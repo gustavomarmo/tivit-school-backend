@@ -8,7 +8,7 @@ namespace edu_connect_backend.Configuration
     {
         public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
+            var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
 
             services.AddAuthentication(x =>
             {

@@ -12,11 +12,12 @@ namespace edu_connect_backend.Configuration
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "Insira o token JWT desta maneira: Bearer {seu_token}",
+                    Description = "Cole apenas o seu token JWT abaixo (sem escrever Bearer)",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",             
+                    BearerFormat = "JWT"
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
