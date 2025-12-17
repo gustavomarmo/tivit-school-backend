@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edu_connect_backend.Context;
 
@@ -11,9 +12,11 @@ using edu_connect_backend.Context;
 namespace edu_connect_backend.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    partial class ConnectionContextModelSnapshot : ModelSnapshot
+    [Migration("20251217181650_RenomeandoTabelas")]
+    partial class RenomeandoTabelas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace edu_connect_backend.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("turma");
+                    b.ToTable("turmas");
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.Usuario", b =>

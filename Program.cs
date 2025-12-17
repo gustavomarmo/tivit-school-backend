@@ -23,6 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AlunoRepository>();
+builder.Services.AddScoped<AlunoService>();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
