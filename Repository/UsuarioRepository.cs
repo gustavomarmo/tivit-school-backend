@@ -9,7 +9,7 @@ namespace edu_connect_backend.Repository
         
         public UsuarioRepository(ConnectionContext context)
         {
-            context = context;
+            this.context = context;
         }
 
         public void AdicionarUsuario(Usuario usuario)
