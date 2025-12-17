@@ -28,9 +28,34 @@ namespace edu_connect_backend.Repository
             return query.ToList();
         }
 
+        public Aluno? ObterPorId(int id)
+        {
+            return context.alunos
+                .Include(a => a.usuario)
+                .Include(a => a.turma)
+                .FirstOrDefault(a => a.id == id);
+        }
+
+        public bool UsuarioJaEAluno(int usuarioId)
+        {
+            return context.alunos.Any(a => a.usuarioId == usuarioId);
+        }
+
         public void Adicionar(Aluno aluno)
         {
             context.alunos.Add(aluno);
+            context.SaveChanges();
+        }
+
+        public void Atualizar(Aluno aluno)
+        {
+            context.alunos.Update(aluno);
+            context.SaveChanges();
+        }
+
+        public void Deletar(Aluno aluno)
+        {
+            context.alunos.Remove(aluno);
             context.SaveChanges();
         }
     }

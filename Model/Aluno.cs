@@ -12,10 +12,10 @@ namespace edu_connect_backend.Model
         public DateTime dataNascimento { get; set; }
 
         // Chaves Estrangeiras
-        public int usuario_id { get; set; }
+        public int usuarioId { get; set; }
         public Usuario usuario { get; set; } = null!;
 
-        public int? turma_id { get; set; }
+        public int? turmaId { get; set; }
         public Turma? turma { get; set; }
     }
 }

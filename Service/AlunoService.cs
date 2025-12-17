@@ -26,5 +26,54 @@ namespace edu_connect_backend.Service
                 turma = a.turma?.nome ?? "Sem Turma" // Trata nulo se não tiver turma
             }).ToList();
         }
+
+        public void CriarAluno(AlunoRequestDTO dto)
+        {
+            string emailGerado = $"{dto.matricula}@aluno.educonnect.com";
+
+            var novoUsuario = new Usuario
+            {
+                nome = dto.nome,
+                email = emailGerado,
+                senhaHash = "Mudar123!", // Senha Padrão Inicial
+                cpf = "",
+                perfil = dto.,
+                ativo = dto.ativo,
+                dataCadastro = DateTime.Now
+            };
+
+            var novoAluno = new Aluno
+            {
+                matricula = dto.matricula,
+                dataNascimento = DateTime.Now,
+                turmaId = dto.turmaId,
+                usuario = novoUsuario
+            };
+
+            repository.Adicionar(novoAluno);
+        }
+
+        public bool? EditarAluno(int id, AlunoRequestDTO dto)
+        {
+            var aluno = repository.ObterPorId(id);
+            if (aluno == null) return null;
+
+            aluno.usuario.nome = dto.nome;
+            aluno.matricula = dto.matricula;
+            aluno.turmaId = dto.turmaId;
+            aluno.usuario.ativo = dto.ativo;
+
+            repository.Atualizar(aluno);
+            return true;
+        }
+
+        public bool DeletarAluno(int id)
+        {
+            var aluno = repository.ObterPorId(id);
+            if (aluno == null) return false;
+
+            repository.Deletar(aluno);
+            return true;
+        }
     }
 }
