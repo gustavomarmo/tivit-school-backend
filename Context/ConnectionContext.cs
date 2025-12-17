@@ -7,7 +7,7 @@ namespace edu_connect_backend.Context
         public ConnectionContext(DbContextOptions<ConnectionContext> options) : base(options)
         {
         }
-        public DbSet<Model.Usuario> Usuarios { get; set; }
+        public DbSet<Model.Usuario> usuarios { get; set; }
 
     }
 }

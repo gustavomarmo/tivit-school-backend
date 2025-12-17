@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edu_connect_backend.Context;
 
@@ -10,9 +11,11 @@ using edu_connect_backend.Context;
 namespace edu_connect_backend.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    partial class ConnectionContextModelSnapshot : ModelSnapshot
+    [Migration("20251217151504_AjusteCamposUsuario")]
+    partial class AjusteCamposUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

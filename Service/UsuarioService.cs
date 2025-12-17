@@ -12,6 +12,11 @@ namespace edu_connect_backend.Service
             this.repository = repository;
         }
 
+        public Usuario? ObterUsuarioPorEmail(string email)
+        {
+            return repository.ObterPorEmail(email);
+        }
+
         public void CadastrarUsuario(Usuario usuario)
         {
             repository.AdicionarUsuario(usuario);
