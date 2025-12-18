@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edu_connect_backend.Context;
 
@@ -11,9 +12,11 @@ using edu_connect_backend.Context;
 namespace edu_connect_backend.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    partial class ConnectionContextModelSnapshot : ModelSnapshot
+    [Migration("20251218002937_AjusteEnumUsuarioEInt")]
+    partial class AjusteEnumUsuarioEInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,76 +60,6 @@ namespace edu_connect_backend.Migrations
                     b.ToTable("aluno");
                 });
 
-            modelBuilder.Entity("edu_connect_backend.Model.Disciplina", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("nome");
-
-                    b.Property<int>("professorId")
-                        .HasColumnType("int")
-                        .HasColumnName("professor_id");
-
-                    b.Property<int>("turmaId")
-                        .HasColumnType("int")
-                        .HasColumnName("turma_id");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("professorId");
-
-                    b.HasIndex("turmaId");
-
-                    b.ToTable("disciplina");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Material", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("descricao");
-
-                    b.Property<string>("tipo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("tipo");
-
-                    b.Property<string>("titulo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("titulo");
-
-                    b.Property<int>("topicoId")
-                        .HasColumnType("int")
-                        .HasColumnName("topico_id");
-
-                    b.Property<string>("url")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("url");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("topicoId");
-
-                    b.ToTable("material");
-                });
-
             modelBuilder.Entity("edu_connect_backend.Model.Professor", b =>
                 {
                     b.Property<int>("id")
@@ -155,31 +88,6 @@ namespace edu_connect_backend.Migrations
                     b.HasIndex("usuarioId");
 
                     b.ToTable("professor");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Topico", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("disciplinaId")
-                        .HasColumnType("int")
-                        .HasColumnName("disciplina_id");
-
-                    b.Property<string>("titulo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("titulo");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("disciplinaId");
-
-                    b.ToTable("topico");
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.Turma", b =>
@@ -269,36 +177,6 @@ namespace edu_connect_backend.Migrations
                     b.Navigation("usuario");
                 });
 
-            modelBuilder.Entity("edu_connect_backend.Model.Disciplina", b =>
-                {
-                    b.HasOne("edu_connect_backend.Model.Professor", "professor")
-                        .WithMany()
-                        .HasForeignKey("professorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("edu_connect_backend.Model.Turma", "turma")
-                        .WithMany()
-                        .HasForeignKey("turmaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("professor");
-
-                    b.Navigation("turma");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Material", b =>
-                {
-                    b.HasOne("edu_connect_backend.Model.Topico", "topico")
-                        .WithMany("materiais")
-                        .HasForeignKey("topicoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("topico");
-                });
-
             modelBuilder.Entity("edu_connect_backend.Model.Professor", b =>
                 {
                     b.HasOne("edu_connect_backend.Model.Usuario", "usuario")
@@ -308,27 +186,6 @@ namespace edu_connect_backend.Migrations
                         .IsRequired();
 
                     b.Navigation("usuario");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Topico", b =>
-                {
-                    b.HasOne("edu_connect_backend.Model.Disciplina", "disciplina")
-                        .WithMany("topicos")
-                        .HasForeignKey("disciplinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("disciplina");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Disciplina", b =>
-                {
-                    b.Navigation("topicos");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Topico", b =>
-                {
-                    b.Navigation("materiais");
                 });
 #pragma warning restore 612, 618
         }

@@ -48,6 +48,12 @@ namespace edu_connect_backend.Repository
 
         public void Deletar(Professor professor)
         {
+            if (professor.usuario != null)
+            {
+                professor.usuario.ativo = false;
+                context.usuarios.Update(professor.usuario);
+            }
+
             context.professores.Remove(professor);
             context.SaveChanges();
         }

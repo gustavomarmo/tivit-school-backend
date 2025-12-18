@@ -13,10 +13,20 @@ namespace edu_connect_backend.Context
         public DbSet<Aluno> alunos { get; set; }
         public DbSet<Turma> turmas { get; set; }
         public DbSet<Professor> professores { get; set; }
+        public DbSet<Disciplina> Disciplinas { get; set; }
+        public DbSet<TurmaDisciplina> TurmaDisciplinas { get; set; }
+        public DbSet<Topico> Topicos { get; set; }
+        public DbSet<Material> Materiais { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Usuario>().HasKey(u => u.id);
+            modelBuilder.Entity<Aluno>().HasKey(a => a.id);
+            modelBuilder.Entity<Turma>().HasKey(t => t.id);
+            modelBuilder.Entity<Professor>().HasKey(p => p.id);
+
 
             // 1. Configurar Enum para salvar como Texto (Opcional, mas recomendado para leitura)
             modelBuilder.Entity<Usuario>()
