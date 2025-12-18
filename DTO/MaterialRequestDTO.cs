@@ -3,7 +3,7 @@
     public class TopicoRequestDTO
     {
         public string titulo { get; set; }
-        public int disciplinaId { get; set; }
+        public int turmaDisciplinaId { get; set; }
     }
 
     public class MaterialRequestDTO

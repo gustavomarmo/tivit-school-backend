@@ -66,7 +66,7 @@ namespace edu_connect_backend.Service
             return new DisciplinaConteudoDTO
             {
                 id = turmaDisciplina.id,
-                nome = turmaDisciplina.nome,
+                nome = turmaDisciplina.disciplina.nome,
                 topicos = turmaDisciplina.topicos.Select(t => new TopicoDTO
                 {
                     id = t.id,
@@ -84,7 +84,7 @@ namespace edu_connect_backend.Service
 
         public void CriarTopico(TopicoRequestDTO dto)
         {
-            var topico = new Topico { titulo = dto.titulo, disciplinaId = dto.disciplinaId };
+            var topico = new Topico { titulo = dto.titulo, turmaDisciplinaId = dto.turmaDisciplinaId };
             repository.AdicionarTopico(topico);
         }
 
