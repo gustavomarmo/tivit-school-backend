@@ -17,6 +17,8 @@ namespace edu_connect_backend.Context
         public DbSet<TurmaDisciplina> TurmaDisciplinas { get; set; }
         public DbSet<Topico> Topicos { get; set; }
         public DbSet<Material> Materiais { get; set; }
+        public DbSet<Nota> Notas { get; set; }
+        public DbSet<Aviso> Avisos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
