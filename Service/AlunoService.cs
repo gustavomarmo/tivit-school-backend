@@ -37,7 +37,7 @@ namespace edu_connect_backend.Service
                 email = emailGerado,
                 senhaHash = "Mudar123!", // Senha Padrão Inicial
                 cpf = "",
-                perfil = dto.,
+                perfil = PerfilUsuario.Aluno,
                 ativo = dto.ativo,
                 dataCadastro = DateTime.Now
             };

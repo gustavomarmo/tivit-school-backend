@@ -12,6 +12,7 @@ namespace edu_connect_backend.Context
         public DbSet<Model.Usuario> usuarios { get; set; }
         public DbSet<Aluno> alunos { get; set; }
         public DbSet<Turma> turmas { get; set; }
+        public DbSet<Professor> professores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

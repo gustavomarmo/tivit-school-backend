@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edu_connect_backend.Context;
 
@@ -11,9 +12,11 @@ using edu_connect_backend.Context;
 namespace edu_connect_backend.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    partial class ConnectionContextModelSnapshot : ModelSnapshot
+    [Migration("20251217223736_AjusteCamposAluno")]
+    partial class AjusteCamposAluno
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,36 +58,6 @@ namespace edu_connect_backend.Migrations
                     b.HasIndex("usuarioId");
 
                     b.ToTable("aluno");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Professor", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("especialidade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("especialidade");
-
-                    b.Property<string>("matricula")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("matricula");
-
-                    b.Property<int>("usuarioId")
-                        .HasColumnType("int")
-                        .HasColumnName("usuario_id");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("usuarioId");
-
-                    b.ToTable("professor");
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.Turma", b =>
@@ -170,17 +143,6 @@ namespace edu_connect_backend.Migrations
                         .IsRequired();
 
                     b.Navigation("turma");
-
-                    b.Navigation("usuario");
-                });
-
-            modelBuilder.Entity("edu_connect_backend.Model.Professor", b =>
-                {
-                    b.HasOne("edu_connect_backend.Model.Usuario", "usuario")
-                        .WithMany()
-                        .HasForeignKey("usuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("usuario");
                 });
