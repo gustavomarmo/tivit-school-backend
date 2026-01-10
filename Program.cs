@@ -32,6 +32,8 @@ builder.Services.AddScoped<AcademicoRepository>();
 builder.Services.AddScoped<AcademicoService>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<NotaRepository>();
+builder.Services.AddScoped<NotaService>();
 
 var app = builder.Build();
 

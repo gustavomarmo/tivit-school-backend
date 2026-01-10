@@ -29,6 +29,17 @@ namespace edu_connect_backend.Context
             modelBuilder.Entity<Turma>().HasKey(t => t.id);
             modelBuilder.Entity<Professor>().HasKey(p => p.id);
 
+            modelBuilder.Entity<Nota>()
+                .HasOne(n => n.aluno)
+                .WithMany() // Se a classe Aluno tiver uma lista de Notas, use .WithMany(a => a.Notas)
+                .HasForeignKey(n => n.alunoId)
+                .OnDelete(DeleteBehavior.NoAction); // Define NO ACTION
+
+            modelBuilder.Entity<Nota>()
+                .HasOne(n => n.turmaDisciplina)
+                .WithMany()
+                .HasForeignKey(n => n.turmaDisciplinaId)
+                .OnDelete(DeleteBehavior.NoAction); // D
 
             // 1. Configurar Enum para salvar como Texto (Opcional, mas recomendado para leitura)
             modelBuilder.Entity<Usuario>()
