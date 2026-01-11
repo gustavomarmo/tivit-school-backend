@@ -19,6 +19,7 @@ namespace edu_connect_backend.Context
         public DbSet<Material> Materiais { get; set; }
         public DbSet<Nota> Notas { get; set; }
         public DbSet<Aviso> Avisos { get; set; }
+        public DbSet<Notificacao> Notificacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,13 @@ namespace edu_connect_backend.Context
                 .WithMany()
                 .HasForeignKey(n => n.turmaDisciplinaId)
                 .OnDelete(DeleteBehavior.NoAction); // D
+
+            modelBuilder.Entity<Notificacao>()
+            .HasOne(n => n.usuario)
+            .WithMany()
+            .HasForeignKey(n => n.usuarioId)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
             // 1. Configurar Enum para salvar como Texto (Opcional, mas recomendado para leitura)
             modelBuilder.Entity<Usuario>()

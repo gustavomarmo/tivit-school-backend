@@ -20,6 +20,8 @@ builder.Services.AddSwaggerConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TokenService>();
@@ -34,6 +36,8 @@ builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<NotaRepository>();
 builder.Services.AddScoped<NotaService>();
+builder.Services.AddScoped<NotificacaoRepository>();
+builder.Services.AddScoped<NotificacaoService>();
 
 var app = builder.Build();
 
