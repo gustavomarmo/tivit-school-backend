@@ -53,8 +53,6 @@ namespace edu_connect_backend.Repository
 
             context.SaveChanges();
         }
-
-        // Método auxiliar para criar notificações (útil para quando lançar notas, etc.)
         public void Criar(Notificacao notificacao)
         {
             context.Notificacoes.Add(notificacao);

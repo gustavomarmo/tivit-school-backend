@@ -21,7 +21,6 @@ namespace edu_connect_backend.Controller
         [HttpGet("disciplinas/minhas")]
         public IActionResult GetMinhasDisciplinas()
         {
-            // Pega o email de dentro do token automaticamente
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var resultado = service.ListarMinhasDisciplinas(email!);
             return Ok(resultado);
@@ -51,16 +50,52 @@ namespace edu_connect_backend.Controller
             return StatusCode(201);
         }
 
-        [HttpPost("atividades/{id}/entrega")]
-        [Authorize(Roles = "Aluno")]
-        public IActionResult PostEntrega(int id, [FromBody] object entrega)
+        [HttpPut("materiais/{id}")]
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult EditarMaterial(int id, [FromBody] MaterialRequestDTO dto)
         {
-            // Endpoint mockado para aceitar a chamada do front
-            return Ok("Entrega recebida com sucesso");
+            try
+            {
+                service.AtualizarMaterial(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("materiais/{id}")]
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult DeletarMaterial(int id)
+        {
+            try
+            {
+                service.DeletarMaterial(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("atividades/{id}/entrega")]
+        [Authorize]
+        public IActionResult EntregarAtividade(int id, [FromForm] IFormFile file)
+        {
+            try
+            {
+                var url = service.RegistrarEntrega(id, file);
+                return Ok(new { mensagem = "Entrega realizada com sucesso!", url = url });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("disciplinas")]
-        [Authorize(Roles = "Coordenador")] // Só coordenador cadastra matéria nova
+        [Authorize(Roles = "Coordenador")]
         public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoDTO dto)
         {
             this.service.CriarDisciplinaGenerica(dto);
@@ -68,7 +103,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("disciplinas/vincular")]
-        [Authorize(Roles = "Coordenador")] // Só coordenador monta a grade
+        [Authorize(Roles = "Coordenador")]
         public IActionResult Vincular([FromBody] VincularDisciplinaDTO dto)
         {
             this.service.VincularDisciplina(dto);

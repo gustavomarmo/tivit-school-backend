@@ -2,6 +2,10 @@
 using edu_connect_backend.DTO;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace edu_connect_backend.Service
 {
@@ -12,18 +16,24 @@ namespace edu_connect_backend.Service
         private readonly UsuarioRepository usuarioRepository;
         private readonly AlunoRepository alunoRepository;
         private readonly ProfessorRepository professorRepository;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IWebHostEnvironment env;
 
-        public AcademicoService(ConnectionContext context,
+        public AcademicoService(
+            ConnectionContext context,
             AcademicoRepository repository,
             UsuarioRepository usuarioRepository,
             AlunoRepository alunoRepository,
-            ProfessorRepository professorRepository)
+            ProfessorRepository professorRepository,
+            IHttpContextAccessor httpContextAccessor // ADICIONE ESTE PARÂMETRO
+        )
         {
             this.repository = repository;
             this.usuarioRepository = usuarioRepository;
             this.alunoRepository = alunoRepository;
             this.professorRepository = professorRepository;
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor; // ADICIONE ESTA LINHA
         }
 
         public void CriarDisciplinaGenerica(DisciplinaCriacaoDTO dto)
@@ -49,12 +59,33 @@ namespace edu_connect_backend.Service
 
             List<TurmaDisciplina> lista = new();
 
+            if (usuario.perfil == PerfilUsuario.Aluno)
+            {
+                var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
+
+                if (aluno != null)
+                {
+                    lista = repository.ObterDisciplinasPorAluno(aluno.id);
+                }
+            }
+            else if (usuario.perfil == PerfilUsuario.Professor)
+            {
+                var professor = context.professores.FirstOrDefault(p => p.usuarioId == usuario.id);
+
+                if (professor != null)
+                {
+                    lista = repository.ObterDisciplinasPorProfessor(professor.id);
+                }
+            }
+
             return lista.Select(td => new DisciplinaResumoDTO
             {
                 id = td.id,
                 nome = td.disciplina.nome,
-                turma = td.turma.nome,
-                professor = td.professor.usuario.nome
+                turma = td.turma != null ? td.turma.nome : "N/A",
+                professor = td.professor != null && td.professor.usuario != null
+                            ? td.professor.usuario.nome
+                            : "Sem Professor"
             }).ToList();
         }
 
@@ -101,10 +132,67 @@ namespace edu_connect_backend.Service
             repository.AdicionarMaterial(material);
         }
 
-        // Simulação de entrega (apenas logica visual por enquanto)
-        public void RegistrarEntrega(int atividadeId, string urlArquivo)
+        private int ObterIdUsuarioLogado()
         {
-            // Aqui você salvaria numa tabela 'Entrega' no futuro
+            var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
+            throw new Exception("Usuário não identificado.");
+        }
+
+        public void AtualizarMaterial(int id, MaterialRequestDTO dto)
+        {
+            var material = repository.ObterMaterialPorId(id);
+            if (material == null) throw new Exception("Material não encontrado.");
+
+            material.titulo = dto.titulo;
+            material.url = dto.url;
+            material.tipo = dto.tipo;
+            material.topicoId = dto.topicoId;
+
+            repository.AtualizarMaterial(material);
+        }
+
+        public void DeletarMaterial(int id)
+        {
+            var material = repository.ObterMaterialPorId(id);
+            if (material == null) throw new Exception("Material não encontrado.");
+
+            repository.DeletarMaterial(material);
+        }
+        public string RegistrarEntrega(int atividadeId, IFormFile arquivo)
+        {
+            var usuarioId = ObterIdUsuarioLogado();
+
+            var material = repository.ObterMaterialPorId(atividadeId);
+            if (material == null) throw new Exception("Atividade não encontrada.");
+            if (material.tipo != "assignment") throw new Exception("Este material não é uma atividade.");
+
+            if (arquivo == null || arquivo.Length == 0) throw new Exception("Arquivo inválido.");
+
+            string pastaUploads = Path.Combine(env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
+
+            if (!Directory.Exists(pastaUploads))
+                Directory.CreateDirectory(pastaUploads);
+
+            string nomeArquivo = $"{DateTime.Now.Ticks}_{arquivo.FileName}";
+            string caminhoCompleto = Path.Combine(pastaUploads, nomeArquivo);
+
+            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+            {
+                arquivo.CopyTo(stream);
+            }
+
+            var novaEntrega = new Entrega
+            {
+                materialId = atividadeId,
+                alunoId = usuarioId,
+                arquivoUrl = $"/uploads/{nomeArquivo}",
+                dataEntrega = DateTime.Now
+            };
+
+            repository.AdicionarEntrega(novaEntrega);
+
+            return novaEntrega.arquivoUrl;      
         }
     }
 }

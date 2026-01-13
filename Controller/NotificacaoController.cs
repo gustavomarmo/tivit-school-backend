@@ -6,7 +6,7 @@ namespace edu_connect_backend.Controller
 {
     [ApiController]
     [Route("api/notificacoes")]
-    [Authorize] // Exige token JWT para acessar
+    [Authorize]
     public class NotificacaoController : ControllerBase
     {
         private readonly NotificacaoService service;

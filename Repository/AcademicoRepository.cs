@@ -74,7 +74,7 @@ namespace edu_connect_backend.Repository
 
         public Material? ObterMaterialPorId(int id)
         {
-            return context.Materiais.Find(id);
+            return context.Materiais.FirstOrDefault(m => m.id == id);
         }
 
         public void AtualizarMaterial(Material material)
@@ -87,6 +87,17 @@ namespace edu_connect_backend.Repository
         {
             context.Materiais.Remove(material);
             context.SaveChanges();
+        }
+
+        public void AdicionarEntrega(Entrega entrega)
+        {
+            context.Entregas.Add(entrega);
+            context.SaveChanges();
+        }
+
+        public bool ExisteEntrega(int materialId, int alunoId)
+        {
+            return context.Entregas.Any(e => e.materialId == materialId && e.alunoId == alunoId);
         }
     }
 }

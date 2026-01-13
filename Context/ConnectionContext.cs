@@ -20,6 +20,7 @@ namespace edu_connect_backend.Context
         public DbSet<Nota> Notas { get; set; }
         public DbSet<Aviso> Avisos { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
+        public DbSet<Entrega> Entregas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,22 +32,34 @@ namespace edu_connect_backend.Context
             modelBuilder.Entity<Professor>().HasKey(p => p.id);
 
             modelBuilder.Entity<Nota>()
-                .HasOne(n => n.aluno)
-                .WithMany() // Se a classe Aluno tiver uma lista de Notas, use .WithMany(a => a.Notas)
-                .HasForeignKey(n => n.alunoId)
-                .OnDelete(DeleteBehavior.NoAction); // Define NO ACTION
+            .HasOne(n => n.aluno)
+            .WithMany()
+            .HasForeignKey(n => n.alunoId)
+            .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Nota>()
-                .HasOne(n => n.turmaDisciplina)
-                .WithMany()
-                .HasForeignKey(n => n.turmaDisciplinaId)
-                .OnDelete(DeleteBehavior.NoAction); // D
+            .HasOne(n => n.turmaDisciplina)
+            .WithMany()
+            .HasForeignKey(n => n.turmaDisciplinaId)
+            .OnDelete(DeleteBehavior.NoAction); // D
 
             modelBuilder.Entity<Notificacao>()
             .HasOne(n => n.usuario)
             .WithMany()
             .HasForeignKey(n => n.usuarioId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Entrega>()
+            .HasOne(e => e.material)
+            .WithMany()
+            .HasForeignKey(e => e.materialId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Entrega>()
+            .HasOne(e => e.aluno)
+            .WithMany()
+            .HasForeignKey(e => e.alunoId)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
             // 1. Configurar Enum para salvar como Texto (Opcional, mas recomendado para leitura)

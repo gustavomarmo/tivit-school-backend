@@ -18,7 +18,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet("boletim")]
-        [Authorize(Roles = "Aluno")] // Só aluno vê o próprio boletim
+        [Authorize(Roles = "Aluno")]
         public IActionResult GetBoletim()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
@@ -33,7 +33,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet("lancamento")]
-        [Authorize(Roles = "Professor, Coordenador")] // Professores e Coordenadores podem ver
+        [Authorize(Roles = "Professor, Coordenador")]
         public IActionResult GetLancamento([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
         {
             if (turmaId <= 0 || disciplinaId <= 0 || bimestre <= 0)
@@ -41,8 +41,6 @@ namespace edu_connect_backend.Controller
 
             var lista = _service.ObterListaLancamento(turmaId, disciplinaId, bimestre);
 
-            // Retorna lista vazia com 200 OK ao invés de 404 se não tiver alunos, 
-            // pois o front espera um array para renderizar a tabela (mesmo que vazia).
             return Ok(lista);
         }
     }
