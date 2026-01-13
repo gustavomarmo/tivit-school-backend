@@ -22,6 +22,8 @@ namespace edu_connect_backend.Context
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<Entrega> Entregas { get; set; }
 
+        public DbSet<Frequencia> Frequencias { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

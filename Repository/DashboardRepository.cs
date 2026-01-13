@@ -34,5 +34,56 @@ namespace edu_connect_backend.Repository
                 .SqlQueryRaw<TarefaPendenteDTO>("EXEC sp_Dashboard_Tarefas @TurmaId = {0}", turmaId)
                 .ToList();
         }
+
+        public List<DadosNotaProfessor> ObterNotasPorProfessor(int professorId)
+        {
+            var vinculos = context.TurmaDisciplinas
+                .Where(td => td.professorId == professorId)
+                .Include(td => td.turma)
+                .Include(td => td.disciplina)
+                .ToList();
+
+            if (!vinculos.Any()) return new List<DadosNotaProfessor>();
+
+            List<DadosNotaProfessor> resultados = new();
+
+            foreach (var vinculo in vinculos)
+            {
+                var alunosNaTurma = context.alunos
+                    .Include(a => a.usuario)
+                    .Where(a => a.turmaId == vinculo.turmaId)
+                    .ToList();
+
+                foreach (var aluno in alunosNaTurma)
+                {
+                    
+                    var notas = context.Notas
+                        .Where(n => n.alunoId == aluno.id && n.turmaDisciplinaId == vinculo.id)
+                        .ToList();
+
+                    decimal mediaAtual = notas.Any() ? notas.Average(n => n.valor) : 0;
+
+                    resultados.Add(new DadosNotaProfessor
+                    {
+                        AlunoId = aluno.id,
+                        AlunoNome = aluno.usuario.nome,
+                        TurmaNome = vinculo.turma.nome,
+                        DisciplinaNome = vinculo.disciplina.nome,
+                        Media = mediaAtual
+                    });
+                }
+            }
+
+            return resultados;
+        }
+    }
+
+    public class DadosNotaProfessor
+    {
+        public int AlunoId { get; set; }
+        public string AlunoNome { get; set; }
+        public string TurmaNome { get; set; }
+        public string DisciplinaNome { get; set; }
+        public decimal Media { get; set; }
     }
 }

@@ -38,6 +38,8 @@ builder.Services.AddScoped<NotaRepository>();
 builder.Services.AddScoped<NotaService>();
 builder.Services.AddScoped<NotificacaoRepository>();
 builder.Services.AddScoped<NotificacaoService>();
+builder.Services.AddScoped<FrequenciaRepository>();
+builder.Services.AddScoped<FrequenciaService>();
 
 var app = builder.Build();
 

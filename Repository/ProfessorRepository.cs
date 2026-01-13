@@ -57,5 +57,10 @@ namespace edu_connect_backend.Repository
             context.professores.Remove(professor);
             context.SaveChanges();
         }
+
+        public Professor? ObterPorUsuarioId(int usuarioId)
+        {
+            return context.professores.FirstOrDefault(p => p.usuarioId == usuarioId);
+        }
     }
 }
