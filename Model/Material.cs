@@ -13,5 +13,8 @@ namespace edu_connect_backend.Model
 
         public int topicoId { get; set; }
         public Topico topico { get; set; } = null!;
+
+        public DateTime? dataEntrega { get; set; }
+        public decimal? notaMaxima { get; set; }
     }
 }

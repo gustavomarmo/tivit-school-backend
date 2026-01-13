@@ -27,6 +27,8 @@
         public int id { get; set; }
         public string titulo { get; set; }
         public string tipo { get; set; }
-        public string? url { get; set; }
+        public string url { get; set; }
+        public DateTime? dataEntrega { get; set; }
+        public bool entregue { get; set; }
     }
 }

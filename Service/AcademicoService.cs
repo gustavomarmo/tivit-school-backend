@@ -25,7 +25,7 @@ namespace edu_connect_backend.Service
             UsuarioRepository usuarioRepository,
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
-            IHttpContextAccessor httpContextAccessor // ADICIONE ESTE PARÂMETRO
+            IHttpContextAccessor httpContextAccessor
         )
         {
             this.repository = repository;
@@ -33,7 +33,7 @@ namespace edu_connect_backend.Service
             this.alunoRepository = alunoRepository;
             this.professorRepository = professorRepository;
             this.context = context;
-            this.httpContextAccessor = httpContextAccessor; // ADICIONE ESTA LINHA
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public void CriarDisciplinaGenerica(DisciplinaCriacaoDTO dto)
@@ -94,6 +94,8 @@ namespace edu_connect_backend.Service
             var turmaDisciplina = repository.ObterConteudoCompleto(disciplinaId);
             if (turmaDisciplina == null) return null;
 
+            var usuarioId = ObterIdUsuarioLogado();
+
             return new DisciplinaConteudoDTO
             {
                 id = turmaDisciplina.id,
@@ -107,7 +109,10 @@ namespace edu_connect_backend.Service
                         id = m.id,
                         titulo = m.titulo,
                         tipo = m.tipo,
-                        url = m.url
+                        url = m.url,
+                        dataEntrega = m.dataEntrega,
+
+                        entregue = (m.tipo == "assignment") && repository.ExisteEntrega(m.id, usuarioId)
                     }).ToList()
                 }).ToList()
             };
@@ -158,6 +163,35 @@ namespace edu_connect_backend.Service
             if (material == null) throw new Exception("Material não encontrado.");
 
             repository.DeletarMaterial(material);
+        }
+
+        public void CriarAtividade(AtividadeRequestDTO dto)
+        {
+            var atividade = new Material
+            {
+                titulo = dto.titulo,
+                descricao = dto.descricao,
+                tipo = "assignment",
+                url = "",
+                topicoId = dto.topicoId,
+                dataEntrega = dto.dataEntrega,
+                notaMaxima = dto.notaMaxima
+            };
+            repository.AdicionarMaterial(atividade);
+        }
+
+        public void AtualizarAtividade(int id, AtividadeRequestDTO dto)
+        {
+            var material = repository.ObterMaterialPorId(id);
+            if (material == null) throw new Exception("Atividade não encontrada.");
+            if (material.tipo != "assignment") throw new Exception("Este item não é uma atividade.");
+
+            material.titulo = dto.titulo;
+            material.descricao = dto.descricao;
+            material.dataEntrega = dto.dataEntrega;
+            material.notaMaxima = dto.notaMaxima;
+
+            repository.AtualizarMaterial(material);
         }
         public string RegistrarEntrega(int atividadeId, IFormFile arquivo)
         {

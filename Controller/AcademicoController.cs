@@ -79,6 +79,37 @@ namespace edu_connect_backend.Controller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("atividades")]
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult CriarAtividade([FromBody] AtividadeRequestDTO dto)
+        {
+            try
+            {
+                service.CriarAtividade(dto);
+                return Ok("Atividade criada com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("atividades/{id}")]
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult AtualizarAtividade(int id, [FromBody] AtividadeRequestDTO dto)
+        {
+            try
+            {
+                service.AtualizarAtividade(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("atividades/{id}/entrega")]
         [Authorize]
         public IActionResult EntregarAtividade(int id, [FromForm] IFormFile file)
