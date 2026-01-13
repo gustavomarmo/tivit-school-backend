@@ -111,7 +111,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("atividades/{id}/entrega")]
-        [Authorize]
+        [Authorize(Roles = "Aluno")]
         public IActionResult EntregarAtividade(int id, [FromForm] IFormFile file)
         {
             try

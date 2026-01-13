@@ -25,7 +25,8 @@ namespace edu_connect_backend.Service
             UsuarioRepository usuarioRepository,
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IWebHostEnvironment env
         )
         {
             this.repository = repository;
@@ -34,6 +35,7 @@ namespace edu_connect_backend.Service
             this.professorRepository = professorRepository;
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
+            this.env = env;
         }
 
         public void CriarDisciplinaGenerica(DisciplinaCriacaoDTO dto)
@@ -197,9 +199,14 @@ namespace edu_connect_backend.Service
         {
             var usuarioId = ObterIdUsuarioLogado();
 
+            var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuarioId);
+            if (aluno == null) throw new Exception("Perfil de aluno não encontrado para este usuário.");
+
             var material = repository.ObterMaterialPorId(atividadeId);
             if (material == null) throw new Exception("Atividade não encontrada.");
-            if (material.tipo != "assignment") throw new Exception("Este material não é uma atividade.");
+
+            if (material.tipo != "assignment" && material.dataEntrega == null)
+                throw new Exception("Este material não é uma atividade.");
 
             if (arquivo == null || arquivo.Length == 0) throw new Exception("Arquivo inválido.");
 
@@ -219,14 +226,14 @@ namespace edu_connect_backend.Service
             var novaEntrega = new Entrega
             {
                 materialId = atividadeId,
-                alunoId = usuarioId,
+                alunoId = aluno.id,
                 arquivoUrl = $"/uploads/{nomeArquivo}",
                 dataEntrega = DateTime.Now
             };
 
             repository.AdicionarEntrega(novaEntrega);
 
-            return novaEntrega.arquivoUrl;      
+            return novaEntrega.arquivoUrl;
         }
     }
 }
