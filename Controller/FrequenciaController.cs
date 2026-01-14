@@ -31,5 +31,20 @@ namespace edu_connect_backend.Controller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("resumo")]
+        [Authorize(Roles = "Aluno")]
+        public IActionResult GetResumoFrequencia()
+        {
+            try
+            {
+                var resumo = service.ObterResumoFrequenciaLogado();
+                return Ok(resumo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
