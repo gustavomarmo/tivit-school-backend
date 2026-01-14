@@ -64,5 +64,12 @@ namespace edu_connect_backend.Repository
             context.alunos.Remove(aluno);
             context.SaveChanges();
         }
+
+        public bool TodosAlunosExistem(List<int> ids)
+        {
+            var contagemNoBanco = context.alunos.Count(a => ids.Contains(a.id));
+
+            return contagemNoBanco == ids.Distinct().Count();
+        }
     }
 }

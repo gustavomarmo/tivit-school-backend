@@ -39,12 +39,6 @@ namespace edu_connect_backend.Context
             .HasForeignKey(n => n.alunoId)
             .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Nota>()
-            .HasOne(n => n.turmaDisciplina)
-            .WithMany()
-            .HasForeignKey(n => n.turmaDisciplinaId)
-            .OnDelete(DeleteBehavior.NoAction); // D
-
             modelBuilder.Entity<Notificacao>()
             .HasOne(n => n.usuario)
             .WithMany()

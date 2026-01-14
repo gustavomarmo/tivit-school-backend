@@ -55,40 +55,17 @@ namespace edu_connect_backend.Service
             var idUsuario = ObterIdUsuarioLogado();
             var professor = professorRepository.ObterPorUsuarioId(idUsuario);
 
-            if (professor == null) throw new Exception("Perfil de professor não encontrado.");
+            if (professor == null) throw new Exception("Professor não encontrado.");
 
-            var dados = repository.ObterNotasPorProfessor(professor.id);
+            var kpis = repository.ObterKPIsProfessorProcedure(professor.id);
 
-            var response = new DashboardProfessorResponseDTO
+            var alunosAtencao = repository.ObterAlunosEmRisco(professor.id);
+
+            return new DashboardProfessorResponseDTO
             {
-                kpis = new KPIsProfessorDTO(),
-                alunosAtencao = new List<AlunoAtencaoDTO>()
+                kpis = kpis,
+                alunosAtencao = alunosAtencao
             };
-
-            if (dados.Any())
-            {
-                response.kpis.mediaTurmas = Math.Round(dados.Average(d => d.Media), 1);
-
-                response.kpis.alunosEmRec = dados.Count(d => d.Media < 6.0m);
-
-                response.alunosAtencao = dados
-                    .Where(d => d.Media < 6.0m)
-                    .OrderBy(d => d.Media)
-                    .Take(5)
-                    .Select(d => new AlunoAtencaoDTO
-                    {
-                        id = d.AlunoId,
-                        nome = d.AlunoNome,
-                        turma = d.TurmaNome,
-                        disciplina = d.DisciplinaNome,
-                        media = Math.Round(d.Media, 1),
-                        foto = ""
-                    }).ToList();
-            }
-
-            response.kpis.frequencia = frequenciaRepository.ObterPercentualFrequenciaProfessor(professor.id);
-
-            return response;
         }
 
         private int ObterIdUsuarioLogado()

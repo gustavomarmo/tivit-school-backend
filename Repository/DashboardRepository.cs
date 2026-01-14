@@ -1,5 +1,6 @@
 ﻿using edu_connect_backend.Context;
 using edu_connect_backend.DTO;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace edu_connect_backend.Repository
@@ -58,7 +59,7 @@ namespace edu_connect_backend.Repository
                 {
                     
                     var notas = context.Notas
-                        .Where(n => n.alunoId == aluno.id && n.turmaDisciplinaId == vinculo.id)
+                        .Where(n => n.alunoId == aluno.id && n.disciplinaId == vinculo.id)
                         .ToList();
 
                     decimal mediaAtual = notas.Any() ? notas.Average(n => n.valor) : 0;
@@ -75,6 +76,27 @@ namespace edu_connect_backend.Repository
             }
 
             return resultados;
+        }
+
+        public KPIsProfessorDTO ObterKPIsProfessorProcedure(int professorId)
+        {
+            var param = new SqlParameter("@ProfessorId", professorId);
+
+            var result = context.Database
+                .SqlQueryRaw<KPIsProfessorDTO>("EXEC sp_Dashboard_Professor_KPIs @ProfessorId", param)
+                .AsEnumerable()
+                .FirstOrDefault();
+
+            return result ?? new KPIsProfessorDTO();
+        }
+
+        public List<AlunoAtencaoDTO> ObterAlunosEmRisco(int professorId)
+        {
+            var param = new SqlParameter("@ProfessorId", professorId);
+
+            return context.Database
+                .SqlQueryRaw<AlunoAtencaoDTO>("EXEC sp_Dashboard_Professor_AlunosRisco @ProfessorId", param)
+                .ToList();
         }
     }
 

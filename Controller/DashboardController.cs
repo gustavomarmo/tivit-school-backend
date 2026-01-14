@@ -31,5 +31,20 @@ namespace edu_connect_backend.Controller
 
             return Ok(resultado);
         }
+
+        [HttpGet("professor")]
+        [Authorize(Roles = "Professor")]
+        public IActionResult GetDashboardProfessor()
+        {
+            try
+            {
+                var dados = service.ObterDashboardProfessor();
+                return Ok(dados);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
