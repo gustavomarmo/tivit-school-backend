@@ -7,17 +7,15 @@ namespace edu_connect_backend.Model
     {
         public int id { get; set; }
         public decimal valor { get; set; }
-
         public int bimestre { get; set; }
         public string tipo { get; set; } = string.Empty;
-
         public DateTime dataLancamento { get; set; } = DateTime.Now;
         public string descricao { get; set; } = string.Empty;
 
         public int alunoId { get; set; }
         public Aluno aluno { get; set; }
 
-        public int disciplinaId { get; set; }
-        public Disciplina disciplina { get; set; }
+        public int turmaDisciplinaId { get; set; }
+        public TurmaDisciplina turmaDisciplina { get; set; }
     }
 }

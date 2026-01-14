@@ -59,7 +59,7 @@ namespace edu_connect_backend.Repository
                 {
                     
                     var notas = context.Notas
-                        .Where(n => n.alunoId == aluno.id && n.disciplinaId == vinculo.id)
+                        .Where(n => n.alunoId == aluno.id && n.turmaDisciplinaId == vinculo.id)
                         .ToList();
 
                     decimal mediaAtual = notas.Any() ? notas.Average(n => n.valor) : 0;

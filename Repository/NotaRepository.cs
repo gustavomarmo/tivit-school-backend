@@ -17,7 +17,6 @@ namespace edu_connect_backend.Repository
 
         public List<BoletimDTO> ObterBoletimPorAluno(int alunoId)
         {
-            // O EF Core mapeia automaticamente as colunas do SELECT para as propriedades do DTO
             return _context.Database
                 .SqlQueryRaw<BoletimDTO>("EXEC sp_Notas_Boletim @AlunoId = {0}", alunoId)
                 .ToList();
@@ -32,11 +31,11 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public Nota? ObterNotaEspecifica(int alunoId, int disciplinaId, int bimestre, string tipo)
+        public Nota? ObterNotaEspecifica(int alunoId, int turmaDisciplinaId, int bimestre, string tipo)
         {
             return _context.Notas
                 .FirstOrDefault(n => n.alunoId == alunoId &&
-                                     n.disciplinaId == disciplinaId &&
+                                     n.turmaDisciplinaId == turmaDisciplinaId &&
                                      n.bimestre == bimestre &&
                                      n.tipo == tipo);
         }
@@ -51,6 +50,12 @@ namespace edu_connect_backend.Repository
         {
             _context.Notas.Update(nota);
             _context.SaveChanges();
+        }
+
+        public TurmaDisciplina? ObterTurmaDisciplina(int turmaId, int disciplinaId)
+        {
+            return _context.TurmaDisciplinas
+                .FirstOrDefault(td => td.turmaId == turmaId && td.disciplinaId == disciplinaId);
         }
     }
 }
