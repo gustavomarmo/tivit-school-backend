@@ -23,6 +23,7 @@ namespace edu_connect_backend.Context
         public DbSet<Entrega> Entregas { get; set; }
 
         public DbSet<Frequencia> Frequencias { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,23 +58,17 @@ namespace edu_connect_backend.Context
             .HasForeignKey(e => e.alunoId)
             .OnDelete(DeleteBehavior.NoAction);
 
-
-            // 1. Configurar Enum para salvar como Texto (Opcional, mas recomendado para leitura)
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.perfil)
                 .HasConversion<string>();
 
-            // 2. LÓGICA PARA CONVERTER TUDO PARA SNAKE_CASE
-            // Percorre todas as tabelas e colunas definidas
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
-                // Converte nome da tabela (Ex: TurmaDisciplinas -> turma_disciplinas)
                 if (entity.GetTableName() != null)
                 {
                     entity.SetTableName(ToSnakeCase(entity.GetTableName()!));
                 }
 
-                // Converte nome das colunas (Ex: DataNascimento -> data_nascimento)
                 foreach (var property in entity.GetProperties())
                 {
                     property.SetColumnName(ToSnakeCase(property.Name));
@@ -81,7 +76,6 @@ namespace edu_connect_backend.Context
             }
         }
 
-        // Função auxiliar para converter String (PascalCase -> snake_case)
         private string ToSnakeCase(string input)
         {
             if (string.IsNullOrEmpty(input)) { return input; }

@@ -40,6 +40,8 @@ builder.Services.AddScoped<NotificacaoRepository>();
 builder.Services.AddScoped<NotificacaoService>();
 builder.Services.AddScoped<FrequenciaRepository>();
 builder.Services.AddScoped<FrequenciaService>();
+builder.Services.AddScoped<EventoRepository>();
+builder.Services.AddScoped<EventoService>();
 
 var app = builder.Build();
 
