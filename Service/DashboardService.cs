@@ -13,6 +13,7 @@ namespace edu_connect_backend.Service
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ProfessorRepository professorRepository;
         private readonly FrequenciaRepository frequenciaRepository;
+        private readonly EventoRepository eventoRepository;
 
         public DashboardService(
             DashboardRepository repository,
@@ -20,7 +21,8 @@ namespace edu_connect_backend.Service
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
             FrequenciaRepository frequenciaRepository,
-            UsuarioRepository usuarioRepository)
+            UsuarioRepository usuarioRepository,
+            EventoRepository eventoRepository)
         {
             this.repository = repository;
             this.alunoRepository = alunoRepository;
@@ -28,6 +30,7 @@ namespace edu_connect_backend.Service
             this.httpContextAccessor = httpContextAccessor;
             this.professorRepository = professorRepository;
             this.frequenciaRepository = frequenciaRepository;
+            this.eventoRepository = eventoRepository;
         }
 
         public DashboardAlunoDTO? ObterDashboardAluno(string emailUsuario)
@@ -66,6 +69,30 @@ namespace edu_connect_backend.Service
                 kpis = kpis,
                 alunosAtencao = alunosAtencao
             };
+        }
+
+        public DashboardCoordenadorResponseDTO ObterDashboardCoordenador()
+        {
+            var response = new DashboardCoordenadorResponseDTO();
+
+            response.kpis = repository.ObterKPIsCoordenador();
+
+            response.graficoDesempenho = repository.ObterGraficoDesempenhoTurmas();
+            response.graficoStatus = repository.ObterGraficoStatusAlunos();
+
+            var eventosFuturos = eventoRepository.ObterProximosEventos(5);
+
+            response.proximosEventos = eventosFuturos.Select(e => new EventoResponseDTO
+            {
+                id = e.id,
+                title = e.titulo,
+                start = e.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
+                type = e.tipo,
+                description = e.descricao,
+                turmaNome = e.turma != null ? e.turma.nome : "Geral"
+            }).ToList();
+
+            return response;
         }
 
         private int ObterIdUsuarioLogado()

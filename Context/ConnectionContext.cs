@@ -1,4 +1,5 @@
-﻿using edu_connect_backend.Model;
+﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -33,6 +34,9 @@ namespace edu_connect_backend.Context
             modelBuilder.Entity<Aluno>().HasKey(a => a.id);
             modelBuilder.Entity<Turma>().HasKey(t => t.id);
             modelBuilder.Entity<Professor>().HasKey(p => p.id);
+            modelBuilder.Entity<KPIsCoordenadorDTO>().HasNoKey();
+            modelBuilder.Entity<GraficoBarrasDTO>().HasNoKey();
+            modelBuilder.Entity<GraficoPizzaDTO>().HasNoKey();
 
             modelBuilder.Entity<Nota>()
             .HasOne(n => n.aluno)

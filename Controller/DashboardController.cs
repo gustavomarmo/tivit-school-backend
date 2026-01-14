@@ -46,5 +46,20 @@ namespace edu_connect_backend.Controller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("coordenador")]
+        [Authorize(Roles = "Coordenador,Admin")]
+        public IActionResult GetDashboardCoordenador()
+        {
+            try
+            {
+                var dados = service.ObterDashboardCoordenador();
+                return Ok(dados);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

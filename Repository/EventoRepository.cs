@@ -27,5 +27,15 @@ namespace edu_connect_backend.Repository
                 .OrderBy(e => e.dataInicio)
                 .ToList();
         }
+
+        public List<Evento> ObterProximosEventos(int quantidade)
+        {
+            return context.Eventos
+                .Include(e => e.turma)
+                .Where(e => e.dataInicio >= DateTime.Today)
+                .OrderBy(e => e.dataInicio)
+                .Take(quantidade)
+                .ToList();
+        }
     }
 }

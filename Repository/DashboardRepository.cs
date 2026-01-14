@@ -98,6 +98,29 @@ namespace edu_connect_backend.Repository
                 .SqlQueryRaw<AlunoAtencaoDTO>("EXEC sp_Dashboard_Professor_AlunosRisco @ProfessorId", param)
                 .ToList();
         }
+
+        public KPIsCoordenadorDTO ObterKPIsCoordenador()
+        {
+            var result = context.Database
+                .SqlQueryRaw<KPIsCoordenadorDTO>("EXEC sp_Dashboard_Coordenador_KPIs")
+                .AsEnumerable()
+                .FirstOrDefault();
+            return result ?? new KPIsCoordenadorDTO();
+        }
+
+        public List<GraficoBarrasDTO> ObterGraficoDesempenhoTurmas()
+        {
+            return context.Database
+                .SqlQueryRaw<GraficoBarrasDTO>("EXEC sp_Dashboard_Coordenador_GraficoBarras")
+                .ToList();
+        }
+
+        public List<GraficoPizzaDTO> ObterGraficoStatusAlunos()
+        {
+            return context.Database
+                .SqlQueryRaw<GraficoPizzaDTO>("EXEC sp_Dashboard_Coordenador_GraficoPizza")
+                .ToList();
+        }
     }
 
     public class DadosNotaProfessor
