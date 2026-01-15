@@ -44,6 +44,7 @@ builder.Services.AddScoped<FrequenciaRepository>();
 builder.Services.AddScoped<FrequenciaService>();
 builder.Services.AddScoped<EventoRepository>();
 builder.Services.AddScoped<EventoService>();
+builder.Services.AddScoped<BoletimPdfService>();
 
 var app = builder.Build();
 

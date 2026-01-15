@@ -12,10 +12,12 @@ namespace edu_connect_backend.Controller
     public class NotaController : ControllerBase
     {
         private readonly NotaService _service;
+        private readonly BoletimPdfService _pdfService;
 
-        public NotaController(NotaService service)
+        public NotaController(NotaService service, BoletimPdfService pdfService)
         {
             _service = service;
+            _pdfService = pdfService;
         }
 
         [HttpGet("boletim")]
@@ -62,6 +64,24 @@ namespace edu_connect_backend.Controller
             {
                 return BadRequest($"Erro ao salvar lote: {ex.Message}");
             }
+        }
+
+        [HttpGet("boletim/download")]
+        [Authorize(Roles = "Aluno")]
+        public IActionResult DownloadBoletim()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null) return Unauthorized();
+
+            var boletim = _service.ObterBoletim(email);
+            var nomeAluno = User.FindFirst(ClaimTypes.Name)?.Value ?? "Aluno";
+
+            if (boletim == null || !boletim.Any())
+                return NotFound("Sem dados para gerar o boletim.");
+
+            var pdfBytes = _pdfService.GerarPdfBoletim(boletim, nomeAluno);
+
+            return File(pdfBytes, "application/pdf", "meu_boletim.pdf");
         }
     }
 }
