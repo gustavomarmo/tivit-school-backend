@@ -29,7 +29,6 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AlunoRepository>();
 builder.Services.AddScoped<AlunoService>();
-builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
 builder.Services.AddScoped<AcademicoRepository>();

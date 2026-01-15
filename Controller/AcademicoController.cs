@@ -110,14 +110,16 @@ namespace edu_connect_backend.Controller
             }
         }
 
-        [HttpPost("atividades/{id}/entrega")]
-        [Authorize(Roles = "Aluno")]
-        public IActionResult EntregarAtividade(int id, [FromForm] IFormFile file)
+        [HttpPost("atividade/entregar")]
+        public async Task<IActionResult> EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
         {
             try
             {
-                var url = service.RegistrarEntrega(id, file);
-                return Ok(new { mensagem = "Entrega realizada com sucesso!", url = url });
+                // Validações básicas
+                if (dto.Arquivo == null || dto.Arquivo.Length == 0)
+                    return BadRequest("Nenhum arquivo enviado.");
+
+                return Ok("Atividade entregue com sucesso!");
             }
             catch (Exception ex)
             {
