@@ -71,5 +71,13 @@ namespace edu_connect_backend.Repository
 
             return contagemNoBanco == ids.Distinct().Count();
         }
+
+        public Aluno? ObterPorUsuarioId(int usuarioId)
+        {
+            return context.alunos
+                .Include(a => a.usuario)
+                .Include(a => a.turma)
+                .FirstOrDefault(a => a.usuarioId == usuarioId);
+        }
     }
 }

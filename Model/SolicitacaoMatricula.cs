@@ -9,7 +9,6 @@ namespace edu_connect_backend.Model
         [Key]
         public int id { get; set; }
 
-        // --- Passo 1: Dados Iniciais ---
         [Required]
         public string nomeCompleto { get; set; } = string.Empty;
 

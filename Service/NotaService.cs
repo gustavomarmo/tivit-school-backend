@@ -60,8 +60,7 @@ namespace edu_connect_backend.Service
             var usuario = _usuarioRepository.ObterPorEmail(emailUsuario);
             if (usuario == null) return null;
 
-            var aluno = _alunoRepository.ObterAlunos(usuario.nome)
-                            .FirstOrDefault(a => a.usuarioId == usuario.id);
+            var aluno = _alunoRepository.ObterPorUsuarioId(usuario.id);
 
             if (aluno == null) return null;
 
