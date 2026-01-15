@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ConnectionContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddCorsConfiguration();
 builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.AddSwaggerConfiguration();

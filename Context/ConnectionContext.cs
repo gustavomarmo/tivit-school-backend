@@ -25,6 +25,8 @@ namespace edu_connect_backend.Context
 
         public DbSet<Frequencia> Frequencias { get; set; }
         public DbSet<Evento> Eventos { get; set; }
+        public DbSet<SolicitacaoMatricula> solicitacoesMatricula { get; set; }
+        public DbSet<DocumentoMatricula> documentosMatricula { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -64,6 +66,18 @@ namespace edu_connect_backend.Context
 
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.perfil)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<SolicitacaoMatricula>()
+                .Property(s => s.status)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<SolicitacaoMatricula>()
+                .Property(s => s.turnoDesejado)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<DocumentoMatricula>()
+                .Property(d => d.tipo)
                 .HasConversion<string>();
 
             foreach (var entity in modelBuilder.Model.GetEntityTypes())

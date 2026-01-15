@@ -8,7 +8,7 @@ namespace edu_connect_backend.Model
         public int id { get; set; }
         public string titulo { get; set; }
         public string mensagem { get; set; }
-        public string tipo { get; set; } // 'success', 'warning', 'info'
+        public string tipo { get; set; }
         public DateTime dataCriacao { get; set; } = DateTime.Now;
         public bool lida { get; set; } = false;
         public int usuarioId { get; set; }
