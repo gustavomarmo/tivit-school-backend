@@ -188,5 +188,70 @@ namespace edu_connect_backend.Controller
 
             return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documento.id });
         }
+
+        [HttpGet("vagas-disponiveis")]
+        public async Task<IActionResult> ObterVagas()
+        {
+            var configuracoes = await _context.configuracoesVaga
+                .Where(c => c.anoLetivo == 2026)
+                .ToListAsync();
+
+            if (!configuracoes.Any())
+            {
+                return NotFound("Nenhuma vaga configurada para o ano letivo atual.");
+            }
+
+            var ocupacoes = await _context.solicitacoesMatricula
+                .Where(s => s.status != StatusMatricula.Rejeitado && s.serieDesejada != null)
+                .Select(s => new { s.serieDesejada, s.turnoDesejado })
+                .ToListAsync();
+
+            var resultado = configuracoes.Select(config =>
+            {
+                int ocupadas = ocupacoes.Count(s =>
+                    s.serieDesejada == config.serie &&
+                    s.turnoDesejado == config.turno);
+
+                return new
+                {
+                    opt = new
+                    {
+                        serie = config.serie,
+                        turno = config.turno.ToString(),
+                        valor = config.valorMensalidade
+                    },
+                    vagasRestantes = config.vagasTotais - ocupadas,
+                    disponivel = (config.vagasTotais - ocupadas) > 0
+                };
+            });
+
+            return Ok(resultado);
+        }
+
+        [HttpPut("selecionar-vaga")]
+        public async Task<IActionResult> SelecionarVaga([FromBody] SelecaoVagaDTO dto)
+        {
+            var solicitacao = await _context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
+
+            if (solicitacao == null) return NotFound("Solicitação não encontrada.");
+
+            decimal valorCalculado = 0;
+            if (dto.Serie.Contains("1º")) valorCalculado = dto.Turno == "Manha" ? 1200 : 1100;
+            else if (dto.Serie.Contains("2º")) valorCalculado = dto.Turno == "Manha" ? 1250 : 950;
+            else if (dto.Serie.Contains("3º")) valorCalculado = 1300;
+
+            if (!Enum.TryParse<Turno>(dto.Turno, true, out var turnoEnum))
+            {
+                return BadRequest("Turno inválido.");
+            }
+
+            solicitacao.serieDesejada = dto.Serie;
+            solicitacao.turnoDesejado = turnoEnum;
+            solicitacao.valorMensalidade = valorCalculado;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensagem = "Vaga selecionada com sucesso!", valor = valorCalculado });
+        }
     }
 }

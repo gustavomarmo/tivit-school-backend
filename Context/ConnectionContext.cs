@@ -27,6 +27,7 @@ namespace edu_connect_backend.Context
         public DbSet<Evento> Eventos { get; set; }
         public DbSet<SolicitacaoMatricula> solicitacoesMatricula { get; set; }
         public DbSet<DocumentoMatricula> documentosMatricula { get; set; }
+        public DbSet<ConfiguracaoVaga>  configuracoesVaga { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,6 +79,10 @@ namespace edu_connect_backend.Context
 
             modelBuilder.Entity<DocumentoMatricula>()
                 .Property(d => d.tipo)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<ConfiguracaoVaga>()
+                .Property(c => c.turno)
                 .HasConversion<string>();
 
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
