@@ -242,5 +242,60 @@ namespace edu_connect_backend.Service
 
             return novaEntrega.arquivoUrl;
         }
+
+        public List<DisciplinaResumoDTO> ListarExtracurriculares(string emailUsuario)
+        {
+            var usuario = usuarioRepository.ObterPorEmail(emailUsuario);
+            if (usuario == null) return new List<DisciplinaResumoDTO>();
+
+            List<TurmaExtracurricular> lista = new();
+
+            if (usuario.perfil == PerfilUsuario.Aluno)
+            {
+                var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
+                if (aluno != null)
+                {
+                    lista = repository.ObterExtracurricularesPorAluno(aluno.id);
+                }
+            }
+
+            return lista.Select(te => new DisciplinaResumoDTO
+            {
+                id = te.id,
+                nome = te.extracurricular.nome,
+                turma = te.turma != null ? te.turma.nome : "N/A",
+                professor = te.professor != null && te.professor.usuario != null
+                            ? te.professor.usuario.nome
+                            : "Instrutor"
+            }).ToList();
+        }
+
+        public DisciplinaConteudoDTO? ObterConteudoExtracurricular(int idVunculo)
+        {
+            var dados = repository.ObterConteudoExtracurricularCompleto(idVunculo);
+            if (dados == null) return null;
+
+            var usuarioId = ObterIdUsuarioLogado();
+
+            return new DisciplinaConteudoDTO
+            {
+                id = dados.id,
+                nome = dados.extracurricular.nome,
+                topicos = dados.topicos.Select(t => new TopicoDTO
+                {
+                    id = t.id,
+                    titulo = t.titulo,
+                    materiais = t.materiais.Select(m => new MaterialDTO
+                    {
+                        id = m.id,
+                        titulo = m.titulo,
+                        tipo = m.tipo,
+                        url = m.url,
+                        dataEntrega = m.dataEntrega,
+                        entregue = (m.tipo == "assignment") && repository.ExisteEntrega(m.id, usuarioId)
+                    }).ToList()
+                }).ToList()
+            };
+        }
     }
 }

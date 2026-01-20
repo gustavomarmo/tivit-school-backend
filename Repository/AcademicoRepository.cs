@@ -105,5 +105,27 @@ namespace edu_connect_backend.Repository
         {
             return context.Entregas.Any(e => e.materialId == materialId && e.alunoId == alunoId);
         }
+
+        public List<TurmaExtracurricular> ObterExtracurricularesPorAluno(int alunoId)
+        {
+            var aluno = context.alunos.FirstOrDefault(a => a.id == alunoId);
+            if (aluno == null || aluno.turmaId == null) return new List<TurmaExtracurricular>();
+
+            return context.TurmaExtracurriculares
+                .Include(te => te.extracurricular)
+                .Include(te => te.turma)
+                .Include(te => te.professor).ThenInclude(p => p.usuario)
+                .Where(te => te.turmaId == aluno.turmaId)
+                .ToList();
+        }
+
+        public TurmaExtracurricular? ObterConteudoExtracurricularCompleto(int turmaExtracurricularId)
+        {
+            return context.TurmaExtracurriculares
+                .Include(te => te.extracurricular)
+                .Include(te => te.topicos)
+                    .ThenInclude(t => t.materiais)
+                .FirstOrDefault(te => te.id == turmaExtracurricularId);
+        }
     }
 }

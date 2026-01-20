@@ -11,6 +11,9 @@ namespace edu_connect_backend.Model
         public int turmaDisciplinaId { get; set; }
         public TurmaDisciplina turmaDisciplina { get; set; } = null!;
 
+        public int? turmaExtracurricularId { get; set; }
+        public TurmaExtracurricular? turmaExtracurricular { get; set; }
+
         public List<Material> materiais { get; set; } = new();
     }
 }

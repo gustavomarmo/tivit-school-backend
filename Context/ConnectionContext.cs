@@ -16,6 +16,8 @@ namespace edu_connect_backend.Context
         public DbSet<Professor> professores { get; set; }
         public DbSet<Disciplina> Disciplinas { get; set; }
         public DbSet<TurmaDisciplina> TurmaDisciplinas { get; set; }
+        public DbSet<Extracurricular> Extracurriculares { get; set; }
+        public DbSet<TurmaExtracurricular> TurmaExtracurriculares { get; set; }
         public DbSet<Topico> Topicos { get; set; }
         public DbSet<Material> Materiais { get; set; }
         public DbSet<Nota> Notas { get; set; }
