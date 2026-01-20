@@ -54,6 +54,13 @@ namespace edu_connect_backend.Service
             };
             repository.VincularDisciplinaTurma(vinculo);
         }
+
+        public List<string> ListarTurmas()
+        {
+            var turmas = repository.ListarTodasTurmas();
+
+            return turmas.Select(t => t.nome).Distinct().ToList();
+        }
         public List<DisciplinaResumoDTO> ListarMinhasDisciplinas(string emailUsuario)
         {
             var usuario = usuarioRepository.ObterPorEmail(emailUsuario);

@@ -12,6 +12,12 @@ namespace edu_connect_backend.Repository
         {
             this.context = context;
         }
+
+        public List<Turma> ListarTodasTurmas()
+        {
+            return context.turmas.OrderBy(t => t.nome).ToList();
+        }
+
         public List<Disciplina> ListarDisciplinasGerais()
         {
             return context.Disciplinas.ToList();

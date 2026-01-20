@@ -142,5 +142,21 @@ namespace edu_connect_backend.Controller
             this.service.VincularDisciplina(dto);
             return StatusCode(201);
         }
+
+
+        [HttpGet("turmas")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult GetTurmas()
+        {
+            try
+            {
+                var resultado = service.ListarTurmas();
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erro ao listar turmas: " + ex.Message);
+            }
+        }
     }
 }
