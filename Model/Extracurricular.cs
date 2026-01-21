@@ -9,3 +9,4 @@ namespace edu_connect_backend.Model
         public string nome { get; set; } = string.Empty;
         public string? descricao { get; set; }
     }
+}

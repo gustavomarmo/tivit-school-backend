@@ -297,5 +297,53 @@ namespace edu_connect_backend.Service
                 }).ToList()
             };
         }
+
+        public void CriarAtividadeExtracurricular(ExtracurricularRequestDTO dto)
+        {
+            var nova = new Extracurricular
+            {
+                nome = dto.nome,
+                descricao = dto.descricao
+            };
+            repository.CriarExtracurricular(nova);
+        }
+
+        public void EditarAtividadeExtracurricular(int id, ExtracurricularRequestDTO dto)
+        {
+            var atividade = repository.ObterExtracurricularPorId(id);
+            if (atividade == null) throw new Exception("Atividade não encontrada.");
+
+            atividade.nome = dto.nome;
+            atividade.descricao = dto.descricao;
+
+            repository.AtualizarExtracurricular(atividade);
+        }
+
+        public void DeletarAtividadeExtracurricular(int id)
+        {
+            var atividade = repository.ObterExtracurricularPorId(id);
+            if (atividade == null) throw new Exception("Atividade não encontrada.");
+
+            repository.DeletarExtracurricular(atividade);
+        }
+
+        public void VincularExtracurricular(VincularExtracurricularDTO dto)
+        {
+            var vinculo = new TurmaExtracurricular
+            {
+                turmaId = dto.turmaId,
+                extracurricularId = dto.extracurricularId,
+                professorId = dto.professorId
+            };
+            repository.VincularTurmaExtracurricular(vinculo);
+        }
+
+        public void RemoverVinculoExtracurricular(int idVinculo)
+        {
+            var vinculo = repository.ObterVinculoPorId(idVinculo);
+            if (vinculo == null) throw new Exception("Vínculo não encontrado.");
+
+            repository.DeletarVinculoExtracurricular(vinculo);
+        }
     }
 }

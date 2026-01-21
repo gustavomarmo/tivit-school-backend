@@ -127,5 +127,45 @@ namespace edu_connect_backend.Repository
                     .ThenInclude(t => t.materiais)
                 .FirstOrDefault(te => te.id == turmaExtracurricularId);
         }
+
+        public void CriarExtracurricular(Extracurricular atividade)
+        {
+            context.Extracurriculares.Add(atividade);
+            context.SaveChanges();
+        }
+
+        public Extracurricular? ObterExtracurricularPorId(int id)
+        {
+            return context.Extracurriculares.FirstOrDefault(e => e.id == id);
+        }
+
+        public void AtualizarExtracurricular(Extracurricular atividade)
+        {
+            context.Extracurriculares.Update(atividade);
+            context.SaveChanges();
+        }
+
+        public void DeletarExtracurricular(Extracurricular atividade)
+        {
+            context.Extracurriculares.Remove(atividade);
+            context.SaveChanges();
+        }
+
+        public void VincularTurmaExtracurricular(TurmaExtracurricular vinculo)
+        {
+            context.TurmaExtracurriculares.Add(vinculo);
+            context.SaveChanges();
+        }
+
+        public TurmaExtracurricular? ObterVinculoPorId(int id)
+        {
+            return context.TurmaExtracurriculares.FirstOrDefault(t => t.id == id);
+        }
+
+        public void DeletarVinculoExtracurricular(TurmaExtracurricular vinculo)
+        {
+            context.TurmaExtracurriculares.Remove(vinculo);
+            context.SaveChanges();
+        }
     }
 }

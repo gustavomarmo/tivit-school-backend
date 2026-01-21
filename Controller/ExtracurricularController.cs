@@ -1,4 +1,5 @@
-﻿using edu_connect_backend.Service;
+﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -46,6 +47,81 @@ namespace edu_connect_backend.Controller
             catch (Exception ex)
             {
                 return BadRequest("Erro ao obter conteúdo: " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult Criar([FromBody] ExtracurricularRequestDTO dto)
+        {
+            try
+            {
+                service.CriarAtividadeExtracurricular(dto);
+                return StatusCode(201, "Atividade criada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult Editar(int id, [FromBody] ExtracurricularRequestDTO dto)
+        {
+            try
+            {
+                service.EditarAtividadeExtracurricular(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult Deletar(int id)
+        {
+            try
+            {
+                service.DeletarAtividadeExtracurricular(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("vincular")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult VincularTurma([FromBody] VincularExtracurricularDTO dto)
+        {
+            try
+            {
+                service.VincularExtracurricular(dto);
+                return StatusCode(201, "Atividade vinculada à turma com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("vinculo/{id}")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult RemoverVinculo(int id)
+        {
+            try
+            {
+                service.RemoverVinculoExtracurricular(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
