@@ -18,11 +18,11 @@ namespace edu_connect_backend.Controller
             this.service = service;
         }
 
-        [HttpGet("disciplinas/minhas")]
-        public IActionResult GetMinhasDisciplinas()
+        [HttpGet("disciplinas")]
+        public IActionResult GetDisciplinas()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var resultado = service.ListarMinhasDisciplinas(email!);
+            var resultado = service.ListarDisciplinas(email!);
             return Ok(resultado);
         }
 
@@ -40,6 +40,36 @@ namespace edu_connect_backend.Controller
         {
             service.CriarTopico(dto);
             return StatusCode(201);
+        }
+
+        [HttpPut("topicos/{id}")]
+        [Authorize(Roles = "Professor,Coordenador")]
+        public IActionResult EditarTopico(int id, [FromBody] TopicoRequestDTO dto)
+        {
+            try
+            {
+                service.EditarTopico(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("topicos/{id}")]
+        [Authorize(Roles = "Professor,Coordenador")]
+        public IActionResult DeletarTopico(int id)
+        {
+            try
+            {
+                service.DeletarTopico(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("materiais")]

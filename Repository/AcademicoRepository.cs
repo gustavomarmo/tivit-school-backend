@@ -71,6 +71,17 @@ namespace edu_connect_backend.Repository
             context.Topicos.Add(topico);
             context.SaveChanges();
         }
+        public void AtualizarTopico(Topico topico)
+        {
+            context.Topicos.Update(topico);
+            context.SaveChanges();
+        }
+
+        public void DeletarTopico(Topico topico)
+        {
+            context.Topicos.Remove(topico);
+            context.SaveChanges();
+        }
 
         public void AdicionarMaterial(Material material)
         {
@@ -166,6 +177,13 @@ namespace edu_connect_backend.Repository
         {
             context.TurmaExtracurriculares.Remove(vinculo);
             context.SaveChanges();
+        }
+
+        public Topico? ObterTopicoPorId(int id)
+        {
+            return context.Topicos
+                .Include(t => t.materiais)
+                .FirstOrDefault(t => t.id == id);
         }
     }
 }

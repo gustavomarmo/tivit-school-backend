@@ -61,7 +61,7 @@ namespace edu_connect_backend.Service
 
             return turmas.Select(t => t.nome).Distinct().ToList();
         }
-        public List<DisciplinaResumoDTO> ListarMinhasDisciplinas(string emailUsuario)
+        public List<DisciplinaResumoDTO> ListarDisciplinas(string emailUsuario)
         {
             var usuario = usuarioRepository.ObterPorEmail(emailUsuario);
             if (usuario == null) return new List<DisciplinaResumoDTO>();

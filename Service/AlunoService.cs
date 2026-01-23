@@ -23,7 +23,7 @@ namespace edu_connect_backend.Service
                 nome = a.usuario.nome,
                 email = a.usuario.email,
                 matricula = a.matricula,
-                turma = a.turma?.nome ?? "Sem Turma" // Trata nulo se não tiver turma
+                turma = a.turma?.nome ?? "Sem Turma"
             }).ToList();
         }
 
@@ -35,7 +35,7 @@ namespace edu_connect_backend.Service
             {
                 nome = dto.nome,
                 email = emailGerado,
-                senhaHash = "Mudar123!", // Senha Padrão Inicial
+                senhaHash = "Mudar123!",
                 cpf = "",
                 perfil = PerfilUsuario.Aluno,
                 ativo = dto.ativo,
@@ -50,7 +50,7 @@ namespace edu_connect_backend.Service
                 usuario = novoUsuario
             };
 
-            repository.Adicionar(novoAluno);
+            repository.Criar(novoAluno);
         }
 
         public bool? EditarAluno(int id, AlunoRequestDTO dto)

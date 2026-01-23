@@ -36,12 +36,7 @@ namespace edu_connect_backend.Repository
                 .FirstOrDefault(a => a.id == id);
         }
 
-        public bool UsuarioJaEAluno(int usuarioId)
-        {
-            return context.alunos.Any(a => a.usuarioId == usuarioId);
-        }
-
-        public void Adicionar(Aluno aluno)
+        public void Criar(Aluno aluno)
         {
             context.alunos.Add(aluno);
             context.SaveChanges();

@@ -24,7 +24,6 @@ namespace edu_connect_backend.Context
         public DbSet<Aviso> Avisos { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<Entrega> Entregas { get; set; }
-
         public DbSet<Frequencia> Frequencias { get; set; }
         public DbSet<Evento> Eventos { get; set; }
         public DbSet<SolicitacaoMatricula> solicitacoesMatricula { get; set; }
