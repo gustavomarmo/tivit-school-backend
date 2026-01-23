@@ -18,6 +18,17 @@ namespace edu_connect_backend.Repository
             context.Eventos.Add(evento);
             context.SaveChanges();
         }
+        public void Atualizar(Evento evento)
+        {
+            context.Eventos.Update(evento);
+            context.SaveChanges();
+        }
+
+        public void Deletar(Evento evento)
+        {
+            context.Eventos.Remove(evento);
+            context.SaveChanges();
+        }
 
         public List<Evento> ObterPorMesAno(int mes, int ano)
         {
@@ -36,6 +47,11 @@ namespace edu_connect_backend.Repository
                 .OrderBy(e => e.dataInicio)
                 .Take(quantidade)
                 .ToList();
+        }
+
+        public Evento? ObterPorId(int id)
+        {
+            return context.Eventos.FirstOrDefault(e => e.id == id);
         }
     }
 }

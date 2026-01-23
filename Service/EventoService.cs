@@ -56,5 +56,27 @@ namespace edu_connect_backend.Service
                 turmaNome = e.turma?.nome ?? "Geral"
             }).ToList();
         }
+
+        public void EditarEvento(int id, EventoRequestDTO dto)
+        {
+            var evento = repository.ObterPorId(id);
+            if (evento == null) throw new Exception("Evento não encontrado.");
+
+            evento.titulo = dto.titulo;
+            evento.descricao = dto.descricao;
+            evento.dataInicio = dto.dataInicio;
+            evento.dataFim = dto.dataFim;
+            evento.tipo = dto.tipo;
+
+            repository.Atualizar(evento);
+        }
+
+        public void DeletarEvento(int id)
+        {
+            var evento = repository.ObterPorId(id);
+            if (evento == null) throw new Exception("Evento não encontrado.");
+
+            repository.Deletar(evento);
+        }
     }
 }
