@@ -34,7 +34,6 @@ namespace edu_connect_backend.Controller
             }
             catch (Exception ex)
             {
-                // Retorna 400 Bad Request se o usuário não existir ou já for aluno
                 return BadRequest(ex.Message);
             }
         }

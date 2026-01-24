@@ -132,7 +132,24 @@ namespace edu_connect_backend.Service
             var topico = new Topico { titulo = dto.titulo, turmaDisciplinaId = dto.turmaDisciplinaId };
             repository.AdicionarTopico(topico);
         }
+        public void EditarTopico(int id, TopicoRequestDTO dto)
+        {
+            var topico = repository.ObterTopicoPorId(id);
+            if (topico == null) throw new Exception("Tópico não encontrado.");
 
+            // Atualizamos apenas o título
+            topico.titulo = dto.titulo;
+
+            repository.AtualizarTopico(topico);
+        }
+
+        public void DeletarTopico(int id)
+        {
+            var topico = repository.ObterTopicoPorId(id);
+            if (topico == null) throw new Exception("Tópico não encontrado.");
+
+            repository.DeletarTopico(topico);
+        }
         public void CriarMaterial(MaterialRequestDTO dto)
         {
             var material = new Material

@@ -42,7 +42,7 @@ namespace edu_connect_backend.Service
                             .FirstOrDefault(a => a.usuarioId == usuario.id);
 
             if (aluno == null || aluno.turmaId == null) return null;
-
+                                                                    
             var dashboard = new DashboardAlunoDTO
             {
                 ultimasNotas = repository.ObterNotasRecentes(aluno.id),

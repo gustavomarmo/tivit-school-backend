@@ -49,5 +49,35 @@ namespace edu_connect_backend.Controller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Professor,Coordenador")]
+        public IActionResult Editar(int id, [FromBody] EventoRequestDTO dto)
+        {
+            try
+            {
+                service.EditarEvento(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Professor,Coordenador")]
+        public IActionResult Deletar(int id)
+        {
+            try
+            {
+                service.DeletarEvento(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
