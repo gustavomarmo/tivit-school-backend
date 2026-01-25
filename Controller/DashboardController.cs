@@ -1,5 +1,4 @@
-﻿using edu_connect_backend.Mapper;
-using edu_connect_backend.Service;
+﻿using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,11 +11,10 @@ namespace edu_connect_backend.Controller
     public class DashboardController : ControllerBase
     {
         private readonly DashboardService dashboardService;
-        private readonly DashboardMapper dashboardMapper;
 
-        public DashboardController(DashboardService service)
+        public DashboardController(DashboardService dashboardService)
         {
-            this.dashboardService = service;
+            this.dashboardService = dashboardService;
         }
 
         [HttpGet("aluno")]
@@ -27,9 +25,7 @@ namespace edu_connect_backend.Controller
 
             if (email == null) return Unauthorized();
 
-            var resultado = dashboardService.ObterDashboardAluno(email);
-
-            return Ok(resultado);
+            return Ok(dashboardService.ObterDashboardAluno(email));
         }
 
         [HttpGet("professor")]
