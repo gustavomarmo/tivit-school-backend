@@ -9,19 +9,19 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class NotificacaoController : ControllerBase
     {
-        private readonly NotificacaoService service;
+        private readonly NotificacaoService notificacaoService;
 
         public NotificacaoController(NotificacaoService service)
         {
-            this.service = service;
+            this.notificacaoService = service;
         }
 
         [HttpGet]
-        public IActionResult GetNotificacoes()
+        public IActionResult listarNotificacoes()
         {
             try
             {
-                var resultado = service.ObterNotificacoesDoUsuario();
+                var resultado = notificacaoService.obterNotificacoesDoUsuario();
                 return Ok(resultado);
             }
             catch (Exception ex)
@@ -31,11 +31,11 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet("nao-lidas/contagem")]
-        public IActionResult GetContagemNaoLidas()
+        public IActionResult obterContagemNotificacoesNaoLidas()
         {
             try
             {
-                var contagem = service.ContarNaoLidas();
+                var contagem = notificacaoService.contarNotificacoesNaoLidas();
                 return Ok(contagem);
             }
             catch (Exception ex)
@@ -45,20 +45,20 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("{id}/ler")]
-        public IActionResult MarcarComoLida(int id)
+        public IActionResult marcarNotificacaoComoLida(int id)
         {
-            var sucesso = service.MarcarComoLida(id);
+            var sucesso = notificacaoService.marcarNotificacaoComoLida(id);
             if (!sucesso) return NotFound("Notificação não encontrada.");
 
             return NoContent();
         }
 
         [HttpPut("ler-todas")]
-        public IActionResult MarcarTodasComoLidas()
+        public IActionResult marcarTodasNotificacoesComoLidas()
         {
             try
             {
-                service.MarcarTodasComoLidas();
+                notificacaoService.marcarTodasNotificacoesComoLidas();
                 return NoContent();
             }
             catch (Exception ex)

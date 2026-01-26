@@ -11,34 +11,49 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class AcademicoController : ControllerBase
     {
-        private readonly AcademicoService service;
+        private readonly AcademicoService academicoService;
 
-        public AcademicoController(AcademicoService service)
+        public AcademicoController(AcademicoService academicoService)
         {
-            this.service = service;
+            this.academicoService = academicoService;
         }
 
         [HttpGet("disciplinas")]
-        public IActionResult GetDisciplinas()
+        public IActionResult ListarDisciplinas()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var resultado = service.ListarDisciplinas(email!);
+            var resultado = academicoService.ListarDisciplinas(email!);
             return Ok(resultado);
         }
 
-        [HttpGet("disciplinas/{id}/conteudo")]
-        public IActionResult GetConteudo(int id)
+        [HttpGet("turmas")]
+        [Authorize(Roles = "Coordenador")]
+        public IActionResult ListarTurmas()
         {
-            var conteudo = service.ObterConteudo(id);
+            try
+            {
+                var resultado = academicoService.ListarTurmas();
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erro ao listar turmas: " + ex.Message);
+            }
+        }
+
+        [HttpGet("disciplinas/{id}/conteudo")]
+        public IActionResult ObterConteudo(int id)
+        {
+            var conteudo = academicoService.ObterConteudo(id);
             if (conteudo == null) return NotFound("Disciplina não encontrada");
             return Ok(conteudo);
         }
 
         [HttpPost("topicos")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult PostTopico([FromBody] TopicoRequestDTO dto)
+        public IActionResult CriarTopico([FromBody] TopicoRequestDTO dto)
         {
-            service.CriarTopico(dto);
+            academicoService.CriarTopico(dto);
             return StatusCode(201);
         }
 
@@ -46,37 +61,23 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult EditarTopico(int id, [FromBody] TopicoRequestDTO dto)
         {
-            try
-            {
-                service.EditarTopico(id, dto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.EditarTopico(id, dto);
+            return NoContent();
         }
 
         [HttpDelete("topicos/{id}")]
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult DeletarTopico(int id)
         {
-            try
-            {
-                service.DeletarTopico(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.DeletarTopico(id);
+            return NoContent();
         }
 
         [HttpPost("materiais")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult PostMaterial([FromBody] MaterialRequestDTO dto)
+        public IActionResult CriarMaterial([FromBody] MaterialRequestDTO dto)
         {
-            service.CriarMaterial(dto);
+            academicoService.CriarMaterial(dto);
             return StatusCode(201);
         }
 
@@ -84,109 +85,65 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult EditarMaterial(int id, [FromBody] MaterialRequestDTO dto)
         {
-            try
-            {
-                service.AtualizarMaterial(id, dto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.EditarMaterial(id, dto);
+            return NoContent();
         }
 
         [HttpDelete("materiais/{id}")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult DeletarMaterial(int id)
         {
-            try
-            {
-                service.DeletarMaterial(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.DeletarMaterial(id);
+            return NoContent();
         }
 
         [HttpPost("atividades")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult CriarAtividade([FromBody] AtividadeRequestDTO dto)
         {
-            try
-            {
-                service.CriarAtividade(dto);
-                return Ok("Atividade criada com sucesso!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.CriarAtividade(dto);
+            return Ok("Atividade criada com sucesso!");
         }
 
         [HttpPut("atividades/{id}")]
         [Authorize(Roles = "Professor,Admin")]
-        public IActionResult AtualizarAtividade(int id, [FromBody] AtividadeRequestDTO dto)
+        public IActionResult EditarAtividade(int id, [FromBody] AtividadeRequestDTO dto)
         {
-            try
-            {
-                service.AtualizarAtividade(id, dto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            academicoService.EditarAtividade(id, dto);
+            return NoContent();
+        }
+
+        [HttpDelete("atividades/{id}")]
+        [Authorize(Roles = "Professor,Admin")]
+        public IActionResult DeletarAtividade(int id)
+        {
+            academicoService.DeletarAtividade(id);
+            return NoContent();
         }
 
         [HttpPost("atividade/entregar")]
         public async Task<IActionResult> EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
         {
-            try
-            {
-                // Validações básicas
-                if (dto.Arquivo == null || dto.Arquivo.Length == 0)
-                    return BadRequest("Nenhum arquivo enviado.");
+            if (dto.Arquivo == null || dto.Arquivo.Length == 0)
+                return BadRequest("Nenhum arquivo enviado.");
 
-                return Ok("Atividade entregue com sucesso!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok("Atividade entregue com sucesso!");
         }
 
         [HttpPost("disciplinas")]
         [Authorize(Roles = "Coordenador")]
         public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoDTO dto)
         {
-            this.service.CriarDisciplinaGenerica(dto);
+            academicoService.CriarDisciplinaGenerica(dto);
             return StatusCode(201);
         }
 
         [HttpPost("disciplinas/vincular")]
         [Authorize(Roles = "Coordenador")]
-        public IActionResult Vincular([FromBody] VincularDisciplinaDTO dto)
+        public IActionResult VincularDisciplina([FromBody] VincularDisciplinaDTO dto)
         {
-            this.service.VincularDisciplina(dto);
+            academicoService.VincularDisciplina(dto);
             return StatusCode(201);
-        }
-
-
-        [HttpGet("turmas")]
-        [Authorize(Roles = "Coordenador")]
-        public IActionResult GetTurmas()
-        {
-            try
-            {
-                var resultado = service.ListarTurmas();
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Erro ao listar turmas: " + ex.Message);
-            }
         }
     }
 }

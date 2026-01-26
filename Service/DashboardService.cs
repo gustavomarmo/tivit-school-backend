@@ -1,6 +1,8 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Math.EC;
 using System.Security.Claims;
 
 namespace edu_connect_backend.Service
@@ -33,36 +35,35 @@ namespace edu_connect_backend.Service
             this.eventoRepository = eventoRepository;
         }
 
-        public DashboardAlunoDTO? ObterDashboardAluno(string emailUsuario)
+        public DashboardAlunoReadModel obterDashboardAluno(int usuarioId)
         {
-            var usuario = usuarioRepository.ObterPorEmail(emailUsuario);
-            if (usuario == null) return null;
+            var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
+                ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
 
-            var aluno = alunoRepository.ObterAlunos(usuario.nome)
-                            .FirstOrDefault(a => a.usuarioId == usuario.id);
-
-            if (aluno == null || aluno.turmaId == null) return null;
+            var aluno = alunoRepository.obterAlunos(usuario.nome)
+                            .FirstOrDefault(a => a.usuarioId == usuario.id)
+                            ?? throw new KeyNotFoundException("Cadastro de aluno não encontrado");
                                                                     
-            var dashboard = new DashboardAlunoDTO
+            var dashboard = new DashboardAlunoReadModel
             {
-                ultimasNotas = repository.ObterNotasRecentes(aluno.id),
-                avisos = repository.ObterAvisos(aluno.turmaId.Value),
-                tarefasPendentes = repository.ObterTarefasPendentes(aluno.turmaId.Value)
+                ultimasNotas = repository.obterNotasRecentes(aluno.id),
+                avisos = repository.obterAvisos(aluno.turmaId.Value),
+                tarefasPendentes = repository.obterTarefasPendentes(aluno.turmaId.Value)
             };
 
             return dashboard;
         }
 
-        public DashboardProfessorResponseDTO ObterDashboardProfessor()
+        public DashboardProfessorResponseDTO obterDashboardProfessor(int usuarioId)
         {
-            var idUsuario = ObterIdUsuarioLogado();
-            var professor = professorRepository.ObterPorUsuarioId(idUsuario);
+            var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
+                ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
 
-            if (professor == null) throw new Exception("Professor não encontrado.");
+            var professor = professorRepository.obterProfessorPorUsuarioId(usuario.id);
 
-            var kpis = repository.ObterKPIsProfessorProcedure(professor.id);
+            var kpis = repository.obterKPIsProfessorProcedure(professor.id);
 
-            var alunosAtencao = repository.ObterAlunosEmRisco(professor.id);
+            var alunosAtencao = repository.obterAlunosEmRisco(professor.id);
 
             return new DashboardProfessorResponseDTO
             {
@@ -71,16 +72,16 @@ namespace edu_connect_backend.Service
             };
         }
 
-        public DashboardCoordenadorResponseDTO ObterDashboardCoordenador()
+        public DashboardCoordenadorResponseDTO obterDashboardCoordenador()
         {
             var response = new DashboardCoordenadorResponseDTO();
 
-            response.kpis = repository.ObterKPIsCoordenador();
+            response.kpis = repository.obterKPIsCoordenador();
 
-            response.graficoDesempenho = repository.ObterGraficoDesempenhoTurmas();
-            response.graficoStatus = repository.ObterGraficoStatusAlunos();
+            response.graficoDesempenho = repository.obterGraficoDesempenhoTurmas();
+            response.graficoStatus = repository.obterGraficoStatusAlunos();
 
-            var eventosFuturos = eventoRepository.ObterProximosEventos(5);
+            var eventosFuturos = eventoRepository.obterProximosEventos(5);
 
             response.proximosEventos = eventosFuturos.Select(e => new EventoResponseDTO
             {
@@ -95,11 +96,6 @@ namespace edu_connect_backend.Service
             return response;
         }
 
-        private int ObterIdUsuarioLogado()
-        {
-            var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
-            throw new Exception("Usuário não identificado.");
-        }
+        
     }
 }

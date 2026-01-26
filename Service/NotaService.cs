@@ -55,9 +55,9 @@ namespace edu_connect_backend.Service
             }
         }
 
-        public List<BoletimDTO>? ObterBoletim(string emailUsuario)
+        public List<BoletimDTO>? obterBoletim(string emailUsuario)
         {
-            var usuario = _usuarioRepository.ObterPorEmail(emailUsuario);
+            var usuario = _usuarioRepository.obterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return null;
 
             var aluno = _alunoRepository.ObterPorUsuarioId(usuario.id);
@@ -67,12 +67,12 @@ namespace edu_connect_backend.Service
             return _repository.ObterBoletimPorAluno(aluno.id);
         }
 
-        public List<NotaLancamentoDTO> ObterListaLancamento(int turmaId, int disciplinaId, int bimestre)
+        public List<NotaLancamentoDTO> obterListaLancamento(int turmaId, int disciplinaId, int bimestre)
         {
             return _repository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre);
         }
 
-        public void LancarNotasEmLote(List<NotaRequestDTO> listaNotas)
+        public void lancarNotasEmLote(List<NotaRequestDTO> listaNotas)
         {
             if (listaNotas == null || !listaNotas.Any()) return;
 

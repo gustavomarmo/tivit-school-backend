@@ -14,7 +14,7 @@ namespace edu_connect_backend.Service
             this.configuration = configuration;
         }
 
-        public string GerarToken(Usuario usuario)
+        public string gerarToken(Usuario usuario)
         {
             var claims = new List<Claim>
             {

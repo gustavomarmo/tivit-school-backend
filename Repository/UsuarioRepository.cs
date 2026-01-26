@@ -12,9 +12,14 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public Usuario? ObterPorEmail(string email)
+        public Usuario? obterUsuarioPorEmail(string email)
         {
             return context.usuarios.FirstOrDefault(u => u.email == email);
+        }
+
+        public Usuario? obterPorUsuarioId(int usuarioId)
+        {
+            return context.usuarios.FirstOrDefault(u => u.id == usuarioId);
         }
 
         public void AdicionarUsuario(Usuario usuario)

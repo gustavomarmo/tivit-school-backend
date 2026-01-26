@@ -1,5 +1,6 @@
 using edu_connect_backend.Configuration;
 using edu_connect_backend.Context;
+using edu_connect_backend.Exceptions;
 using edu_connect_backend.Repository;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -56,6 +57,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("AllowAll");
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseAuthentication();
 app.UseAuthorization();

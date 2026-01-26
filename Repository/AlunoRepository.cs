@@ -13,7 +13,7 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public List<Aluno> ObterAlunos(string? busca)
+        public List<Aluno> obterAlunos(string? busca)
         {
             var query = context.alunos
                 .Include(a => a.usuario)

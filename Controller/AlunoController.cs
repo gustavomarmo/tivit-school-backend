@@ -18,18 +18,18 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet]
-        public IActionResult Listar([FromQuery] string? busca)
+        public IActionResult listarAlunos([FromQuery] string? busca)
         {
-            var resultado = service.ListarAlunos(busca);
+            var resultado = service.listarAlunos(busca);
             return Ok(resultado);
         }
 
         [HttpPost]
-        public IActionResult Criar([FromBody] AlunoRequestDTO dto)
+        public IActionResult criarAluno([FromBody] AlunoRequestDTO dto)
         {
             try
             {
-                service.CriarAluno(dto);
+                service.criarAluno(dto);
                 return StatusCode(201);
             }
             catch (Exception ex)
@@ -39,9 +39,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("{id}")]
-        public IActionResult Editar(int id, [FromBody] AlunoRequestDTO dto)
+        public IActionResult editarAluno(int id, [FromBody] AlunoRequestDTO dto)
         {
-            var alunoEditado = service.EditarAluno(id, dto);
+            var alunoEditado = service.editarAluno(id, dto);
 
             if (alunoEditado == null)
                 return NotFound("Aluno não encontrado.");
@@ -50,9 +50,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
+        public IActionResult deletarAluno(int id)
         {
-            var sucesso = service.DeletarAluno(id);
+            var sucesso = service.deletarAluno(id);
 
             if (!sucesso)
                 return NotFound("Aluno não encontrado.");

@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,37 +20,33 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("aluno")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult GetDashboardAluno()
+        public IActionResult getDashboardAluno()
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
 
-            if (email == null) return Unauthorized();
+            if (usuarioId == null) return Unauthorized();
 
-            return Ok(dashboardService.ObterDashboardAluno(email));
+            return Ok(dashboardService.obterDashboardAluno(usuarioId));
         }
 
         [HttpGet("professor")]
         [Authorize(Roles = "Professor")]
-        public IActionResult GetDashboardProfessor()
+        public IActionResult getDashboardProfessor()
         {
-            try
-            {
-                var dados = dashboardService.ObterDashboardProfessor();
-                return Ok(dados);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
+
+            if (usuarioId == null) return Unauthorized();
+
+            return Ok(dashboardService.obterDashboardProfessor(usuarioId));
         }
 
         [HttpGet("coordenador")]
         [Authorize(Roles = "Coordenador,Admin")]
-        public IActionResult GetDashboardCoordenador()
+        public IActionResult getDashboardCoordenador()
         {
             try
             {
-                var dados = dashboardService.ObterDashboardCoordenador();
+                var dados = dashboardService.obterDashboardCoordenador();
                 return Ok(dados);
             }
             catch (Exception ex)

@@ -19,11 +19,11 @@ namespace edu_connect_backend.Controller
 
         [HttpPost("chamada")]
         [Authorize(Roles = "Professor")]
-        public IActionResult RealizarChamada([FromBody] ChamadaRequestDTO dto)
+        public IActionResult realizarChamada([FromBody] ChamadaRequestDTO dto)
         {
             try
             {
-                service.RealizarChamada(dto);
+                service.realizarChamada(dto);
                 return Ok("Chamada registrada com sucesso!");
             }
             catch (Exception ex)
@@ -34,11 +34,11 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("resumo")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult GetResumoFrequencia()
+        public IActionResult obterResumoFrequencia()
         {
             try
             {
-                var resumo = service.ObterResumoFrequenciaLogado();
+                var resumo = service.obterResumoFrequenciaLogado();
                 return Ok(resumo);
             }
             catch (Exception ex)

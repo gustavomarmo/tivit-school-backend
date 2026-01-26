@@ -9,19 +9,19 @@ namespace edu_connect_backend.Controller
     [Route("auth")]
     public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioService service;
+        private readonly UsuarioService usuarioService;
         private readonly TokenService tokenService;
 
-        public UsuarioController(UsuarioService service, TokenService tokenService)
+        public UsuarioController(UsuarioService usuarioService, TokenService tokenService)
         {
-            this.service = service;
+            this.usuarioService = usuarioService;
             this.tokenService = tokenService;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequestDTO login)
+        public IActionResult login([FromBody] LoginRequestDTO login)
         {
-            var usuario = service.ObterUsuarioPorEmail(login.email);
+            var usuario = usuarioService.obterUsuarioPorEmail(login.email);
 
             if (usuario == null)
                 return Unauthorized("Email ou senha inválidos.");
@@ -29,7 +29,7 @@ namespace edu_connect_backend.Controller
             if (usuario.senhaHash != login.senha)
                 return Unauthorized("Email ou senha inválidos.");
 
-            var token = tokenService.GerarToken(usuario);
+            var token = tokenService.gerarToken(usuario);
 
             return Ok(new LoginResponseDTO
             {
@@ -42,9 +42,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("cadastro")]
-        public IActionResult CadastrarUsuario([FromBody] Usuario usuario)
+        public IActionResult cadastrarUsuario([FromBody] Usuario usuario)
         {
-            service.CadastrarUsuario(usuario);
+            usuarioService.cadastrarUsuario(usuario);
             return Ok("Usuário cadastrado com sucesso!");
         }
     }

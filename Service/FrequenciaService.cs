@@ -25,7 +25,7 @@ namespace edu_connect_backend.Service
             this.context = context;
         }
 
-        public void RealizarChamada(ChamadaRequestDTO dto)
+        public void realizarChamada(ChamadaRequestDTO dto)
         {
             var idsAlunos = dto.registros.Select(r => r.alunoId).ToList();
 
@@ -50,7 +50,7 @@ namespace edu_connect_backend.Service
             repository.Registrar(listaParaSalvar);
         }
 
-        public List<FrequenciaResumoDTO> ObterResumoFrequenciaLogado()
+        public List<FrequenciaResumoDTO> obterResumoFrequenciaLogado()
         {
             var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
             if (idClaim == null || !int.TryParse(idClaim.Value, out int usuarioId))

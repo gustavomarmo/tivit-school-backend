@@ -1,8 +1,6 @@
-﻿using edu_connect_backend.Model;
-
-namespace edu_connect_backend.DTO
+﻿namespace edu_connect_backend.Model
 {
-    public class DashboardAlunoDTO
+    public class DashboardAlunoReadModel
     {
         public List<NotaResumoReadModel> ultimasNotas { get; set; } = new();
         public List<AvisoResumoReadModel> avisos { get; set; } = new();

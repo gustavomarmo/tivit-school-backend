@@ -7,7 +7,7 @@ namespace edu_connect_backend.Service
 {
     public class BoletimPdfService
     {
-        public byte[] GerarPdfBoletim(List<BoletimDTO> boletim, string nomeAluno)
+        public byte[] gerarPdfBoletim(List<BoletimDTO> boletim, string nomeAluno)
         {
             QuestPDF.Settings.License = LicenseType.Community;
 

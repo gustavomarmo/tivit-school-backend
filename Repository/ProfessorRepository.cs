@@ -58,7 +58,7 @@ namespace edu_connect_backend.Repository
             context.SaveChanges();
         }
 
-        public Professor? ObterPorUsuarioId(int usuarioId)
+        public Professor? obterProfessorPorUsuarioId(int usuarioId)
         {
             return context.professores.FirstOrDefault(p => p.usuarioId == usuarioId);
         }

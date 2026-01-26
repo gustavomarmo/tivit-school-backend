@@ -13,7 +13,7 @@ namespace edu_connect_backend.Service
             this.repository = repository;
         }
 
-        public List<ProfessorResponseDTO> ListarProfessores(string? busca)
+        public List<ProfessorResponseDTO> listarProfessores(string? busca)
         {
             var professores = repository.ObterProfessores(busca);
 
@@ -27,7 +27,7 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public void CriarProfessor(ProfessorRequestDTO dto)
+        public void criarProfessor(ProfessorRequestDTO dto)
         {
             // Gera e-mail padrão para professor
             string emailGerado = $"{dto.matricula}@professor.educonnect.com";
@@ -53,7 +53,7 @@ namespace edu_connect_backend.Service
             this.repository.Adicionar(novoProfessor);
         }
 
-        public bool? EditarProfessor(int id, ProfessorRequestDTO dto)
+        public bool? editarProfessor(int id, ProfessorRequestDTO dto)
         {
             var professor = repository.ObterPorId(id);
             if (professor == null) return null;
@@ -70,7 +70,7 @@ namespace edu_connect_backend.Service
             return true;
         }
 
-        public bool DeletarProfessor(int id)
+        public bool deletarProfessor(int id)
         {
             var professor = repository.ObterPorId(id);
             if (professor == null) return false;

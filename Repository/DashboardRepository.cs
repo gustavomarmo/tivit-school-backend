@@ -15,21 +15,21 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public List<NotaResumoReadModel> ObterNotasRecentes(int alunoId)
+        public List<NotaResumoReadModel> obterNotasRecentes(int alunoId)
         {
             return context.Database
                 .SqlQueryRaw<NotaResumoReadModel>("EXEC sp_Dashboard_NotasRecentes @AlunoId = {0}", alunoId)
                 .ToList();
         }
 
-        public List<AvisoResumoReadModel> ObterAvisos(int turmaId)
+        public List<AvisoResumoReadModel> obterAvisos(int turmaId)
         {
             return context.Database
                 .SqlQueryRaw<AvisoResumoReadModel>("EXEC sp_Dashboard_Avisos @TurmaId = {0}", turmaId)
                 .ToList();
         }
 
-        public List<TarefaPendenteReadModel> ObterTarefasPendentes(int turmaId)
+        public List<TarefaPendenteReadModel> obterTarefasPendentes(int turmaId)
         {
             return context.Database
                 .SqlQueryRaw<TarefaPendenteReadModel>("EXEC sp_Dashboard_Tarefas @TurmaId = {0}", turmaId)
@@ -78,7 +78,7 @@ namespace edu_connect_backend.Repository
             return resultados;
         }
 
-        public KPIsProfessorDTO ObterKPIsProfessorProcedure(int professorId)
+        public KPIsProfessorDTO obterKPIsProfessorProcedure(int professorId)
         {
             var param = new SqlParameter("@ProfessorId", professorId);
 
@@ -90,7 +90,7 @@ namespace edu_connect_backend.Repository
             return result ?? new KPIsProfessorDTO();
         }
 
-        public List<AlunoAtencaoDTO> ObterAlunosEmRisco(int professorId)
+        public List<AlunoAtencaoDTO> obterAlunosEmRisco(int professorId)
         {
             var param = new SqlParameter("@ProfessorId", professorId);
 
@@ -99,7 +99,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public KPIsCoordenadorDTO ObterKPIsCoordenador()
+        public KPIsCoordenadorDTO obterKPIsCoordenador()
         {
             var result = context.Database
                 .SqlQueryRaw<KPIsCoordenadorDTO>("EXEC sp_Dashboard_Coordenador_KPIs")
@@ -108,14 +108,14 @@ namespace edu_connect_backend.Repository
             return result ?? new KPIsCoordenadorDTO();
         }
 
-        public List<GraficoBarrasDTO> ObterGraficoDesempenhoTurmas()
+        public List<GraficoBarrasDTO> obterGraficoDesempenhoTurmas()
         {
             return context.Database
                 .SqlQueryRaw<GraficoBarrasDTO>("EXEC sp_Dashboard_Coordenador_GraficoBarras")
                 .ToList();
         }
 
-        public List<GraficoPizzaDTO> ObterGraficoStatusAlunos()
+        public List<GraficoPizzaDTO> obterGraficoStatusAlunos()
         {
             return context.Database
                 .SqlQueryRaw<GraficoPizzaDTO>("EXEC sp_Dashboard_Coordenador_GraficoPizza")

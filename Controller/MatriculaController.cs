@@ -11,13 +11,13 @@ namespace edu_connect_backend.Controller
     [Route("api/[controller]")]
     public class MatriculaController : ControllerBase
     {
-        private readonly ConnectionContext _context;
-        private readonly EmailService _emailService;
+        private readonly ConnectionContext context;
+        private readonly EmailService emailService;
 
         public MatriculaController(ConnectionContext context, EmailService emailService)
         {
-            _context = context;
-            _emailService = emailService;
+            this.context = context;
+            this.emailService = emailService;
         }
 
         [HttpPost("iniciar")]
@@ -26,7 +26,7 @@ namespace edu_connect_backend.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var solicitacao = await _context.solicitacoesMatricula
+            var solicitacao = await context.solicitacoesMatricula
                 .FirstOrDefaultAsync(x => x.cpf == dto.Cpf || x.email == dto.Email);
 
             string otp = new Random().Next(100000, 999999).ToString();
@@ -48,7 +48,7 @@ namespace edu_connect_backend.Controller
                 solicitacao.codigoOtp = otp;
                 solicitacao.validadeOtp = DateTime.Now.AddMinutes(30);
 
-                _context.solicitacoesMatricula.Update(solicitacao);
+                context.solicitacoesMatricula.Update(solicitacao);
 
                 mensagemRetorno = "Identificamos um cadastro em andamento. Um NOVO código foi enviado para seu e-mail.";
                 ehReenvio = true;
@@ -68,12 +68,12 @@ namespace edu_connect_backend.Controller
                     dataSolicitacao = DateTime.Now
                 };
 
-                _context.solicitacoesMatricula.Add(solicitacao);
+                context.solicitacoesMatricula.Add(solicitacao);
             }
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace edu_connect_backend.Controller
                     Utilize este código para continuar. Validade: 30 minutos.
                 ";
 
-                await _emailService.SendEmailAsync(dto.Email, dto.NomeCompleto, assunto, corpo);
+                await emailService.SendEmailAsync(dto.Email, dto.NomeCompleto, assunto, corpo);
             }
             catch (Exception ex)
             {
@@ -106,7 +106,7 @@ namespace edu_connect_backend.Controller
         [HttpPost("validar-otp")]
         public async Task<IActionResult> ValidarOtp([FromBody] ValidarOtpDTO dto)
         {
-            var solicitacao = await _context.solicitacoesMatricula
+            var solicitacao = await context.solicitacoesMatricula
                 .FirstOrDefaultAsync(x => x.email == dto.Email && x.codigoOtp == dto.Codigo);
 
             if (solicitacao == null)
@@ -118,7 +118,7 @@ namespace edu_connect_backend.Controller
             if (solicitacao.status == StatusMatricula.Iniciado)
             {
                 solicitacao.status = StatusMatricula.AguardandoDados;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
 
             return Ok(new
@@ -132,7 +132,7 @@ namespace edu_connect_backend.Controller
         [HttpPut("dados-complementares")]
         public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2DTO dto)
         {
-            var solicitacao = await _context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
+            var solicitacao = await context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
 
             if (solicitacao == null)
                 return NotFound("Solicitação não encontrada.");
@@ -143,7 +143,7 @@ namespace edu_connect_backend.Controller
             solicitacao.contatoResponsavel = dto.ContatoResponsavel;
             solicitacao.escolaridadeAnterior = dto.EscolaridadeAnterior;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return Ok(new { mensagem = "Dados salvos com sucesso!" });
         }
@@ -157,7 +157,7 @@ namespace edu_connect_backend.Controller
             if (arquivo == null || arquivo.Length == 0)
                 return BadRequest("Arquivo inválido.");
 
-            var solicitacao = await _context.solicitacoesMatricula.FindAsync(solicitacaoId);
+            var solicitacao = await context.solicitacoesMatricula.FindAsync(solicitacaoId);
             if (solicitacao == null) return NotFound("Solicitação não encontrada.");
 
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "matriculas", solicitacaoId.ToString());
@@ -183,8 +183,8 @@ namespace edu_connect_backend.Controller
                 validado = false
             };
 
-            _context.documentosMatricula.Add(documento);
-            await _context.SaveChangesAsync();
+            context.documentosMatricula.Add(documento);
+            await context.SaveChangesAsync();
 
             return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documento.id });
         }
@@ -192,7 +192,7 @@ namespace edu_connect_backend.Controller
         [HttpGet("vagas-disponiveis")]
         public async Task<IActionResult> ObterVagas()
         {
-            var configuracoes = await _context.configuracoesVaga
+            var configuracoes = await context.configuracoesVaga
                 .Where(c => c.anoLetivo == 2026)
                 .ToListAsync();
 
@@ -201,7 +201,7 @@ namespace edu_connect_backend.Controller
                 return NotFound("Nenhuma vaga configurada para o ano letivo atual.");
             }
 
-            var ocupacoes = await _context.solicitacoesMatricula
+            var ocupacoes = await context.solicitacoesMatricula
                 .Where(s => s.status != StatusMatricula.Rejeitado && s.serieDesejada != null)
                 .Select(s => new { s.serieDesejada, s.turnoDesejado })
                 .ToListAsync();
@@ -231,7 +231,7 @@ namespace edu_connect_backend.Controller
         [HttpPut("selecionar-vaga")]
         public async Task<IActionResult> SelecionarVaga([FromBody] SelecaoVagaDTO dto)
         {
-            var solicitacao = await _context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
+            var solicitacao = await context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
 
             if (solicitacao == null) return NotFound("Solicitação não encontrada.");
 
@@ -249,7 +249,7 @@ namespace edu_connect_backend.Controller
             solicitacao.turnoDesejado = turnoEnum;
             solicitacao.valorMensalidade = valorCalculado;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return Ok(new { mensagem = "Vaga selecionada com sucesso!", valor = valorCalculado });
         }

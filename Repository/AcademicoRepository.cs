@@ -13,7 +13,7 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public List<Turma> ListarTodasTurmas()
+        public List<Turma> listarTurmas()
         {
             return context.turmas.OrderBy(t => t.nome).ToList();
         }
@@ -29,13 +29,13 @@ namespace edu_connect_backend.Repository
             context.SaveChanges();
         }
 
-        public void VincularDisciplinaTurma(TurmaDisciplina vinculo)
+        public void vincularDisciplina(TurmaDisciplina vinculo)
         {
             context.TurmaDisciplinas.Add(vinculo);
             context.SaveChanges();
         }
 
-        public List<TurmaDisciplina> ObterDisciplinasPorAluno(int alunoId)
+        public List<TurmaDisciplina> obterDisciplinasPorAluno(int alunoId)
         {
             var aluno = context.alunos.FirstOrDefault(a => a.id == alunoId);
             if (aluno == null || aluno.turmaId == null) return new List<TurmaDisciplina>();
@@ -48,7 +48,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public List<TurmaDisciplina> ObterDisciplinasPorProfessor(int professorId)
+        public List<TurmaDisciplina> obterDisciplinasPorProfessor(int professorId)
         {
             return context.TurmaDisciplinas
                 .Include(td => td.disciplina)
@@ -57,7 +57,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public TurmaDisciplina? ObterConteudoCompleto(int turmaDisciplinaId)
+        public TurmaDisciplina? obterConteudoCompleto(int turmaDisciplinaId)
         {
             return context.TurmaDisciplinas
                 .Include(td => td.disciplina)
@@ -66,7 +66,7 @@ namespace edu_connect_backend.Repository
                 .FirstOrDefault(td => td.id == turmaDisciplinaId);
         }
 
-        public void AdicionarTopico(Topico topico)
+        public void CriarTopico(Topico topico)
         {
             context.Topicos.Add(topico);
             context.SaveChanges();

@@ -11,23 +11,23 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class NotaController : ControllerBase
     {
-        private readonly NotaService _service;
-        private readonly BoletimPdfService _pdfService;
+        private readonly NotaService service;
+        private readonly BoletimPdfService pdfService;
 
         public NotaController(NotaService service, BoletimPdfService pdfService)
         {
-            _service = service;
-            _pdfService = pdfService;
+            this.service = service;
+            this.pdfService = pdfService;
         }
 
         [HttpGet("boletim")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult GetBoletim()
+        public IActionResult obterBoletim()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (email == null) return Unauthorized();
 
-            var boletim = _service.ObterBoletim(email);
+            var boletim = service.obterBoletim(email);
 
             if (boletim == null)
                 return NotFound("Aluno não encontrado ou sem notas registradas.");
@@ -37,26 +37,26 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("lancamento")]
         [Authorize(Roles = "Professor, Coordenador")]
-        public IActionResult GetLancamento([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
+        public IActionResult obterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
         {
             if (turmaId <= 0 || disciplinaId <= 0 || bimestre <= 0)
                 return BadRequest("Parâmetros inválidos.");
 
-            var lista = _service.ObterListaLancamento(turmaId, disciplinaId, bimestre);
+            var lista = service.obterListaLancamento(turmaId, disciplinaId, bimestre);
 
             return Ok(lista);
         }
 
         [HttpPost("lote")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult SalvarNotasLote([FromBody] List<NotaRequestDTO> notas)
+        public IActionResult salvarNotasLote([FromBody] List<NotaRequestDTO> notas)
         {
             try
             {
                 if (notas == null || notas.Count == 0)
                     return BadRequest("A lista de notas está vazia.");
 
-                _service.LancarNotasEmLote(notas);
+                service.lancarNotasEmLote(notas);
 
                 return Ok(new { mensagem = $"{notas.Count} notas processadas com sucesso." });
             }
@@ -68,18 +68,18 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("boletim/download")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult DownloadBoletim()
+        public IActionResult downloadBoletim()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (email == null) return Unauthorized();
 
-            var boletim = _service.ObterBoletim(email);
+            var boletim = service.obterBoletim(email);
             var nomeAluno = User.FindFirst(ClaimTypes.Name)?.Value ?? "Aluno";
 
             if (boletim == null || !boletim.Any())
                 return NotFound("Sem dados para gerar o boletim.");
 
-            var pdfBytes = _pdfService.GerarPdfBoletim(boletim, nomeAluno);
+            var pdfBytes = pdfService.gerarPdfBoletim(boletim, nomeAluno);
 
             return File(pdfBytes, "application/pdf", "meu_boletim.pdf");
         }

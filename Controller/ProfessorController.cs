@@ -10,25 +10,25 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class ProfessorController : ControllerBase
     {
-        private readonly ProfessorService service;
+        private readonly ProfessorService professorService;
 
         public ProfessorController(ProfessorService service)
         {
-            this.service = service;
+            this.professorService = service;
         }
 
         [HttpGet]
-        public IActionResult Listar([FromQuery] string? busca)
+        public IActionResult listarProfessores([FromQuery] string? busca)
         {
-            return Ok(service.ListarProfessores(busca));
+            return Ok(professorService.listarProfessores(busca));
         }
 
         [HttpPost]
-        public IActionResult Criar([FromBody] ProfessorRequestDTO dto)
+        public IActionResult criarProfessor([FromBody] ProfessorRequestDTO dto)
         {
             try
             {
-                service.CriarProfessor(dto);
+                professorService.criarProfessor(dto);
                 return StatusCode(201);
             }
             catch (Exception ex)
@@ -38,9 +38,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("{id}")]
-        public IActionResult Editar(int id, [FromBody] ProfessorRequestDTO dto)
+        public IActionResult editarProfessor(int id, [FromBody] ProfessorRequestDTO dto)
         {
-            var resultado = service.EditarProfessor(id, dto);
+            var resultado = professorService.editarProfessor(id, dto);
 
             if (resultado == null)
                 return NotFound("Professor não encontrado.");
@@ -49,9 +49,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
+        public IActionResult deletarProfessor(int id)
         {
-            var sucesso = service.DeletarProfessor(id);
+            var sucesso = professorService.deletarProfessor(id);
 
             if (!sucesso)
                 return NotFound("Professor não encontrado.");

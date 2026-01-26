@@ -26,7 +26,7 @@ namespace edu_connect_backend.Service
             throw new Exception("Usuário não identificado no token.");
         }
 
-        public List<NotificacaoResponseDTO> ObterNotificacoesDoUsuario()
+        public List<NotificacaoResponseDTO> obterNotificacoesDoUsuario()
         {
             var usuarioId = ObterIdUsuarioLogado();
             var notificacoes = repository.ObterPorUsuario(usuarioId);
@@ -43,13 +43,13 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public int ContarNaoLidas()
+        public int contarNotificacoesNaoLidas()
         {
             var usuarioId = ObterIdUsuarioLogado();
             return repository.ContarNaoLidas(usuarioId);
         }
 
-        public bool MarcarComoLida(int id)
+        public bool marcarNotificacaoComoLida(int id)
         {
             var usuarioId = ObterIdUsuarioLogado();
             var notificacao = repository.ObterPorId(id, usuarioId);
@@ -60,7 +60,7 @@ namespace edu_connect_backend.Service
             return true;
         }
 
-        public void MarcarTodasComoLidas()
+        public void marcarTodasNotificacoesComoLidas()
         {
             var usuarioId = ObterIdUsuarioLogado();
             repository.MarcarTodasComoLidas(usuarioId);

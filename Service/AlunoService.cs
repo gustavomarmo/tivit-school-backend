@@ -13,9 +13,9 @@ namespace edu_connect_backend.Service
             this.repository = repository;
         }
 
-        public List<AlunoResponseDTO> ListarAlunos(string? busca)
+        public List<AlunoResponseDTO> listarAlunos(string? busca)
         {
-            var alunos = repository.ObterAlunos(busca);
+            var alunos = repository.obterAlunos(busca);
 
             return alunos.Select(a => new AlunoResponseDTO
             {
@@ -27,7 +27,7 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public void CriarAluno(AlunoRequestDTO dto)
+        public void criarAluno(AlunoRequestDTO dto)
         {
             string emailGerado = $"{dto.matricula}@aluno.educonnect.com";
 
@@ -53,7 +53,7 @@ namespace edu_connect_backend.Service
             repository.Criar(novoAluno);
         }
 
-        public bool? EditarAluno(int id, AlunoRequestDTO dto)
+        public bool? editarAluno(int id, AlunoRequestDTO dto)
         {
             var aluno = repository.ObterPorId(id);
             if (aluno == null) return null;
@@ -67,7 +67,7 @@ namespace edu_connect_backend.Service
             return true;
         }
 
-        public bool DeletarAluno(int id)
+        public bool deletarAluno(int id)
         {
             var aluno = repository.ObterPorId(id);
             if (aluno == null) return false;
