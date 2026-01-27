@@ -11,11 +11,11 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class ExtracurricularController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private readonly ExtracurricularService extracurricularService;
 
-        public ExtracurricularController(AcademicoService academicoService)
+        public ExtracurricularController(ExtracurricularService extracurricularService)
         {
-            this.academicoService = academicoService;
+            this.extracurricularService = extracurricularService;
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace edu_connect_backend.Controller
 
             try
             {
-                var resultado = academicoService.ListarExtracurriculares(email);
+                var resultado = extracurricularService.ListarExtracurriculares(email);
                 return Ok(resultado);
             }
             catch (Exception ex)
@@ -38,7 +38,7 @@ namespace edu_connect_backend.Controller
         [HttpGet("{id}/conteudo")]
         public IActionResult ObterConteudo(int id)
         {
-            var conteudo = academicoService.ObterConteudoExtracurricular(id);
+            var conteudo = extracurricularService.ObterConteudoExtracurricular(id);
             if (conteudo == null) return NotFound("Atividade não encontrada.");
             return Ok(conteudo);
         }
@@ -47,7 +47,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult CriarExtracurricular([FromBody] ExtracurricularRequestDTO dto)
         {
-            academicoService.CriarAtividadeExtracurricular(dto);
+            extracurricularService.CriarAtividadeExtracurricular(dto);
             return StatusCode(201, "Atividade criada com sucesso.");
         }
 
@@ -55,7 +55,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult EditarExtracurricular(int id, [FromBody] ExtracurricularRequestDTO dto)
         {
-            academicoService.EditarAtividadeExtracurricular(id, dto);
+            extracurricularService.EditarAtividadeExtracurricular(id, dto);
             return NoContent();
         }
 
@@ -63,7 +63,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult DeletarExtracurricular(int id)
         {
-            academicoService.DeletarAtividadeExtracurricular(id);
+            extracurricularService.DeletarAtividadeExtracurricular(id);
             return NoContent();
         }
 
@@ -71,7 +71,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult VincularExtracurricular([FromBody] VincularExtracurricularDTO dto)
         {
-            academicoService.VincularExtracurricular(dto);
+            extracurricularService.VincularExtracurricular(dto);
             return StatusCode(201);
         }
 
@@ -79,7 +79,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult RemoverVinculoExtracurricular(int id)
         {
-            academicoService.RemoverVinculoExtracurricular(id);
+            extracurricularService.RemoverVinculoExtracurricular(id);
             return NoContent();
         }
     }

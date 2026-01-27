@@ -11,18 +11,18 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class DisciplinaController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private readonly DisciplinaService disciplinaService;
 
-        public DisciplinaController(AcademicoService academicoService)
+        public DisciplinaController(TopicoService academicoService)
         {
-            this.academicoService = academicoService;
+            this.disciplinaService = disciplinaService;
         }
 
         [HttpGet]
         public IActionResult ListarDisciplinas()
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var resultado = academicoService.ListarDisciplinas(email);
+            var resultado = disciplinaService.ListarDisciplinas(email);
             return Ok(resultado);
         }
 
@@ -30,7 +30,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoDTO dto)
         {
-            academicoService.CriarDisciplinaGenerica(dto);
+            disciplinaService.CriarDisciplinaGenerica(dto);
             return StatusCode(201);
         }
 
@@ -38,14 +38,14 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult VincularDisciplina([FromBody] VincularDisciplinaDTO dto)
         {
-            academicoService.VincularDisciplina(dto);
+            disciplinaService.VincularDisciplina(dto);
             return StatusCode(201);
         }
 
         [HttpGet("{id}/conteudo")]
         public IActionResult ObterConteudo(int id)
         {
-            var conteudo = academicoService.ObterConteudo(id);
+            var conteudo = disciplinaService.ObterConteudo(id);
             if (conteudo == null) return NotFound("Disciplina não encontrada");
             return Ok(conteudo);
         }

@@ -10,18 +10,18 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class AtividadeController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private readonly AtividadeService atividadeService;
 
-        public AtividadeController(AcademicoService academicoService)
+        public AtividadeController(AtividadeService atividadeService)
         {
-            this.academicoService = academicoService;
+            this.atividadeService = atividadeService;
         }
 
         [HttpPost("atividades")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult CriarAtividade([FromBody] AtividadeRequestDTO dto)
         {
-            academicoService.CriarAtividade(dto);
+            atividadeService.CriarAtividade(dto);
             return Ok("Atividade criada com sucesso!");
         }
 
@@ -29,7 +29,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult EditarAtividade(int id, [FromBody] AtividadeRequestDTO dto)
         {
-            academicoService.EditarAtividade(id, dto);
+            atividadeService.EditarAtividade(id, dto);
             return NoContent();
         }
 
@@ -37,7 +37,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult DeletarAtividade(int id)
         {
-            academicoService.DeletarAtividade(id);
+            atividadeService.DeletarAtividade(id);
             return NoContent();
         }
 

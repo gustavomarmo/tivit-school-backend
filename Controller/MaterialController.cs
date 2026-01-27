@@ -10,18 +10,18 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class MaterialController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private readonly MaterialService materialService;
         
-        public MaterialController(AcademicoService academicoService)
+        public MaterialController(MaterialService materialService)
         {
-            this.academicoService = academicoService;
+            this.materialService = materialService;
         }
 
         [HttpPost]
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult CriarMaterial([FromBody] MaterialRequestDTO dto)
         {
-            academicoService.CriarMaterial(dto);
+            materialService.CriarMaterial(dto);
             return StatusCode(201);
         }
 
@@ -29,7 +29,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult EditarMaterial(int id, [FromBody] MaterialRequestDTO dto)
         {
-            academicoService.EditarMaterial(id, dto);
+            materialService.EditarMaterial(id, dto);
             return NoContent();
         }
 
@@ -37,7 +37,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult DeletarMaterial(int id)
         {
-            academicoService.DeletarMaterial(id);
+            materialService.DeletarMaterial(id);
             return NoContent();
         }
     }

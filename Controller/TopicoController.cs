@@ -10,18 +10,18 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class TopicoController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private TopicoService topicoService;
 
-        public TopicoController(AcademicoService academicoService)
+        public TopicoController(TopicoService topicoService)
         {
-            this.academicoService = academicoService;
+            this.topicoService = topicoService;
         }
 
         [HttpPost]
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult CriarTopico([FromBody] TopicoRequestDTO dto)
         {
-            academicoService.CriarTopico(dto);
+            topicoService.CriarTopico(dto);
             return StatusCode(201);
         }
 
@@ -29,7 +29,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult EditarTopico(int id, [FromBody] TopicoRequestDTO dto)
         {
-            academicoService.EditarTopico(id, dto);
+            topicoService.EditarTopico(id, dto);
             return NoContent();
         }
 
@@ -37,7 +37,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult DeletarTopico(int id)
         {
-            academicoService.DeletarTopico(id);
+            topicoService.DeletarTopico(id);
             return NoContent();
         }
     }

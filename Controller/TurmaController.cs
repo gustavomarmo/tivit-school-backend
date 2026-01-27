@@ -9,18 +9,18 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class TurmaController : ControllerBase
     {
-        private readonly AcademicoService academicoService;
+        private readonly TurmaService turmaService;
 
-        public TurmaController(AcademicoService academicoService)
+        public TurmaController(TurmaService turmaService)
         {
-            this.academicoService = academicoService;
+            this.turmaService = turmaService;
         }
 
         [HttpGet]
         [Authorize(Roles = "Coordenador")]
         public IActionResult ListarTurmas()
         {
-            var resultado = academicoService.ListarTurmas();
+            var resultado = turmaService.ListarNomesTurmas();
             return Ok(resultado);
         }
     }

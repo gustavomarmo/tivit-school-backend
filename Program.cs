@@ -33,7 +33,7 @@ builder.Services.AddScoped<AlunoService>();
 builder.Services.AddScoped<ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
 builder.Services.AddScoped<AcademicoRepository>();
-builder.Services.AddScoped<AcademicoService>();
+builder.Services.AddScoped<TopicoService>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<NotaRepository>();
