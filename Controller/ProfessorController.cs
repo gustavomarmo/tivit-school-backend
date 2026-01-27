@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("professor")]
+    [Route("api/professores")]
     [Authorize]
     public class ProfessorController : ControllerBase
     {

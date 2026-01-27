@@ -23,7 +23,7 @@ namespace edu_connect_backend.Service
             throw new Exception("Usuário não identificado.");
         }
 
-        public void criarEvento(EventoRequestDTO dto)
+        public void CriarEvento(EventoRequestDTO dto)
         {
             var usuarioId = ObterIdUsuarioLogado();
 
@@ -41,7 +41,7 @@ namespace edu_connect_backend.Service
             repository.Criar(evento);
         }
 
-        public List<EventoResponseDTO> listarEventos(int mes, int ano)
+        public List<EventoResponseDTO> ListarEventos(int mes, int ano)
         {
             var eventos = repository.ObterPorMesAno(mes, ano);
 
@@ -57,7 +57,7 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public void editarEvento(int id, EventoRequestDTO dto)
+        public void EditarEvento(int id, EventoRequestDTO dto)
         {
             var evento = repository.ObterPorId(id);
             if (evento == null) throw new Exception("Evento não encontrado.");
@@ -71,7 +71,7 @@ namespace edu_connect_backend.Service
             repository.Atualizar(evento);
         }
 
-        public void deletarEvento(int id)
+        public void DeletarEvento(int id)
         {
             var evento = repository.ObterPorId(id);
             if (evento == null) throw new Exception("Evento não encontrado.");

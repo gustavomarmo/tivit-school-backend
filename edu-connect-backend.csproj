@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controller\AcademicoController.cs" />
     <Compile Remove="DTO\EntregarAtividadeDTO.cs" />
     <Compile Remove="Model\Notas.cs" />
   </ItemGroup>

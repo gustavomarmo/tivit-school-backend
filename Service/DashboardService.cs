@@ -54,7 +54,7 @@ namespace edu_connect_backend.Service
             return dashboard;
         }
 
-        public DashboardProfessorResponseDTO obterDashboardProfessor(int usuarioId)
+        public DashboardProfessorResponseDTO ObterDashboardProfessor(int usuarioId)
         {
             var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
                 ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
@@ -72,7 +72,7 @@ namespace edu_connect_backend.Service
             };
         }
 
-        public DashboardCoordenadorResponseDTO obterDashboardCoordenador()
+        public DashboardCoordenadorResponseDTO ObterDashboardCoordenador()
         {
             var response = new DashboardCoordenadorResponseDTO();
 

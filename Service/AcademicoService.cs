@@ -14,6 +14,7 @@ namespace edu_connect_backend.Service
         private readonly ConnectionContext context;
         private readonly AcademicoRepository academicoRepository;
         private readonly UsuarioRepository usuarioRepository;
+        private readonly AlunoRepository alunoRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IWebHostEnvironment env;
 
@@ -29,6 +30,7 @@ namespace edu_connect_backend.Service
         {
             this.academicoRepository = academicoRepository;
             this.usuarioRepository = usuarioRepository;
+            this.alunoRepository = alunoRepository;
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
             this.env = env;
@@ -59,18 +61,18 @@ namespace edu_connect_backend.Service
         }
         public List<DisciplinaResumoDTO> ListarDisciplinas(string emailUsuario)
         {
-            var usuario = usuarioRepository.obterUsuarioPorEmail(emailUsuario);
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return new List<DisciplinaResumoDTO>();
 
             List<TurmaDisciplina> lista = new();
 
             if (usuario.perfil == PerfilUsuario.Aluno)
             {
-                var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
+                var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
 
                 if (aluno != null)
                 {
-                    lista = academicoRepository.obterDisciplinasPorAluno(aluno.id);
+                    lista = academicoRepository.ObterDisciplinasPorAlunoId(aluno.id);
                 }
             }
             else if (usuario.perfil == PerfilUsuario.Professor)
@@ -79,7 +81,7 @@ namespace edu_connect_backend.Service
 
                 if (professor != null)
                 {
-                    lista = academicoRepository.obterDisciplinasPorProfessor(professor.id);
+                    lista = academicoRepository.ObterDisciplinasPorProfessorId(professor.id);
                 }
             }
 
@@ -263,9 +265,9 @@ namespace edu_connect_backend.Service
             return novaEntrega.arquivoUrl;
         }
 
-        public List<DisciplinaResumoDTO> listarExtracurriculares(string emailUsuario)
+        public List<DisciplinaResumoDTO> ListarExtracurriculares(string emailUsuario)
         {
-            var usuario = usuarioRepository.obterUsuarioPorEmail(emailUsuario);
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return new List<DisciplinaResumoDTO>();
 
             List<TurmaExtracurricular> lista = new();
@@ -290,7 +292,7 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public DisciplinaConteudoDTO? obterConteudoExtracurricular(int idVunculo)
+        public DisciplinaConteudoDTO? ObterConteudoExtracurricular(int idVunculo)
         {
             var dados = academicoRepository.ObterConteudoExtracurricularCompleto(idVunculo);
             if (dados == null) return null;
@@ -318,7 +320,7 @@ namespace edu_connect_backend.Service
             };
         }
 
-        public void criarAtividadeExtracurricular(ExtracurricularRequestDTO dto)
+        public void CriarAtividadeExtracurricular(ExtracurricularRequestDTO dto)
         {
             var nova = new Extracurricular
             {
@@ -328,7 +330,7 @@ namespace edu_connect_backend.Service
             academicoRepository.CriarExtracurricular(nova);
         }
 
-        public void editarAtividadeExtracurricular(int id, ExtracurricularRequestDTO dto)
+        public void EditarAtividadeExtracurricular(int id, ExtracurricularRequestDTO dto)
         {
             var atividade = academicoRepository.ObterExtracurricularPorId(id);
             if (atividade == null) throw new Exception("Atividade não encontrada.");
@@ -339,7 +341,7 @@ namespace edu_connect_backend.Service
             academicoRepository.AtualizarExtracurricular(atividade);
         }
 
-        public void deletarAtividadeExtracurricular(int id)
+        public void DeletarAtividadeExtracurricular(int id)
         {
             var atividade = academicoRepository.ObterExtracurricularPorId(id);
             if (atividade == null) throw new Exception("Atividade não encontrada.");
@@ -347,7 +349,7 @@ namespace edu_connect_backend.Service
             academicoRepository.DeletarExtracurricular(atividade);
         }
 
-        public void vincularExtracurricular(VincularExtracurricularDTO dto)
+        public void VincularExtracurricular(VincularExtracurricularDTO dto)
         {
             var vinculo = new TurmaExtracurricular
             {
@@ -358,7 +360,7 @@ namespace edu_connect_backend.Service
             academicoRepository.VincularTurmaExtracurricular(vinculo);
         }
 
-        public void removerVinculoExtracurricular(int idVinculo)
+        public void RemoverVinculoExtracurricular(int idVinculo)
         {
             var vinculo = academicoRepository.ObterVinculoPorId(idVinculo);
             if (vinculo == null) throw new Exception("Vínculo não encontrado.");

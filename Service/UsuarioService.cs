@@ -14,7 +14,7 @@ namespace edu_connect_backend.Service
 
         public Usuario? obterUsuarioPorEmail(string email)
         {
-            return repository.obterUsuarioPorEmail(email);
+            return repository.ObterUsuarioPorEmail(email);
         }
 
         public void cadastrarUsuario(Usuario usuario)

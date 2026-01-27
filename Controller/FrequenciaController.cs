@@ -10,41 +10,27 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class FrequenciaController : ControllerBase
     {
-        private readonly FrequenciaService service;
+        private readonly FrequenciaService frequenciaService;
 
-        public FrequenciaController(FrequenciaService service)
+        public FrequenciaController(FrequenciaService frequenciaService)
         {
-            this.service = service;
+            this.frequenciaService = frequenciaService;
         }
 
         [HttpPost("chamada")]
         [Authorize(Roles = "Professor")]
-        public IActionResult realizarChamada([FromBody] ChamadaRequestDTO dto)
+        public IActionResult RealizarChamada([FromBody] ChamadaRequestDTO dto)
         {
-            try
-            {
-                service.realizarChamada(dto);
-                return Ok("Chamada registrada com sucesso!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            frequenciaService.RealizarChamada(dto);
+            return Ok("Chamada registrada com sucesso!");
         }
 
         [HttpGet("resumo")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult obterResumoFrequencia()
+        public IActionResult ObterResumoFrequencia()
         {
-            try
-            {
-                var resumo = service.obterResumoFrequenciaLogado();
-                return Ok(resumo);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var resumo = frequenciaService.ObterResumoFrequenciaLogado();
+            return Ok(resumo);
         }
     }
 }

@@ -10,73 +10,45 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class EventoController : ControllerBase
     {
-        private readonly EventoService service;
+        private readonly EventoService eventoService;
 
-        public EventoController(EventoService service)
+        public EventoController(EventoService eventoService)
         {
-            this.service = service;
+            this.eventoService = eventoService;
         }
 
         [HttpGet]
-        public IActionResult listarEventos([FromQuery] int mes, [FromQuery] int ano)
+        public IActionResult ListarEventos([FromQuery] int mes, [FromQuery] int ano)
         {
-            try
-            {
-                if (mes < 1 || mes > 12 || ano < 2000)
-                    return BadRequest("Mês ou ano inválidos.");
+            if (mes < 1 || mes > 12 || ano < 2000)
+                return BadRequest("Mês ou ano inválidos.");
 
-                var eventos = service.listarEventos(mes, ano);
-                return Ok(eventos);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var eventos = eventoService.ListarEventos(mes, ano);
+            return Ok(eventos);
         }
 
         [HttpPost]
         [Authorize(Roles = "Professor,Coordenador,Admin")]
-        public IActionResult criarEvento([FromBody] EventoRequestDTO dto)
+        public IActionResult CriarEvento([FromBody] EventoRequestDTO dto)
         {
-            try
-            {
-                service.criarEvento(dto);
-                return Created("", "Evento criado com sucesso!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            eventoService.CriarEvento(dto);
+            return Created("", "Evento criado com sucesso!");
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult editarEvento(int id, [FromBody] EventoRequestDTO dto)
+        public IActionResult EditarEvento(int id, [FromBody] EventoRequestDTO dto)
         {
-            try
-            {
-                service.editarEvento(id, dto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            eventoService.EditarEvento(id, dto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult deletarEvento(int id)
+        public IActionResult DeletarEvento(int id)
         {
-            try
-            {
-                service.deletarEvento(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            eventoService.DeletarEvento(id);
+            return NoContent();
         }
     }
 }

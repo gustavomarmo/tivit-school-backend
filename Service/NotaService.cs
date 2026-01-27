@@ -57,10 +57,10 @@ namespace edu_connect_backend.Service
 
         public List<BoletimDTO>? obterBoletim(string emailUsuario)
         {
-            var usuario = _usuarioRepository.obterUsuarioPorEmail(emailUsuario);
+            var usuario = _usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return null;
 
-            var aluno = _alunoRepository.ObterPorUsuarioId(usuario.id);
+            var aluno = _alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
 
             if (aluno == null) return null;
 

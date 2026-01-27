@@ -20,7 +20,7 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("aluno")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult getDashboardAluno()
+        public IActionResult ObterDashboardAluno()
         {
             var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
 
@@ -31,28 +31,21 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("professor")]
         [Authorize(Roles = "Professor")]
-        public IActionResult getDashboardProfessor()
+        public IActionResult ObterDashboardProfessor()
         {
             var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
 
             if (usuarioId == null) return Unauthorized();
 
-            return Ok(dashboardService.obterDashboardProfessor(usuarioId));
+            return Ok(dashboardService.ObterDashboardProfessor(usuarioId));
         }
 
         [HttpGet("coordenador")]
         [Authorize(Roles = "Coordenador,Admin")]
-        public IActionResult getDashboardCoordenador()
+        public IActionResult ObterDashboardCoordenador()
         {
-            try
-            {
-                var dados = dashboardService.obterDashboardCoordenador();
-                return Ok(dados);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var dados = dashboardService.ObterDashboardCoordenador();
+            return Ok(dados);
         }
     }
 }

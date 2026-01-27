@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("aluno")]
+    [Route("api/aluno")]
     [Authorize]
     public class AlunoController : ControllerBase
     {
@@ -18,30 +18,23 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet]
-        public IActionResult listarAlunos([FromQuery] string? busca)
+        public IActionResult ListarAlunos([FromQuery] string? busca)
         {
-            var resultado = service.listarAlunos(busca);
+            var resultado = service.ListarAlunos(busca);
             return Ok(resultado);
         }
 
         [HttpPost]
-        public IActionResult criarAluno([FromBody] AlunoRequestDTO dto)
+        public IActionResult CriarAluno([FromBody] AlunoRequestDTO dto)
         {
-            try
-            {
-                service.criarAluno(dto);
-                return StatusCode(201);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            service.CriarAluno(dto);
+            return StatusCode(201);    
         }
 
         [HttpPut("{id}")]
-        public IActionResult editarAluno(int id, [FromBody] AlunoRequestDTO dto)
+        public IActionResult EditarAluno(int id, [FromBody] AlunoRequestDTO dto)
         {
-            var alunoEditado = service.editarAluno(id, dto);
+            var alunoEditado = service.EditarAluno(id, dto);
 
             if (alunoEditado == null)
                 return NotFound("Aluno não encontrado.");
@@ -50,9 +43,9 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public IActionResult deletarAluno(int id)
+        public IActionResult DeletarAluno(int id)
         {
-            var sucesso = service.deletarAluno(id);
+            var sucesso = service.DeletarAluno(id);
 
             if (!sucesso)
                 return NotFound("Aluno não encontrado.");

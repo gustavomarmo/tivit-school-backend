@@ -35,7 +35,7 @@ namespace edu_connect_backend.Repository
             context.SaveChanges();
         }
 
-        public List<TurmaDisciplina> obterDisciplinasPorAluno(int alunoId)
+        public List<TurmaDisciplina> ObterDisciplinasPorAlunoId(int alunoId)
         {
             var aluno = context.alunos.FirstOrDefault(a => a.id == alunoId);
             if (aluno == null || aluno.turmaId == null) return new List<TurmaDisciplina>();
@@ -48,7 +48,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public List<TurmaDisciplina> obterDisciplinasPorProfessor(int professorId)
+        public List<TurmaDisciplina> ObterDisciplinasPorProfessorId(int professorId)
         {
             return context.TurmaDisciplinas
                 .Include(td => td.disciplina)

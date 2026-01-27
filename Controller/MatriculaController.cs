@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/matricula")]
     public class MatriculaController : ControllerBase
     {
         private readonly ConnectionContext context;
