@@ -50,6 +50,7 @@ builder.Services.Configure<EduConnectVariables>(
     builder.Configuration.GetSection("edu-connect-variables"));
 builder.Services.AddScoped<AtividadeService>();
 builder.Services.AddScoped<AtividadeRepository>();
+builder.Services.AddScoped<AtividadeMapper>();
 builder.Services.AddScoped<DisciplinaService>();
 builder.Services.AddScoped<DisciplinaRepository>();
 builder.Services.AddScoped<DisciplinaMapper>();

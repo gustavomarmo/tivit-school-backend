@@ -11,32 +11,32 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class AlunoController : ControllerBase
     {
-        private readonly AlunoService service;
-        private readonly AlunoMapper mapper;
+        private readonly AlunoService alunoService;
+        private readonly AlunoMapper alunoMapper;
 
-        public AlunoController(AlunoService service, AlunoMapper mapper)
+        public AlunoController(AlunoService alunoService, AlunoMapper alunoMapper)
         {
-            this.service = service;
-            this.mapper = mapper;
+            this.alunoService = alunoService;
+            this.alunoMapper = alunoMapper;
         }
 
         [HttpGet]
         public IActionResult ListarAlunos([FromQuery] string? busca)
         {
-            return Ok(mapper.ToAlunoResponseDTOList(service.ListarAlunos(busca)));
+            return Ok(alunoMapper.ToAlunoResponseDTOList(alunoService.ListarAlunos(busca)));
         }
 
         [HttpPost]
         public IActionResult CriarAluno([FromBody] AlunoRequestDTO dto)
         {
-            service.CriarAluno(mapper.ToAluno(dto));
+            alunoService.CriarAluno(alunoMapper.ToAluno(dto));
             return StatusCode(201);
         }
 
         [HttpPut("{id}")]
         public IActionResult EditarAluno(int id, [FromBody] AlunoRequestDTO dto)
         {
-            var sucesso = service.EditarAluno(id, mapper.ToAluno(dto));
+            var sucesso = alunoService.EditarAluno(id, alunoMapper.ToAluno(dto));
 
             if (sucesso == null)
                 return NotFound("Aluno não encontrado.");
@@ -47,9 +47,9 @@ namespace edu_connect_backend.Controller
         [HttpDelete("{id}")]
         public IActionResult DeletarAluno(int id)
         {
-            var sucesso = service.DeletarAluno(id);
+            var sucesso = alunoService.DeletarAluno(id);
 
-            if (!service.DeletarAluno(id))
+            if (!alunoService.DeletarAluno(id))
                 return NotFound("Aluno não encontrado.");
 
             return NoContent();

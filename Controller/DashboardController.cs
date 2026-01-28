@@ -44,8 +44,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador,Admin")]
         public IActionResult ObterDashboardCoordenador()
         {
-            var dados = dashboardService.ObterDashboardCoordenador();
-            return Ok(dados);
+            return Ok(dashboardService.ObterDashboardCoordenador());
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,29 +13,31 @@ namespace edu_connect_backend.Controller
     public class AtividadeController : ControllerBase
     {
         private readonly AtividadeService atividadeService;
+        private readonly AtividadeMapper atividadeMapper;
 
-        public AtividadeController(AtividadeService atividadeService)
+        public AtividadeController(AtividadeService atividadeService, AtividadeMapper atividadeMapper)
         {
             this.atividadeService = atividadeService;
+            this.atividadeMapper = atividadeMapper;
         }
 
-        [HttpPost("atividades")]
+        [HttpPost]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult CriarAtividade([FromBody] AtividadeRequestDTO dto)
         {
-            atividadeService.CriarAtividade(dto);
-            return Ok("Atividade criada com sucesso!");
+            atividadeService.CriarAtividade(atividadeMapper.ToMaterial(dto));
+            return Ok();
         }
 
-        [HttpPut("atividades/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult EditarAtividade(int id, [FromBody] AtividadeRequestDTO dto)
         {
-            atividadeService.EditarAtividade(id, dto);
+            atividadeService.EditarAtividade(id, atividadeMapper.ToMaterial(dto));
             return NoContent();
         }
 
-        [HttpDelete("atividades/{id}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult DeletarAtividade(int id)
         {
@@ -41,13 +45,18 @@ namespace edu_connect_backend.Controller
             return NoContent();
         }
 
-        [HttpPost("atividade/entregar")]
+        [HttpPost("entregar")]
         public async Task<IActionResult> EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
         {
             if (dto.Arquivo == null || dto.Arquivo.Length == 0)
-                return BadRequest("Nenhum arquivo enviado.");
+                return BadRequest(new { message = "Nenhum arquivo enviado." });
 
-            return Ok("Atividade entregue com sucesso!");
+            var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
+            if (usuarioId == null) return Unauthorized();
+
+            atividadeService.RegistrarEntrega(dto.AtividadeId, usuarioId, dto.Arquivo);
+
+            return Ok(new { messsage = "Atividade entregue com sucesso!" });
         }
-    }
+    }s
 }
