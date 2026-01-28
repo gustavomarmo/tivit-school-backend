@@ -1,5 +1,4 @@
-﻿using edu_connect_backend.DTO;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 
 namespace edu_connect_backend.Service
@@ -13,18 +12,18 @@ namespace edu_connect_backend.Service
             this.topicoRepository = topicoRepository;
         }
 
-        public void CriarTopico(TopicoRequestDTO dto)
+        public void CriarTopico(Topico topico)
         {
-            var topico = new Topico { titulo = dto.titulo, turmaDisciplinaId = dto.turmaDisciplinaId };
             topicoRepository.CriarTopico(topico);
         }
 
-        public void EditarTopico(int id, TopicoRequestDTO dto)
+        public void EditarTopico(int id, Topico dadosAtualizados)
         {
             var topico = topicoRepository.ObterTopicoPorId(id);
             if (topico == null) throw new Exception("Tópico não encontrado.");
 
-            topico.titulo = dto.titulo;
+            topico.titulo = dadosAtualizados.titulo;
+
             topicoRepository.AtualizarTopico(topico);
         }
 
