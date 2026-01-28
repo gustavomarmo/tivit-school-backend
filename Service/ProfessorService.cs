@@ -1,81 +1,67 @@
-﻿using edu_connect_backend.DTO;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 
 namespace edu_connect_backend.Service
 {
     public class ProfessorService
     {
-        private readonly ProfessorRepository repository;
+        private readonly ProfessorRepository professorRepository;
+        private readonly UsuarioRepository usuarioRepository;
 
-        public ProfessorService(ProfessorRepository repository)
+        public ProfessorService(ProfessorRepository professorRepository, UsuarioRepository usuarioRepository)
         {
-            this.repository = repository;
+            this.professorRepository = professorRepository;
+            this.usuarioRepository = usuarioRepository;
         }
 
-        public List<ProfessorResponseDTO> listarProfessores(string? busca)
+        public List<Professor> ListarProfessores(string? busca)
         {
-            var professores = repository.ObterProfessores(busca);
-
-            return professores.Select(p => new ProfessorResponseDTO
-            {
-                id = p.id,
-                nome = p.usuario.nome,
-                email = p.usuario.email,
-                matricula = p.matricula,
-                especialidade = p.especialidade
-            }).ToList();
+            return professorRepository.Listar(busca);
         }
 
-        public void criarProfessor(ProfessorRequestDTO dto)
+        public void CriarProfessor(Professor novoProfessor)
         {
-            // Gera e-mail padrão para professor
-            string emailGerado = $"{dto.matricula}@professor.educonnect.com";
+            if (novoProfessor.usuario == null)
+                novoProfessor.usuario = new Usuario();
 
-            var novoUsuario = new Usuario
-            {
-                nome = dto.nome,
-                email = emailGerado,
-                senhaHash = "Mudar123!", // Senha Padrão
-                cpf = "",
-                perfil = PerfilUsuario.Professor, // Enum correto
-                ativo = dto.ativo,
-                dataCadastro = DateTime.Now
-            };
+            novoProfessor.usuario.email = $"{novoProfessor.matricula}@professor.educonnect.com";
 
-            var novoProfessor = new Professor
-            {
-                matricula = dto.matricula,
-                especialidade = dto.especialidade,
-                usuario = novoUsuario
-            };
+            // Verifica duplicidade de email
+            if (usuarioRepository.ObterUsuarioPorEmail(novoProfessor.usuario.email) != null)
+                throw new Exception("Já existe um usuário com este e-mail/matrícula.");
 
-            this.repository.Adicionar(novoProfessor);
+            novoProfessor.usuario.senhaHash = "Mudar123!";
+            novoProfessor.usuario.cpf = "";
+            novoProfessor.usuario.perfil = PerfilUsuario.Professor;
+            novoProfessor.usuario.dataCadastro = DateTime.Now;
+
+            professorRepository.Criar(novoProfessor);
         }
 
-        public bool? editarProfessor(int id, ProfessorRequestDTO dto)
+        public bool? EditarProfessor(int id, Professor dadosAtualizados)
         {
-            var professor = repository.ObterPorId(id);
-            if (professor == null) return null;
+            var professorBanco = professorRepository.ObterPorId(id);
+            if (professorBanco == null) return null;
 
-            // Atualiza dados do Usuário
-            professor.usuario.nome = dto.nome;
-            professor.usuario.ativo = dto.ativo;
+            professorBanco.matricula = dadosAtualizados.matricula;
+            professorBanco.especialidade = dadosAtualizados.especialidade;
 
-            // Atualiza dados do Professor
-            professor.matricula = dto.matricula;
-            professor.especialidade = dto.especialidade;
+            if (professorBanco.usuario != null && dadosAtualizados.usuario != null)
+            {
+                professorBanco.usuario.nome = dadosAtualizados.usuario.nome;
+                professorBanco.usuario.ativo = dadosAtualizados.usuario.ativo;
+            }
 
-            repository.Atualizar(professor);
+            professorRepository.Atualizar(professorBanco);
             return true;
         }
 
-        public bool deletarProfessor(int id)
+        public bool DeletarProfessor(int id)
         {
-            var professor = repository.ObterPorId(id);
+            var professor = professorRepository.ObterPorId(id);
             if (professor == null) return false;
 
-            repository.Deletar(professor);
+            professorRepository.Deletar(professor);
             return true;
         }
     }

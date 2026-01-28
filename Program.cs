@@ -34,6 +34,7 @@ builder.Services.AddScoped<AlunoService>();
 builder.Services.AddScoped<AlunoMapper>();
 builder.Services.AddScoped<ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
+builder.Services.AddScoped<ProfessorMapper>();
 builder.Services.AddScoped<TopicoService>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<DashboardService>();

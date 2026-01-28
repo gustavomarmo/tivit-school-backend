@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,50 +12,61 @@ namespace edu_connect_backend.Controller
     public class ProfessorController : ControllerBase
     {
         private readonly ProfessorService professorService;
+        private readonly ProfessorMapper professorMapper;
 
-        public ProfessorController(ProfessorService service)
+        public ProfessorController(ProfessorService professorService, ProfessorMapper professorMapper)
         {
-            this.professorService = service;
+            this.professorService = professorService;
+            this.professorMapper = professorMapper;
         }
 
         [HttpGet]
-        public IActionResult listarProfessores([FromQuery] string? busca)
+        public IActionResult ListarProfessores([FromQuery] string? busca)
         {
-            return Ok(professorService.listarProfessores(busca));
+            var professoresModel = professorService.ListarProfessores(busca);
+            var professoresDTO = professorMapper.ToProfessorResponseDTOList(professoresModel);
+
+            return Ok(professoresDTO);
         }
 
         [HttpPost]
-        public IActionResult criarProfessor([FromBody] ProfessorRequestDTO dto)
+        [Authorize(Roles = "Coordenador,Admin")]
+        public IActionResult CriarProfessor([FromBody] ProfessorRequestDTO dto)
         {
             try
             {
-                professorService.criarProfessor(dto);
-                return StatusCode(201);
+                var professorModel = professorMapper.ToProfessor(dto);
+                professorService.CriarProfessor(professorModel);
+
+                return Created("", new { message = "Professor criado com sucesso!" });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Erro ao criar professor: {ex.Message}");
+                return BadRequest(new { message = $"Erro ao criar professor: {ex.Message}" });
             }
         }
 
         [HttpPut("{id}")]
-        public IActionResult editarProfessor(int id, [FromBody] ProfessorRequestDTO dto)
+        [Authorize(Roles = "Coordenador,Admin")]
+        public IActionResult EditarProfessor(int id, [FromBody] ProfessorRequestDTO dto)
         {
-            var resultado = professorService.editarProfessor(id, dto);
+            var professorModel = professorMapper.ToProfessor(dto);
+            var resultado = professorService.EditarProfessor(id, professorModel);
 
             if (resultado == null)
-                return NotFound("Professor não encontrado.");
+                return NotFound(new { message = "Professor não encontrado." });
 
-            return StatusCode(201);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult deletarProfessor(int id)
+        [Authorize(Roles = "Coordenador,Admin")]
+        public IActionResult DeletarProfessor(int id)
         {
-            var sucesso = professorService.deletarProfessor(id);
+            var sucesso = professorService.DeletarProfessor(id);
 
             if (!sucesso)
-                return NotFound("Professor não encontrado.");
+                return NotFound(new { message = "Professor não encontrado." });
 
             return NoContent();
         }

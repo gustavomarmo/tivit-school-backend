@@ -12,8 +12,7 @@ namespace edu_connect_backend.Repository
         {
             this.context = context;
         }
-
-        public List<Professor> ObterProfessores(string? busca)
+        public List<Professor> Listar(string? busca)
         {
             var query = context.professores
                 .Include(p => p.usuario)
@@ -34,7 +33,7 @@ namespace edu_connect_backend.Repository
                 .FirstOrDefault(p => p.id == id);
         }
 
-        public void Adicionar(Professor professor)
+        public void Criar(Professor professor)
         {
             context.professores.Add(professor);
             context.SaveChanges();
