@@ -57,6 +57,7 @@ builder.Services.AddScoped<DisciplinaRepository>();
 builder.Services.AddScoped<DisciplinaMapper>();
 builder.Services.AddScoped<ExtracurricularService>();
 builder.Services.AddScoped<ExtracurricularRepository>();
+builder.Services.AddScoped<ExtracurricularMapper>();
 builder.Services.AddScoped<MaterialService>();
 builder.Services.AddScoped<MaterialRepository>();
 builder.Services.AddScoped<TopicoService>();

@@ -1,5 +1,7 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,10 +14,14 @@ namespace edu_connect_backend.Controller
     public class ExtracurricularController : ControllerBase
     {
         private readonly ExtracurricularService extracurricularService;
+        private readonly ExtracurricularMapper extracurricularMapper;
 
-        public ExtracurricularController(ExtracurricularService extracurricularService)
+        public ExtracurricularController(
+            ExtracurricularService extracurricularService,
+            ExtracurricularMapper mapper)
         {
             this.extracurricularService = extracurricularService;
+            this.extracurricularMapper = mapper;
         }
 
         [HttpGet]
@@ -26,36 +32,45 @@ namespace edu_connect_backend.Controller
 
             try
             {
-                var resultado = extracurricularService.ListarExtracurriculares(email);
-                return Ok(resultado);
+                var models = extracurricularService.ListarExtracurriculares(email);
+                return Ok(extracurricularMapper.ToDisciplinaResumoDTOList(models));
             }
             catch (Exception ex)
             {
-                return BadRequest("Erro ao listar atividades: " + ex.Message);
+                return BadRequest(new { message = "Erro ao listar atividades: " + ex.Message });
             }
         }
 
         [HttpGet("{id}/conteudo")]
         public IActionResult ObterConteudo(int id)
         {
-            var conteudo = extracurricularService.ObterConteudoExtracurricular(id);
-            if (conteudo == null) return NotFound("Atividade não encontrada.");
-            return Ok(conteudo);
+            var model = extracurricularService.ObterConteudoExtracurricular(id);
+            if (model == null) return NotFound(new { message = "Atividade não encontrada." });
+
+            var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
+            if (usuarioId == null) return Unauthorized();
+
+            var dto = extracurricularMapper.ToDisciplinaConteudoDTO(model, usuarioId);
+
+            return Ok(dto);
         }
 
         [HttpPost]
         [Authorize(Roles = "Coordenador")]
         public IActionResult CriarExtracurricular([FromBody] ExtracurricularRequestDTO dto)
         {
-            extracurricularService.CriarAtividadeExtracurricular(dto);
-            return StatusCode(201, "Atividade criada com sucesso.");
+            var model = extracurricularMapper.ToExtracurricular(dto);
+            extracurricularService.CriarAtividadeExtracurricular(model);
+
+            return Created("", new { message = "Atividade criada com sucesso." });
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Coordenador")]
         public IActionResult EditarExtracurricular(int id, [FromBody] ExtracurricularRequestDTO dto)
         {
-            extracurricularService.EditarAtividadeExtracurricular(id, dto);
+            var model = extracurricularMapper.ToExtracurricular(dto);
+            extracurricularService.EditarAtividadeExtracurricular(id, model);
             return NoContent();
         }
 
@@ -71,8 +86,10 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador")]
         public IActionResult VincularExtracurricular([FromBody] VincularExtracurricularDTO dto)
         {
-            extracurricularService.VincularExtracurricular(dto);
-            return StatusCode(201);
+            var model = extracurricularMapper.ToTurmaExtracurricular(dto);
+            extracurricularService.VincularExtracurricular(model);
+
+            return Created("", new { message = "Vínculo criado com sucesso." });
         }
 
         [HttpDelete("vinculo/{id}")]
