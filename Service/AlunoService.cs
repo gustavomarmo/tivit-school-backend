@@ -1,69 +1,53 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.Configuration;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
+using Microsoft.Extensions.Options;
 
 namespace edu_connect_backend.Service
 {
     public class AlunoService
     {
+        private readonly EduConnectVariables config;
         private readonly AlunoRepository repository;
 
-        public AlunoService(AlunoRepository repository)
+        public AlunoService(IOptions<EduConnectVariables> config, AlunoRepository repository)
         {
+            this.config = config.Value;
             this.repository = repository;
         }
 
-        public List<AlunoResponseDTO> ListarAlunos(string? busca)
+        public List<Aluno> ListarAlunos(string? busca)
         {
-            var alunos = repository.obterAlunos(busca);
-
-            return alunos.Select(a => new AlunoResponseDTO
-            {
-                id = a.id,
-                nome = a.usuario.nome,
-                email = a.usuario.email,
-                matricula = a.matricula,
-                turma = a.turma?.nome ?? "Sem Turma"
-            }).ToList();
+            return repository.obterAlunos(busca);
         }
 
-        public void CriarAluno(AlunoRequestDTO dto)
+        public void CriarAluno(Aluno novoAluno)
         {
-            string emailGerado = $"{dto.matricula}@aluno.educonnect.com";
+            if (novoAluno.usuario == null)
+                novoAluno.usuario = new Usuario();
 
-            var novoUsuario = new Usuario
-            {
-                nome = dto.nome,
-                email = emailGerado,
-                senhaHash = "Mudar123!",
-                cpf = "",
-                perfil = PerfilUsuario.Aluno,
-                ativo = dto.ativo,
-                dataCadastro = DateTime.Now
-            };
+            novoAluno.usuario.email = novoAluno.matricula + config.DOMINIO_EMAIL_ALUNO;
+            novoAluno.usuario.senhaHash = config.SENHA_PADRAO;
+            novoAluno.usuario.cpf = "";
+            novoAluno.usuario.perfil = PerfilUsuario.Aluno;
+            novoAluno.usuario.dataCadastro = DateTime.Now;
 
-            var novoAluno = new Aluno
-            {
-                matricula = dto.matricula,
-                dataNascimento = DateTime.Now,
-                turmaId = dto.turmaId,
-                usuario = novoUsuario
-            };
+            novoAluno.dataNascimento = DateTime.Now;
 
             repository.Criar(novoAluno);
         }
 
-        public bool? EditarAluno(int id, AlunoRequestDTO dto)
+        public bool? EditarAluno(int id, Aluno dadosAtualizados)
         {
-            var aluno = repository.ObterPorId(id);
-            if (aluno == null) return null;
+            var alunoBanco = repository.ObterPorId(id);
+            if (alunoBanco == null) return null;
 
-            aluno.usuario.nome = dto.nome;
-            aluno.matricula = dto.matricula;
-            aluno.turmaId = dto.turmaId;
-            aluno.usuario.ativo = dto.ativo;
+            alunoBanco.usuario.nome = dadosAtualizados.usuario.nome;
+            alunoBanco.matricula = dadosAtualizados.matricula;
+            alunoBanco.turmaId = dadosAtualizados.turmaId;
+            alunoBanco.usuario.ativo = dadosAtualizados.usuario.ativo;
 
-            repository.Atualizar(aluno);
+            repository.Atualizar(alunoBanco);
             return true;
         }
 

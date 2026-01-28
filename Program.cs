@@ -1,6 +1,7 @@
 using edu_connect_backend.Configuration;
 using edu_connect_backend.Context;
 using edu_connect_backend.Exceptions;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Repository;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,9 +31,9 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AlunoRepository>();
 builder.Services.AddScoped<AlunoService>();
+builder.Services.AddScoped<AlunoMapper>();
 builder.Services.AddScoped<ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
-builder.Services.AddScoped<AcademicoRepository>();
 builder.Services.AddScoped<TopicoService>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<DashboardService>();
@@ -45,6 +46,21 @@ builder.Services.AddScoped<FrequenciaService>();
 builder.Services.AddScoped<EventoRepository>();
 builder.Services.AddScoped<EventoService>();
 builder.Services.AddScoped<BoletimPdfService>();
+builder.Services.Configure<EduConnectVariables>(
+    builder.Configuration.GetSection("edu-connect-variables"));
+builder.Services.AddScoped<AtividadeService>();
+builder.Services.AddScoped<AtividadeRepository>();
+builder.Services.AddScoped<DisciplinaService>();
+builder.Services.AddScoped<DisciplinaRepository>();
+builder.Services.AddScoped<DisciplinaMapper>();
+builder.Services.AddScoped<ExtracurricularService>();
+builder.Services.AddScoped<ExtracurricularRepository>();
+builder.Services.AddScoped<MaterialService>();
+builder.Services.AddScoped<MaterialRepository>();
+builder.Services.AddScoped<TopicoService>();
+builder.Services.AddScoped<TopicoRepository>();
+builder.Services.AddScoped<TurmaService>();
+builder.Services.AddScoped<TurmaRepository>();
 
 var app = builder.Build();
 
