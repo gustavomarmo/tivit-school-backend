@@ -6,7 +6,7 @@ namespace edu_connect_backend.Repository
     public class UsuarioRepository
     {
         private readonly ConnectionContext context;
-        
+
         public UsuarioRepository(ConnectionContext context)
         {
             this.context = context;
@@ -17,9 +17,14 @@ namespace edu_connect_backend.Repository
             return context.usuarios.FirstOrDefault(u => u.email == email);
         }
 
-        public Usuario? obterPorUsuarioId(int usuarioId)
+        public Usuario? ObterPorId(int usuarioId)
         {
             return context.usuarios.FirstOrDefault(u => u.id == usuarioId);
+        }
+
+        public Usuario? obterPorUsuarioId(int usuarioId)
+        {
+            return ObterPorId(usuarioId);
         }
 
         public void AdicionarUsuario(Usuario usuario)
@@ -27,6 +32,5 @@ namespace edu_connect_backend.Repository
             context.usuarios.Add(usuario);
             context.SaveChanges();
         }
-
     }
 }

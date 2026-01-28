@@ -1,7 +1,8 @@
-﻿using edu_connect_backend.Model;
+﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
+using edu_connect_backend.Model;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Mvc;
-using edu_connect_backend.DTO;
 
 namespace edu_connect_backend.Controller
 {
@@ -11,41 +12,45 @@ namespace edu_connect_backend.Controller
     {
         private readonly UsuarioService usuarioService;
         private readonly TokenService tokenService;
+        private readonly UsuarioMapper usuarioMapper;
 
-        public UsuarioController(UsuarioService usuarioService, TokenService tokenService)
+        public UsuarioController(
+            UsuarioService usuarioService,
+            TokenService tokenService,
+            UsuarioMapper usuarioMapper)
         {
             this.usuarioService = usuarioService;
             this.tokenService = tokenService;
+            this.usuarioMapper = usuarioMapper;
         }
 
         [HttpPost("login")]
-        public IActionResult login([FromBody] LoginRequestDTO login)
+        public IActionResult Login([FromBody] LoginRequestDTO loginDto)
         {
-            var usuario = usuarioService.obterUsuarioPorEmail(login.email);
+            var usuario = usuarioService.Autenticar(loginDto.email, loginDto.senha);
 
             if (usuario == null)
-                return Unauthorized("Email ou senha inválidos.");
-
-            if (usuario.senhaHash != login.senha)
-                return Unauthorized("Email ou senha inválidos.");
+                return Unauthorized(new { message = "Email ou senha inválidos." });
 
             var token = tokenService.gerarToken(usuario);
 
-            return Ok(new LoginResponseDTO
-            {
-                email = usuario.email,
-                nome = usuario.nome,
-                perfil = usuario.perfil.ToString(),
-                fotoUrl = usuario.fotoUrl,
-                token = token
-            });
+            var response = usuarioMapper.ToLoginResponseDTO(usuario, token);
+
+            return Ok(response);
         }
 
         [HttpPost("cadastro")]
-        public IActionResult cadastrarUsuario([FromBody] Usuario usuario)
+        public IActionResult CadastrarUsuario([FromBody] Usuario usuario)
         {
-            usuarioService.cadastrarUsuario(usuario);
-            return Ok("Usuário cadastrado com sucesso!");
+            try
+            {
+                usuarioService.CadastrarUsuario(usuario);
+                return Ok(new { message = "Usuário cadastrado com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

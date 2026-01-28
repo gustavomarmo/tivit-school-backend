@@ -28,6 +28,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<UsuarioMapper>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AlunoRepository>();
 builder.Services.AddScoped<AlunoService>();
