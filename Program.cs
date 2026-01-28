@@ -66,8 +66,10 @@ builder.Services.AddScoped<MaterialRepository>();
 builder.Services.AddScoped<MaterialMapper>();
 builder.Services.AddScoped<TopicoService>();
 builder.Services.AddScoped<TopicoRepository>();
+builder.Services.AddScoped<TopicoMapper>();
 builder.Services.AddScoped<TurmaService>();
 builder.Services.AddScoped<TurmaRepository>();
+builder.Services.AddScoped<TurmaMapper>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using edu_connect_backend.Repository;
+﻿using edu_connect_backend.Model;
+using edu_connect_backend.Repository;
 
 namespace edu_connect_backend.Service
 {
@@ -11,10 +12,9 @@ namespace edu_connect_backend.Service
             this.turmaRepository = turmaRepository;
         }
 
-        public List<string> ListarNomesTurmas()
+        public List<Turma> ListarTurmas()
         {
-            var turmas = this.turmaRepository.ListarTurmas();
-            return turmas.Select(t => t.nome).Distinct().ToList();
+            return this.turmaRepository.ListarTurmas();
         }
     }
 }

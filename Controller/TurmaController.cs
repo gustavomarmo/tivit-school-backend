@@ -1,4 +1,5 @@
-﻿using edu_connect_backend.Service;
+﻿using edu_connect_backend.Mapper;
+using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,20 @@ namespace edu_connect_backend.Controller
     public class TurmaController : ControllerBase
     {
         private readonly TurmaService turmaService;
+        private readonly TurmaMapper turmaMapper;
 
-        public TurmaController(TurmaService turmaService)
+        public TurmaController(TurmaService turmaService, TurmaMapper turmaMapper)
         {
             this.turmaService = turmaService;
+            this.turmaMapper = turmaMapper;
         }
 
         [HttpGet]
         [Authorize(Roles = "Coordenador")]
         public IActionResult ListarTurmas()
         {
-            var resultado = turmaService.ListarNomesTurmas();
+            var turmasModel = turmaService.ListarTurmas();
+            var resultado = turmaMapper.ToTurmaNomesList(turmasModel);
             return Ok(resultado);
         }
     }
