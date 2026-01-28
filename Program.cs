@@ -42,6 +42,7 @@ builder.Services.AddScoped<NotaService>();
 builder.Services.AddScoped<NotificacaoRepository>();
 builder.Services.AddScoped<NotificacaoService>();
 builder.Services.AddScoped<FrequenciaRepository>();
+builder.Services.AddScoped<FrequenciaMapper>();
 builder.Services.AddScoped<FrequenciaService>();
 builder.Services.AddScoped<EventoRepository>();
 builder.Services.AddScoped<EventoService>();

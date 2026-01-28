@@ -1,10 +1,10 @@
-﻿namespace edu_connect_backend.DTO
+﻿namespace edu_connect_backend.Model
 {
-    public class FrequenciaResumoDTO
+    public class FrequenciaResumoReadModel
     {
         public string disciplina { get; set; } = string.Empty;
         public int totalAulas { get; set; }
-        public int faltas { get; set; }
+        public int totalFaltas { get; set; }
         public double frequencia { get; set; }
     }
 }

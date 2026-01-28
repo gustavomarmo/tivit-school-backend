@@ -1,5 +1,4 @@
 ﻿using edu_connect_backend.Context;
-using edu_connect_backend.DTO;
 using edu_connect_backend.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +40,7 @@ namespace edu_connect_backend.Repository
             return total == 0 ? 0 : Math.Round(((decimal)presentes / total) * 100, 1);
         }
 
-        public List<FrequenciaResumoDTO> ObterResumoPorAluno(int alunoId, int? turmaId)
+        public List<FrequenciaResumoReadModel> ObterResumoPorAluno(int alunoId, int? turmaId)
         {
             var consulta = context.TurmaDisciplinas
                 .Where(td => td.turmaId == turmaId)
@@ -53,14 +52,14 @@ namespace edu_connect_backend.Repository
                 })
                 .ToList();
 
-            var resultado = consulta.Select(item => new FrequenciaResumoDTO
+            var resultado = consulta.Select(item => new FrequenciaResumoReadModel
             {
-                Disciplina = item.NomeDisciplina,
-                TotalAulas = item.TotalAulas,
-                Faltas = item.TotalAulas - item.Presencas,
-                Frequencia = item.TotalAulas == 0
+                disciplina = item.NomeDisciplina,
+                totalAulas = item.TotalAulas,
+                totalFaltas = item.TotalAulas - item.Presencas,
+                frequencia = item.TotalAulas == 0
                     ? 100
-                    : Math.Round(((decimal)item.Presencas / item.TotalAulas) * 100, 1)
+                    : (double)Math.Round(((decimal)item.Presencas / item.TotalAulas) * 100, 1)
             }).ToList();
 
             return resultado;
