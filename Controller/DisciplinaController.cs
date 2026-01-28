@@ -1,6 +1,7 @@
 ﻿using edu_connect_backend.DTO;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -40,7 +41,7 @@ namespace edu_connect_backend.Controller
         [HttpGet("listar")]
         public IActionResult ListarDisciplinas()
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             if (email == null) return Unauthorized();
 
             var dtos = disciplinaMapper.ToDisciplinaResumoDTOList(disciplinaService.ListarDisciplinas(email));
@@ -51,7 +52,7 @@ namespace edu_connect_backend.Controller
         [HttpGet("{id}/conteudo")]
         public IActionResult ObterConteudoDisciplina(int id)
         {
-            var (modelo, entregues) = disciplinaService.ObterConteudoDisciplina(id);
+            var (modelo, entregues) = disciplinaService.ObterConteudoDisciplina(id, ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
 
             if (modelo == null) return NotFound("Disciplina não encontrada.");
 

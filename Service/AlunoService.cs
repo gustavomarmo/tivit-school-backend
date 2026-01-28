@@ -8,17 +8,17 @@ namespace edu_connect_backend.Service
     public class AlunoService
     {
         private readonly EduConnectVariables config;
-        private readonly AlunoRepository repository;
+        private readonly AlunoRepository alunoRepository;
 
         public AlunoService(IOptions<EduConnectVariables> config, AlunoRepository repository)
         {
             this.config = config.Value;
-            this.repository = repository;
+            this.alunoRepository = repository;
         }
 
         public List<Aluno> ListarAlunos(string? busca)
         {
-            return repository.obterAlunos(busca);
+            return alunoRepository.obterAlunos(busca);
         }
 
         public void CriarAluno(Aluno novoAluno)
@@ -34,12 +34,12 @@ namespace edu_connect_backend.Service
 
             novoAluno.dataNascimento = DateTime.Now;
 
-            repository.Criar(novoAluno);
+            alunoRepository.Criar(novoAluno);
         }
 
         public bool? EditarAluno(int id, Aluno dadosAtualizados)
         {
-            var alunoBanco = repository.ObterPorId(id);
+            var alunoBanco = alunoRepository.ObterPorId(id);
             if (alunoBanco == null) return null;
 
             alunoBanco.usuario.nome = dadosAtualizados.usuario.nome;
@@ -47,16 +47,16 @@ namespace edu_connect_backend.Service
             alunoBanco.turmaId = dadosAtualizados.turmaId;
             alunoBanco.usuario.ativo = dadosAtualizados.usuario.ativo;
 
-            repository.Atualizar(alunoBanco);
+            alunoRepository.Atualizar(alunoBanco);
             return true;
         }
 
         public bool DeletarAluno(int id)
         {
-            var aluno = repository.ObterPorId(id);
+            var aluno = alunoRepository.ObterPorId(id);
             if (aluno == null) return false;
 
-            repository.Deletar(aluno);
+            alunoRepository.Deletar(aluno);
             return true;
         }
     }

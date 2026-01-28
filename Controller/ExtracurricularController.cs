@@ -27,7 +27,7 @@ namespace edu_connect_backend.Controller
         [HttpGet]
         public IActionResult ListarExtracurriculares()
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             if (email == null) return Unauthorized();
 
             try

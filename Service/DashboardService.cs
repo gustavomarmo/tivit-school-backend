@@ -12,14 +12,12 @@ namespace edu_connect_backend.Service
         private readonly DashboardRepository repository;
         private readonly AlunoRepository alunoRepository;
         private readonly UsuarioRepository usuarioRepository;
-        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ProfessorRepository professorRepository;
         private readonly FrequenciaRepository frequenciaRepository;
         private readonly EventoRepository eventoRepository;
 
         public DashboardService(
             DashboardRepository repository,
-            IHttpContextAccessor httpContextAccessor,
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
             FrequenciaRepository frequenciaRepository,
@@ -29,7 +27,6 @@ namespace edu_connect_backend.Service
             this.repository = repository;
             this.alunoRepository = alunoRepository;
             this.usuarioRepository = usuarioRepository;
-            this.httpContextAccessor = httpContextAccessor;
             this.professorRepository = professorRepository;
             this.frequenciaRepository = frequenciaRepository;
             this.eventoRepository = eventoRepository;
@@ -59,7 +56,7 @@ namespace edu_connect_backend.Service
             var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
                 ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
 
-            var professor = professorRepository.obterProfessorPorUsuarioId(usuario.id);
+            var professor = professorRepository.ObterProfessorPorUsuarioId(usuario.id);
 
             var kpis = repository.obterKPIsProfessorProcedure(professor.id);
 

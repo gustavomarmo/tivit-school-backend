@@ -1,6 +1,7 @@
 ﻿using edu_connect_backend.DTO;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -27,7 +28,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Aluno")]
         public IActionResult obterBoletim()
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            string email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             if (email == null) return Unauthorized();
 
             var boletimModel = notaService.obterBoletim(email);
@@ -74,11 +75,11 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Aluno")]
         public IActionResult downloadBoletim()
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             if (email == null) return Unauthorized();
 
             var boletimModel = notaService.obterBoletim(email);
-            var nomeAluno = User.FindFirst(ClaimTypes.Name)?.Value ?? "Aluno";
+            var nomeAluno = ColetaInfoToken.ObterNomeAlunoLogado(HttpContext) ?? "Aluno";
 
             if (boletimModel == null || !boletimModel.Any())
                 return NotFound(new { message = "Sem dados para gerar o boletim." });

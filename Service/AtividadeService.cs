@@ -10,17 +10,17 @@ namespace edu_connect_backend.Service
     {
         private readonly MaterialRepository materialRepository;
         private readonly AtividadeRepository atividadeRepository;
-        private readonly ConnectionContext context;
+        private readonly AlunoRepository alunoRepository;
         private readonly IWebHostEnvironment env;
         public AtividadeService(
             MaterialRepository materialRepository,
             AtividadeRepository atividadeRepository,
-            ConnectionContext context,
+            AlunoRepository alunoRepository,
             IWebHostEnvironment env)
         {
             this.materialRepository = materialRepository;
             this.atividadeRepository = atividadeRepository;
-            this.context = context;
+            this.alunoRepository = alunoRepository;
             this.env = env;
         }
 
@@ -52,7 +52,7 @@ namespace edu_connect_backend.Service
 
         public string RegistrarEntrega(int atividadeId, int usuarioId, IFormFile arquivo)
         {
-            var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuarioId);
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId);
             if (aluno == null) throw new Exception("Perfil de aluno não encontrado para este usuário.");
 
             var material = materialRepository.ObterMaterialPorId(atividadeId);
