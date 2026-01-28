@@ -45,6 +45,7 @@ builder.Services.AddScoped<FrequenciaRepository>();
 builder.Services.AddScoped<FrequenciaService>();
 builder.Services.AddScoped<EventoRepository>();
 builder.Services.AddScoped<EventoService>();
+builder.Services.AddScoped<EventoMapper>();
 builder.Services.AddScoped<BoletimPdfService>();
 builder.Services.Configure<EduConnectVariables>(
     builder.Configuration.GetSection("edu-connect-variables"));

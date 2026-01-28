@@ -58,5 +58,5 @@ namespace edu_connect_backend.Controller
 
             return Ok(new { messsage = "Atividade entregue com sucesso!" });
         }
-    }s
+    }
 }

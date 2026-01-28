@@ -1,82 +1,48 @@
-﻿using edu_connect_backend.DTO;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
-using System.Security.Claims;
 
 namespace edu_connect_backend.Service
 {
     public class EventoService
     {
-        private readonly EventoRepository repository;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly EventoRepository eventoRepository;
 
-        public EventoService(EventoRepository repository, IHttpContextAccessor httpContextAccessor)
+        public EventoService(EventoRepository eventoRepository)
         {
-            this.repository = repository;
-            this.httpContextAccessor = httpContextAccessor;
+            this.eventoRepository = eventoRepository;
         }
 
-        private int ObterIdUsuarioLogado()
+        public void CriarEvento(Evento evento)
         {
-            var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
-            throw new Exception("Usuário não identificado.");
+            eventoRepository.Criar(evento);
         }
 
-        public void CriarEvento(EventoRequestDTO dto)
+        public List<Evento> ListarEventos(int mes, int ano)
         {
-            var usuarioId = ObterIdUsuarioLogado();
-
-            var evento = new Evento
-            {
-                titulo = dto.titulo,
-                descricao = dto.descricao,
-                dataInicio = dto.dataInicio,
-                dataFim = dto.dataFim,
-                tipo = dto.tipo,
-                turmaId = dto.turmaId,
-                usuarioCriadorId = usuarioId
-            };
-
-            repository.Criar(evento);
+            return eventoRepository.ObterPorMesAno(mes, ano);
         }
 
-        public List<EventoResponseDTO> ListarEventos(int mes, int ano)
+        public void EditarEvento(int id, Evento dadosAtualizados)
         {
-            var eventos = repository.ObterPorMesAno(mes, ano);
-
-            return eventos.Select(e => new EventoResponseDTO
-            {
-                id = e.id,
-                title = e.titulo,
-                start = e.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
-                end = e.dataFim?.ToString("yyyy-MM-ddTHH:mm:ss"),
-                type = e.tipo,
-                description = e.descricao,
-                turmaNome = e.turma?.nome ?? "Geral"
-            }).ToList();
-        }
-
-        public void EditarEvento(int id, EventoRequestDTO dto)
-        {
-            var evento = repository.ObterPorId(id);
+            var evento = eventoRepository.ObterPorId(id);
             if (evento == null) throw new Exception("Evento não encontrado.");
 
-            evento.titulo = dto.titulo;
-            evento.descricao = dto.descricao;
-            evento.dataInicio = dto.dataInicio;
-            evento.dataFim = dto.dataFim;
-            evento.tipo = dto.tipo;
+            evento.titulo = dadosAtualizados.titulo;
+            evento.descricao = dadosAtualizados.descricao;
+            evento.dataInicio = dadosAtualizados.dataInicio;
+            evento.dataFim = dadosAtualizados.dataFim;
+            evento.tipo = dadosAtualizados.tipo;
+            evento.turmaId = dadosAtualizados.turmaId;
 
-            repository.Atualizar(evento);
+            eventoRepository.Atualizar(evento);
         }
 
         public void DeletarEvento(int id)
         {
-            var evento = repository.ObterPorId(id);
+            var evento = eventoRepository.ObterPorId(id);
             if (evento == null) throw new Exception("Evento não encontrado.");
 
-            repository.Deletar(evento);
+            eventoRepository.Deletar(evento);
         }
     }
 }
