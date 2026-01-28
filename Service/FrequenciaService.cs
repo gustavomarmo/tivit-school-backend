@@ -23,7 +23,7 @@ namespace edu_connect_backend.Service
         {
             var idsAlunos = frequencias.Select(r => r.alunoId).Distinct().ToList();
 
-            if (!this.alunoRepository.TodosAlunosExistem(idsAlunos))
+            if (!alunoRepository.TodosAlunosExistem(idsAlunos))
             {
                 throw new Exception("Um ou mais alunos informados não existem no banco de dados. Verifique a lista.");
             }
@@ -33,7 +33,7 @@ namespace edu_connect_backend.Service
 
         public List<FrequenciaResumoReadModel> ObterResumoFrequencia(int usuarioId)
         {
-            var aluno = this.context.alunos.FirstOrDefault(a => a.usuarioId == usuarioId);
+            var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuarioId);
 
             if (aluno == null)
                 throw new Exception("Perfil de aluno não encontrado para este usuário.");

@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,15 @@ namespace edu_connect_backend.Controller
     [Authorize]
     public class NotaController : ControllerBase
     {
-        private readonly NotaService service;
+        private readonly NotaService notaService;
         private readonly BoletimPdfService pdfService;
+        private readonly NotaMapper notaMapper;
 
-        public NotaController(NotaService service, BoletimPdfService pdfService)
+        public NotaController(NotaService notaService, BoletimPdfService pdfService, NotaMapper notaMapper)
         {
-            this.service = service;
+            this.notaService = notaService;
             this.pdfService = pdfService;
+            this.notaMapper = notaMapper;
         }
 
         [HttpGet("boletim")]
@@ -27,12 +30,12 @@ namespace edu_connect_backend.Controller
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (email == null) return Unauthorized();
 
-            var boletim = service.obterBoletim(email);
+            var boletimModel = notaService.obterBoletim(email);
 
-            if (boletim == null)
-                return NotFound("Aluno não encontrado ou sem notas registradas.");
+            if (boletimModel == null)
+                return NotFound(new { message = "Aluno não encontrado ou sem notas registradas." });
 
-            return Ok(boletim);
+            return Ok(notaMapper.ToBoletimDTOList(boletimModel));
         }
 
         [HttpGet("lancamento")]
@@ -40,29 +43,30 @@ namespace edu_connect_backend.Controller
         public IActionResult obterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
         {
             if (turmaId <= 0 || disciplinaId <= 0 || bimestre <= 0)
-                return BadRequest("Parâmetros inválidos.");
+                return BadRequest(new { message = "Parâmetros inválidos." });
 
-            var lista = service.obterListaLancamento(turmaId, disciplinaId, bimestre);
+            var listaModel = notaService.obterListaLancamento(turmaId, disciplinaId, bimestre);
 
-            return Ok(lista);
+            return Ok(notaMapper.ToNotaLancamentoDTOList(listaModel));
         }
 
         [HttpPost("lote")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult salvarNotasLote([FromBody] List<NotaRequestDTO> notas)
+        public IActionResult salvarNotasLote([FromBody] List<NotaRequestDTO> notasDto)
         {
             try
             {
-                if (notas == null || notas.Count == 0)
-                    return BadRequest("A lista de notas está vazia.");
+                if (notasDto == null || notasDto.Count == 0)
+                    return BadRequest(new { message = "A lista de notas está vazia." });
 
-                service.lancarNotasEmLote(notas);
+                var notasModel = notaMapper.ToNotaList(notasDto);
+                notaService.lancarNotasEmLote(notasModel);
 
-                return Ok(new { mensagem = $"{notas.Count} notas processadas com sucesso." });
+                return Ok(new { mensagem = $"{notasDto.Count} notas processadas com sucesso." });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Erro ao salvar lote: {ex.Message}");
+                return BadRequest(new { message = $"Erro ao salvar lote: {ex.Message}" });
             }
         }
 
@@ -73,13 +77,14 @@ namespace edu_connect_backend.Controller
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (email == null) return Unauthorized();
 
-            var boletim = service.obterBoletim(email);
+            var boletimModel = notaService.obterBoletim(email);
             var nomeAluno = User.FindFirst(ClaimTypes.Name)?.Value ?? "Aluno";
 
-            if (boletim == null || !boletim.Any())
-                return NotFound("Sem dados para gerar o boletim.");
+            if (boletimModel == null || !boletimModel.Any())
+                return NotFound(new { message = "Sem dados para gerar o boletim." });
 
-            var pdfBytes = pdfService.gerarPdfBoletim(boletim, nomeAluno);
+            var boletimDto = notaMapper.ToBoletimDTOList(boletimModel);
+            var pdfBytes = pdfService.gerarPdfBoletim(boletimDto, nomeAluno);
 
             return File(pdfBytes, "application/pdf", "meu_boletim.pdf");
         }

@@ -1,5 +1,4 @@
 ﻿using edu_connect_backend.Context;
-using edu_connect_backend.DTO;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 
@@ -7,82 +6,75 @@ namespace edu_connect_backend.Service
 {
     public class NotaService
     {
-        private readonly NotaRepository _repository;
-        private readonly AlunoRepository _alunoRepository;
-        private readonly UsuarioRepository _usuarioRepository;
-        private readonly ConnectionContext _context;
+        private readonly NotaRepository notaRepository;
+        private readonly AlunoRepository alunoRepository;
+        private readonly UsuarioRepository usuarioRepository;
+        private readonly ConnectionContext context;
 
         public NotaService(
-            NotaRepository repository,
+            NotaRepository notaRepository,
             AlunoRepository alunoRepository,
             UsuarioRepository usuarioRepository,
             ConnectionContext context)
         {
-            _repository = repository;
-            _alunoRepository = alunoRepository;
-            _usuarioRepository = usuarioRepository;
-            _context = context;
+            this.notaRepository = notaRepository;
+            this.alunoRepository = alunoRepository;
+            this.usuarioRepository = usuarioRepository;
+            this.context = context;
         }
 
-        public void LancarNota(NotaRequestDTO dto)
+        public void LancarNota(Nota nota)
         {
-            var vinculo = _repository.ObterTurmaDisciplina(dto.TurmaId, dto.DisciplinaId);
+            var vinculo = notaRepository.ObterTurmaDisciplina(nota.TempTurmaId, nota.TempDisciplinaId);
 
             if (vinculo == null)
                 throw new Exception("Esta disciplina não está vinculada a esta turma.");
 
-            var notaExistente = _repository.ObterNotaEspecifica(dto.AlunoId, vinculo.id, dto.Bimestre, dto.Tipo);
+            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo);
 
             if (notaExistente != null)
             {
-                notaExistente.valor = dto.Valor;
+                notaExistente.valor = nota.valor;
                 notaExistente.dataLancamento = DateTime.Now;
-                _repository.Atualizar(notaExistente);
+                notaRepository.Atualizar(notaExistente);
             }
             else
             {
-                var novaNota = new Nota
-                {
-                    alunoId = dto.AlunoId,
-                    turmaDisciplinaId = vinculo.id,
-                    valor = dto.Valor,
-                    bimestre = dto.Bimestre,
-                    tipo = dto.Tipo,
-                    descricao = $"Nota {dto.Tipo} - {dto.Bimestre}º Bimestre",
-                    dataLancamento = DateTime.Now
-                };
-                _repository.Salvar(novaNota);
+                nota.turmaDisciplinaId = vinculo.id;
+                nota.descricao = $"Nota {nota.tipo} - {nota.bimestre}º Bimestre";
+                nota.dataLancamento = DateTime.Now;
+
+                notaRepository.Salvar(nota);
             }
         }
 
-        public List<BoletimDTO>? obterBoletim(string emailUsuario)
+        public List<BoletimReadModel>? obterBoletim(string emailUsuario)
         {
-            var usuario = _usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return null;
 
-            var aluno = _alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
-
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
             if (aluno == null) return null;
 
-            return _repository.ObterBoletimPorAluno(aluno.id);
+            return notaRepository.ObterBoletimPorAluno(aluno.id);
         }
 
-        public List<NotaLancamentoDTO> obterListaLancamento(int turmaId, int disciplinaId, int bimestre)
+        public List<NotaLancamentoReadModel> obterListaLancamento(int turmaId, int disciplinaId, int bimestre)
         {
-            return _repository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre);
+            return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre);
         }
 
-        public void lancarNotasEmLote(List<NotaRequestDTO> listaNotas)
+        public void lancarNotasEmLote(List<Nota> listaNotas)
         {
             if (listaNotas == null || !listaNotas.Any()) return;
 
-            using var transaction = _context.Database.BeginTransaction();
+            using var transaction = context.Database.BeginTransaction();
 
             try
             {
-                foreach (var dto in listaNotas)
+                foreach (var nota in listaNotas)
                 {
-                    LancarNota(dto);
+                    LancarNota(nota);
                 }
 
                 transaction.Commit();

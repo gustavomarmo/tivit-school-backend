@@ -13,9 +13,14 @@ namespace edu_connect_backend.Model
         public string descricao { get; set; } = string.Empty;
 
         public int alunoId { get; set; }
-        public Aluno aluno { get; set; }
+        public Aluno? aluno { get; set; }
 
         public int turmaDisciplinaId { get; set; }
-        public TurmaDisciplina turmaDisciplina { get; set; }
+        public TurmaDisciplina? turmaDisciplina { get; set; }
+
+        [NotMapped]
+        public int TempTurmaId { get; set; }
+        [NotMapped]
+        public int TempDisciplinaId { get; set; }
     }
 }

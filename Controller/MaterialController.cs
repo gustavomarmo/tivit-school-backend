@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,25 +12,29 @@ namespace edu_connect_backend.Controller
     public class MaterialController : ControllerBase
     {
         private readonly MaterialService materialService;
-        
-        public MaterialController(MaterialService materialService)
+        private readonly MaterialMapper materialMapper;
+
+        public MaterialController(MaterialService materialService, MaterialMapper materialMapper)
         {
             this.materialService = materialService;
+            this.materialMapper = materialMapper;
         }
 
         [HttpPost]
         [Authorize(Roles = "Professor,Coordenador")]
         public IActionResult CriarMaterial([FromBody] MaterialRequestDTO dto)
         {
-            materialService.CriarMaterial(dto);
-            return StatusCode(201);
+            var material = materialMapper.ToMaterial(dto);
+            materialService.CriarMaterial(material);
+            return Created("", new { message = "Material criado com sucesso!" });
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Professor,Admin")]
         public IActionResult EditarMaterial(int id, [FromBody] MaterialRequestDTO dto)
         {
-            materialService.EditarMaterial(id, dto);
+            var material = materialMapper.ToMaterial(dto);
+            materialService.EditarMaterial(id, material);
             return NoContent();
         }
 

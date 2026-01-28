@@ -22,15 +22,15 @@ namespace edu_connect_backend.Service
 
         public List<TurmaExtracurricular> ListarExtracurriculares(string emailUsuario)
         {
-            var usuario = this.usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
             if (usuario == null) return new List<TurmaExtracurricular>();
 
             if (usuario.perfil == PerfilUsuario.Aluno)
             {
-                var aluno = this.context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
+                var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
                 if (aluno != null)
                 {
-                    return this.extracurricularRepository.ObterExtracurricularesPorAluno(aluno.id);
+                    return extracurricularRepository.ObterExtracurricularesPorAluno(aluno.id);
                 }
             }
             return new List<TurmaExtracurricular>();
@@ -38,7 +38,7 @@ namespace edu_connect_backend.Service
 
         public TurmaExtracurricular? ObterConteudoExtracurricular(int idVinculo)
         {
-            return this.extracurricularRepository.ObterConteudoCompleto(idVinculo);
+            return extracurricularRepository.ObterConteudoCompleto(idVinculo);
         }
 
         public void CriarAtividadeExtracurricular(Extracurricular nova)
