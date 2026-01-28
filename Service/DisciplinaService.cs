@@ -1,5 +1,4 @@
 ﻿using edu_connect_backend.Context;
-using edu_connect_backend.DTO;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +11,9 @@ namespace edu_connect_backend.Service
         private readonly DisciplinaRepository disciplinaRepository;
         private readonly UsuarioRepository usuarioRepository;
         private readonly AlunoRepository alunoRepository;
-        private readonly ConnectionContext context; // Para acessar Professores diretamente se necessário, ou crie ProfessorRepository
+        private readonly ConnectionContext context;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly AtividadeRepository atividadeRepository; // Para checar entregas ao listar conteúdo
+        private readonly AtividadeRepository atividadeRepository;
 
         public DisciplinaService(
             DisciplinaRepository disciplinaRepository,
@@ -32,36 +31,27 @@ namespace edu_connect_backend.Service
             this.atividadeRepository = atividadeRepository;
         }
 
-        public void CriarDisciplinaGenerica(DisciplinaCriacaoDTO dto)
+        public void CriarDisciplinaGenerica(Disciplina disciplina)
         {
-            var nova = new Disciplina { nome = dto.nome, codigo = dto.codigo };
-            this.disciplinaRepository.CriarDisciplina(nova);
+            this.disciplinaRepository.CriarDisciplina(disciplina);
         }
 
-        public void VincularDisciplina(VincularDisciplinaDTO dto)
+        public void VincularDisciplina(TurmaDisciplina vinculo)
         {
-            var vinculo = new TurmaDisciplina
-            {
-                turmaId = dto.turmaId,
-                disciplinaId = dto.disciplinaId,
-                professorId = dto.professorId
-            };
             this.disciplinaRepository.VincularDisciplina(vinculo);
         }
 
-        public List<DisciplinaResumoDTO> ListarDisciplinas(string emailUsuario)
+        public List<TurmaDisciplina> ListarDisciplinas(string emailUsuario)
         {
             var usuario = this.usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
-            if (usuario == null) return new List<DisciplinaResumoDTO>();
-
-            List<TurmaDisciplina> lista = new();
+            if (usuario == null) return new List<TurmaDisciplina>();
 
             if (usuario.perfil == PerfilUsuario.Aluno)
             {
                 var aluno = this.alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
                 if (aluno != null)
                 {
-                    lista = this.disciplinaRepository.ObterDisciplinasPorAlunoId(aluno.id);
+                    return this.disciplinaRepository.ObterDisciplinasPorAlunoId(aluno.id);
                 }
             }
             else if (usuario.perfil == PerfilUsuario.Professor)
@@ -69,47 +59,23 @@ namespace edu_connect_backend.Service
                 var professor = this.context.professores.FirstOrDefault(p => p.usuarioId == usuario.id);
                 if (professor != null)
                 {
-                    lista = this.disciplinaRepository.ObterDisciplinasPorProfessorId(professor.id);
+                    return this.disciplinaRepository.ObterDisciplinasPorProfessorId(professor.id);
                 }
             }
 
-            return lista.Select(td => new DisciplinaResumoDTO
-            {
-                id = td.id,
-                nome = td.disciplina.nome,
-                turma = td.turma != null ? td.turma.nome : "N/A",
-                professor = td.professor != null && td.professor.usuario != null
-                            ? td.professor.usuario.nome
-                            : "Sem Professor"
-            }).ToList();
+            return new List<TurmaDisciplina>();
         }
 
-        public DisciplinaConteudoDTO? ObterConteudo(int disciplinaId)
+        public (TurmaDisciplina? disciplina, List<int> entregues) ObterConteudoDisciplina(int disciplinaId)
         {
             var turmaDisciplina = this.disciplinaRepository.ObterConteudoCompleto(disciplinaId);
-            if (turmaDisciplina == null) return null;
+            if (turmaDisciplina == null) return (null, new List<int>());
 
             var usuarioId = ObterIdUsuarioLogado();
 
-            return new DisciplinaConteudoDTO
-            {
-                id = turmaDisciplina.id,
-                nome = turmaDisciplina.disciplina.nome,
-                topicos = turmaDisciplina.topicos.Select(t => new TopicoDTO
-                {
-                    id = t.id,
-                    titulo = t.titulo,
-                    materiais = t.materiais.Select(m => new MaterialDTO
-                    {
-                        id = m.id,
-                        titulo = m.titulo,
-                        tipo = m.tipo,
-                        url = m.url,
-                        dataEntrega = m.dataEntrega,
-                        entregue = (m.tipo == "assignment") && this.atividadeRepository.ExisteEntrega(m.id, usuarioId)
-                    }).ToList()
-                }).ToList()
-            };
+            var entregues = this.atividadeRepository.ObterIdsMateriaisEntregues(disciplinaId, GetAlunoId(usuarioId));
+
+            return (turmaDisciplina, entregues);
         }
 
         private int ObterIdUsuarioLogado()
@@ -117,6 +83,12 @@ namespace edu_connect_backend.Service
             var idClaim = this.httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
             if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
             throw new Exception("Usuário não identificado.");
+        }
+
+        private int GetAlunoId(int usuarioId)
+        {
+            var aluno = this.alunoRepository.ObterAlunoPorUsuarioId(usuarioId);
+            return aluno != null ? aluno.id : 0;
         }
     }
 }

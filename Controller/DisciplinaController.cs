@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,47 +8,54 @@ using System.Security.Claims;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("api/disciplinas")]
+    [Route("disciplina")]
     [Authorize]
     public class DisciplinaController : ControllerBase
     {
         private readonly DisciplinaService disciplinaService;
+        private readonly DisciplinaMapper disciplinaMapper;
 
-        public DisciplinaController(TopicoService academicoService)
+        public DisciplinaController(DisciplinaService disciplinaService, DisciplinaMapper disciplinaMapper)
         {
             this.disciplinaService = disciplinaService;
+            this.disciplinaMapper = disciplinaMapper;
         }
 
-        [HttpGet]
-        public IActionResult ListarDisciplinas()
-        {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var resultado = disciplinaService.ListarDisciplinas(email);
-            return Ok(resultado);
-        }
-
-        [HttpPost]
+        [HttpPost("criar")]
         [Authorize(Roles = "Coordenador")]
         public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoDTO dto)
         {
-            disciplinaService.CriarDisciplinaGenerica(dto);
-            return StatusCode(201);
+            disciplinaService.CriarDisciplinaGenerica(disciplinaMapper.ToDisciplina(dto));
+            return Ok(new { message = "Disciplina criada com sucesso." });
         }
 
         [HttpPost("vincular")]
         [Authorize(Roles = "Coordenador")]
         public IActionResult VincularDisciplina([FromBody] VincularDisciplinaDTO dto)
         {
-            disciplinaService.VincularDisciplina(dto);
-            return StatusCode(201);
+            disciplinaService.VincularDisciplina(disciplinaMapper.ToTurmaDisciplina(dto));
+            return Ok(new { message = "Disciplina vinculada à turma." });
+        }
+
+        [HttpGet("listar")]
+        public IActionResult ListarDisciplinas()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null) return Unauthorized();
+
+            var dtos = disciplinaMapper.ToDisciplinaResumoDTOList(disciplinaService.ListarDisciplinas(email));
+
+            return Ok(dtos);
         }
 
         [HttpGet("{id}/conteudo")]
-        public IActionResult ObterConteudo(int id)
+        public IActionResult ObterConteudoDisciplina(int id)
         {
-            var conteudo = disciplinaService.ObterConteudo(id);
-            if (conteudo == null) return NotFound("Disciplina não encontrada");
-            return Ok(conteudo);
+            var (modelo, entregues) = disciplinaService.ObterConteudoDisciplina(id);
+
+            if (modelo == null) return NotFound("Disciplina não encontrada.");
+
+            return Ok(disciplinaMapper.ToDisciplinaConteudoDTO(modelo, entregues));
         }
     }
 }
