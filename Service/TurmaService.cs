@@ -14,7 +14,8 @@ namespace edu_connect_backend.Service
 
         public List<Turma> ListarTurmas()
         {
-            return this.turmaRepository.ListarTurmas();
+            return this.turmaRepository.ListarTurmas()
+                ?? throw new KeyNotFoundException("Turmas não encontradas");
         }
     }
 }

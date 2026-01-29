@@ -19,13 +19,14 @@ namespace edu_connect_backend.Service
 
         public List<Evento> ListarEventos(int mes, int ano)
         {
-            return eventoRepository.ObterPorMesAno(mes, ano);
+            return eventoRepository.ObterPorMesAno(mes, ano)
+                ?? throw new KeyNotFoundException("Nenhum evento encontrado");
         }
 
         public void EditarEvento(int id, Evento dadosAtualizados)
         {
-            var evento = eventoRepository.ObterPorId(id);
-            if (evento == null) throw new Exception("Evento não encontrado.");
+            var evento = eventoRepository.ObterPorId(id)
+                ?? throw new KeyNotFoundException("Evento não encontrado");
 
             evento.titulo = dadosAtualizados.titulo;
             evento.descricao = dadosAtualizados.descricao;
@@ -39,8 +40,8 @@ namespace edu_connect_backend.Service
 
         public void DeletarEvento(int id)
         {
-            var evento = eventoRepository.ObterPorId(id);
-            if (evento == null) throw new Exception("Evento não encontrado.");
+            var evento = eventoRepository.ObterPorId(id)
+                ?? throw new KeyNotFoundException("Evento não encontrado");
 
             eventoRepository.Deletar(evento);
         }

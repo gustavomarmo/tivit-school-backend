@@ -19,8 +19,8 @@ namespace edu_connect_backend.Service
 
         public void EditarTopico(int id, Topico dadosAtualizados)
         {
-            var topico = topicoRepository.ObterTopicoPorId(id);
-            if (topico == null) throw new Exception("Tópico não encontrado.");
+            var topico = topicoRepository.ObterTopicoPorId(id)
+                ?? throw new KeyNotFoundException("Tópico não encontrado");
 
             topico.titulo = dadosAtualizados.titulo;
 
@@ -29,8 +29,8 @@ namespace edu_connect_backend.Service
 
         public void DeletarTopico(int id)
         {
-            var topico = topicoRepository.ObterTopicoPorId(id);
-            if (topico == null) throw new Exception("Tópico não encontrado.");
+            var topico = topicoRepository.ObterTopicoPorId(id)
+                ?? throw new KeyNotFoundException("Tópico não encontrado");
 
             topicoRepository.DeletarTopico(topico);
         }

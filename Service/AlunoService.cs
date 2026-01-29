@@ -18,7 +18,8 @@ namespace edu_connect_backend.Service
 
         public List<Aluno> ListarAlunos(string? busca)
         {
-            return alunoRepository.obterAlunos(busca);
+            return alunoRepository.obterAlunos(busca)
+                ?? throw new KeyNotFoundException("Alunos não encontrados");
         }
 
         public void CriarAluno(Aluno novoAluno)
@@ -39,8 +40,8 @@ namespace edu_connect_backend.Service
 
         public bool? EditarAluno(int id, Aluno dadosAtualizados)
         {
-            var alunoBanco = alunoRepository.ObterPorId(id);
-            if (alunoBanco == null) return null;
+            var alunoBanco = alunoRepository.ObterPorId(id)
+                ?? throw new KeyNotFoundException("Aluno não encontrado");
 
             alunoBanco.usuario.nome = dadosAtualizados.usuario.nome;
             alunoBanco.matricula = dadosAtualizados.matricula;
@@ -53,8 +54,8 @@ namespace edu_connect_backend.Service
 
         public bool DeletarAluno(int id)
         {
-            var aluno = alunoRepository.ObterPorId(id);
-            if (aluno == null) return false;
+            var aluno = alunoRepository.ObterPorId(id)
+            ?? throw new KeyNotFoundException("Aluno não encontrado");
 
             alunoRepository.Deletar(aluno);
             return true;

@@ -43,24 +43,23 @@ namespace edu_connect_backend.Service
 
         public List<TurmaDisciplina> ListarDisciplinas(string emailUsuario)
         {
-            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
-            if (usuario == null) return new List<TurmaDisciplina>();
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario)
+                 ?? throw new KeyNotFoundException("Usuário não encontrado.");
 
             if (usuario.perfil == PerfilUsuario.Aluno)
             {
-                var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
-                if (aluno != null)
-                {
-                    return disciplinaRepository.ObterDisciplinasPorAlunoId(aluno.id);
-                }
+                var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id)
+                    ?? throw new KeyNotFoundException("Aluno não encontrado.");
+
+                return disciplinaRepository.ObterDisciplinasPorAlunoId(aluno.id)
+                    ?? throw new KeyNotFoundException("Nenhuma disciplina encontrada do aluno.");
             }
             else if (usuario.perfil == PerfilUsuario.Professor)
             {
-                var professor = professorRepository.ObterProfessorPorUsuarioId(usuario.id);
-                if (professor != null)
-                {
-                    return disciplinaRepository.ObterDisciplinasPorProfessorId(professor.id);
-                }
+                var professor = professorRepository.ObterProfessorPorUsuarioId(usuario.id)
+                    ?? throw new KeyNotFoundException("Professor não encontrado.");
+                return disciplinaRepository.ObterDisciplinasPorProfessorId(professor.id)
+                    ?? throw new KeyNotFoundException("Nenhuma disciplina encontrada do professor.");
             }
 
             return new List<TurmaDisciplina>();
@@ -68,25 +67,20 @@ namespace edu_connect_backend.Service
 
         public (TurmaDisciplina? disciplina, List<int> entregues) ObterConteudoDisciplina(int disciplinaId, int usuarioId)
         {
-            var turmaDisciplina = disciplinaRepository.ObterConteudoCompleto(disciplinaId);
-            if (turmaDisciplina == null) return (null, new List<int>());
+            var turmaDisciplina = disciplinaRepository.ObterConteudoCompleto(disciplinaId)
+                ?? throw new KeyNotFoundException("Nenhum contéudo encontrado da disciplina");
 
-            var entregues = atividadeRepository.ObterIdsMateriaisEntregues(disciplinaId, GetAlunoId(usuarioId));
+            var entregues = atividadeRepository.ObterIdsMateriaisEntregues(disciplinaId, GetAlunoId(usuarioId))
+                ?? throw new KeyNotFoundException("Nenhum material entregue da disciplina.");
 
             return (turmaDisciplina, entregues);
         }
 
-        private int ObterIdUsuarioLogado()
-        {
-            var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim != null && int.TryParse(idClaim.Value, out int id)) return id;
-            throw new Exception("Usuário não identificado.");
-        }
-
         private int GetAlunoId(int usuarioId)
         {
-            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId);
-            return aluno != null ? aluno.id : 0;
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId)
+                ?? throw new KeyNotFoundException("Aluno não encontrado.");
+            return aluno.id;
         }
     }
 }

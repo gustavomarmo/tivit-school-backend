@@ -38,9 +38,6 @@ namespace edu_connect_backend.Controller
         {
             var sucesso = alunoService.EditarAluno(id, alunoMapper.ToAluno(dto));
 
-            if (sucesso == null)
-                return NotFound("Aluno não encontrado.");
-
             return StatusCode(204);
         }
 
@@ -48,10 +45,6 @@ namespace edu_connect_backend.Controller
         public IActionResult DeletarAluno(int id)
         {
             var sucesso = alunoService.DeletarAluno(id);
-
-            if (!alunoService.DeletarAluno(id))
-                return NotFound("Aluno não encontrado.");
-
             return NoContent();
         }
     }

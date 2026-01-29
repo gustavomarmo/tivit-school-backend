@@ -31,8 +31,9 @@ namespace edu_connect_backend.Service
 
         public void EditarAtividade(int id, Material dadosAtualizados)
         {
-            var material = materialRepository.ObterMaterialPorId(id);
-            if (material == null) throw new Exception("Atividade não encontrada.");
+            var material = materialRepository.ObterMaterialPorId(id)
+                ?? throw new KeyNotFoundException("Material não encontrado");
+
             if (material.tipo != "assignment") throw new Exception("Este item não é uma atividade.");
 
             material.titulo = dadosAtualizados.titulo;
@@ -45,18 +46,19 @@ namespace edu_connect_backend.Service
 
         public void DeletarAtividade(int id)
         {
-            var material = materialRepository.ObterMaterialPorId(id);
-            if (material != null)
-                materialRepository.DeletarMaterial(material);  
+            var material = materialRepository.ObterMaterialPorId(id)
+                ?? throw new KeyNotFoundException("Material não encontrado");
+
+            materialRepository.DeletarMaterial(material);  
         }
 
         public string RegistrarEntrega(int atividadeId, int usuarioId, IFormFile arquivo)
         {
-            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId);
-            if (aluno == null) throw new Exception("Perfil de aluno não encontrado para este usuário.");
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId)
+                ?? throw new KeyNotFoundException("Perfil de aluno não encontrado para este usuário.");
 
-            var material = materialRepository.ObterMaterialPorId(atividadeId);
-            if (material == null) throw new Exception("Atividade não encontrada.");
+            var material = materialRepository.ObterMaterialPorId(atividadeId)
+                 ?? throw new KeyNotFoundException("Material não encontrado.");
 
             if (material.tipo != "assignment" && material.dataEntrega == null)
                 throw new Exception("Este material não é uma atividade.");

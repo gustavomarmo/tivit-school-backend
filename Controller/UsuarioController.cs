@@ -42,15 +42,8 @@ namespace edu_connect_backend.Controller
         [HttpPost("cadastro")]
         public IActionResult CadastrarUsuario([FromBody] Usuario usuario)
         {
-            try
-            {
-                usuarioService.CadastrarUsuario(usuario);
-                return Ok(new { message = "Usuário cadastrado com sucesso!" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            usuarioService.CadastrarUsuario(usuario);
+            return Ok(new { message = "Usuário cadastrado com sucesso!" });
         }
     }
 }

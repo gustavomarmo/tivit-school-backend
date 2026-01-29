@@ -8,37 +8,38 @@ namespace edu_connect_backend.Service
     {
         private readonly ExtracurricularRepository extracurricularRepository;
         private readonly UsuarioRepository usuarioRepository;
-        private readonly ConnectionContext context;
+        private readonly AlunoRepository alunoRepository;
 
         public ExtracurricularService(
             ExtracurricularRepository extracurricularRepository,
             UsuarioRepository usuarioRepository,
-            ConnectionContext context)
+            AlunoRepository alunoRepository)
         {
             this.extracurricularRepository = extracurricularRepository;
             this.usuarioRepository = usuarioRepository;
-            this.context = context;
+            this.alunoRepository = alunoRepository;
         }
 
         public List<TurmaExtracurricular> ListarExtracurriculares(string emailUsuario)
         {
-            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
-            if (usuario == null) return new List<TurmaExtracurricular>();
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario)
+                ?? throw new KeyNotFoundException("Usuário não encontrado.");
+
 
             if (usuario.perfil == PerfilUsuario.Aluno)
             {
-                var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuario.id);
-                if (aluno != null)
-                {
-                    return extracurricularRepository.ObterExtracurricularesPorAluno(aluno.id);
-                }
+                var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id)
+                    ?? throw new KeyNotFoundException("Aluno não encontrado.");
+                return extracurricularRepository.ObterExtracurricularesPorAluno(aluno.id)
+                    ?? throw new KeyNotFoundException("Nenhuma extracurricular encontrada para o aluno.");
             }
             return new List<TurmaExtracurricular>();
         }
 
         public TurmaExtracurricular? ObterConteudoExtracurricular(int idVinculo)
         {
-            return extracurricularRepository.ObterConteudoCompleto(idVinculo);
+            return extracurricularRepository.ObterConteudoCompleto(idVinculo)
+                ?? throw new KeyNotFoundException("Não há conteúdo na extracurricular em questão.");
         }
 
         public void CriarAtividadeExtracurricular(Extracurricular nova)
@@ -48,8 +49,8 @@ namespace edu_connect_backend.Service
 
         public void EditarAtividadeExtracurricular(int id, Extracurricular dadosAtualizados)
         {
-            var atividade = extracurricularRepository.ObterExtracurricularPorId(id);
-            if (atividade == null) throw new Exception("Atividade não encontrada.");
+            var atividade = extracurricularRepository.ObterExtracurricularPorId(id)
+                ?? throw new KeyNotFoundException("Nenhuma extracurricular encontrada.");
 
             atividade.nome = dadosAtualizados.nome;
             atividade.descricao = dadosAtualizados.descricao;
@@ -59,8 +60,8 @@ namespace edu_connect_backend.Service
 
         public void DeletarAtividadeExtracurricular(int id)
         {
-            var atividade = extracurricularRepository.ObterExtracurricularPorId(id);
-            if (atividade == null) throw new Exception("Atividade não encontrada.");
+            var atividade = extracurricularRepository.ObterExtracurricularPorId(id)
+                ?? throw new KeyNotFoundException("Nenhuma extracurricular encontrada.");
 
             extracurricularRepository.DeletarExtracurricular(atividade);
         }
@@ -72,8 +73,8 @@ namespace edu_connect_backend.Service
 
         public void RemoverVinculoExtracurricular(int idVinculo)
         {
-            var vinculo = extracurricularRepository.ObterVinculoPorId(idVinculo);
-            if (vinculo == null) throw new Exception("Vínculo não encontrado.");
+            var vinculo = extracurricularRepository.ObterVinculoPorId(idVinculo)
+                ?? throw new KeyNotFoundException("Nenhuma vínculo encontrado.");
 
             extracurricularRepository.DeletarVinculoExtracurricular(vinculo);
         }

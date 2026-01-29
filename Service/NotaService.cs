@@ -25,12 +25,11 @@ namespace edu_connect_backend.Service
 
         public void LancarNota(Nota nota)
         {
-            var vinculo = notaRepository.ObterTurmaDisciplina(nota.TempTurmaId, nota.TempDisciplinaId);
+            var vinculo = notaRepository.ObterTurmaDisciplina(nota.TempTurmaId, nota.TempDisciplinaId)
+                ?? throw new KeyNotFoundException("Vínculo não encontrado.");
 
-            if (vinculo == null)
-                throw new Exception("Esta disciplina não está vinculada a esta turma.");
-
-            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo);
+            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo)
+                ?? throw new KeyNotFoundException("Nota específica não encontrada.");
 
             if (notaExistente != null)
             {
@@ -50,18 +49,20 @@ namespace edu_connect_backend.Service
 
         public List<BoletimReadModel>? obterBoletim(string emailUsuario)
         {
-            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario);
-            if (usuario == null) return null;
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario)
+                ?? throw new KeyNotFoundException("Usuário não encontrado.");
 
-            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id);
-            if (aluno == null) return null;
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuario.id)
+                ?? throw new KeyNotFoundException("Aluno não encontrado.");
 
-            return notaRepository.ObterBoletimPorAluno(aluno.id);
+            return notaRepository.ObterBoletimPorAluno(aluno.id)
+                ?? throw new KeyNotFoundException("Boletim não encontrado.");
         }
 
         public List<NotaLancamentoReadModel> obterListaLancamento(int turmaId, int disciplinaId, int bimestre)
         {
-            return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre);
+            return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre)
+                ?? throw new KeyNotFoundException("Alunos não encontrados.");
         }
 
         public void lancarNotasEmLote(List<Nota> listaNotas)

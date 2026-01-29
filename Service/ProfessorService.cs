@@ -1,5 +1,6 @@
 ﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
+using System.Data;
 
 namespace edu_connect_backend.Service
 {
@@ -26,7 +27,6 @@ namespace edu_connect_backend.Service
 
             novoProfessor.usuario.email = $"{novoProfessor.matricula}@professor.educonnect.com";
 
-            // Verifica duplicidade de email
             if (usuarioRepository.ObterUsuarioPorEmail(novoProfessor.usuario.email) != null)
                 throw new Exception("Já existe um usuário com este e-mail/matrícula.");
 
@@ -40,8 +40,8 @@ namespace edu_connect_backend.Service
 
         public bool? EditarProfessor(int id, Professor dadosAtualizados)
         {
-            var professorBanco = professorRepository.ObterPorId(id);
-            if (professorBanco == null) return null;
+            var professorBanco = professorRepository.ObterPorId(id)
+                ?? throw new KeyNotFoundException("Professor não encontrado");
 
             professorBanco.matricula = dadosAtualizados.matricula;
             professorBanco.especialidade = dadosAtualizados.especialidade;
@@ -58,8 +58,8 @@ namespace edu_connect_backend.Service
 
         public bool DeletarProfessor(int id)
         {
-            var professor = professorRepository.ObterPorId(id);
-            if (professor == null) return false;
+            var professor = professorRepository.ObterPorId(id)
+                ?? throw new KeyNotFoundException("Professor não encontrado");
 
             professorRepository.Deletar(professor);
             return true;

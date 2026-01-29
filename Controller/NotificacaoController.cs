@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.Service;
+using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace edu_connect_backend.Controller
         {
             try
             {
-                var resultado = notificacaoService.obterNotificacoesDoUsuario();
+                var resultado = notificacaoService.ObterNotificacoesDoUsuario(ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
                 return Ok(resultado);
             }
             catch (Exception ex)
@@ -35,7 +36,7 @@ namespace edu_connect_backend.Controller
         {
             try
             {
-                var contagem = notificacaoService.contarNotificacoesNaoLidas();
+                var contagem = notificacaoService.ContarNotificacoesNaoLidas(ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
                 return Ok(contagem);
             }
             catch (Exception ex)
@@ -47,7 +48,7 @@ namespace edu_connect_backend.Controller
         [HttpPut("{id}/ler")]
         public IActionResult marcarNotificacaoComoLida(int id)
         {
-            var sucesso = notificacaoService.marcarNotificacaoComoLida(id);
+            var sucesso = notificacaoService.MarcarNotificacaoComoLida(id, ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
             if (!sucesso) return NotFound("Notificação não encontrada.");
 
             return NoContent();
@@ -58,7 +59,7 @@ namespace edu_connect_backend.Controller
         {
             try
             {
-                notificacaoService.marcarTodasNotificacoesComoLidas();
+                notificacaoService.MarcarTodasNotificacoesComoLidas(ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
                 return NoContent();
             }
             catch (Exception ex)

@@ -8,27 +8,14 @@ namespace edu_connect_backend.Service
     public class NotificacaoService
     {
         private readonly NotificacaoRepository repository;
-        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public NotificacaoService(NotificacaoRepository repository, IHttpContextAccessor httpContextAccessor)
+        public NotificacaoService(NotificacaoRepository repository)
         {
             this.repository = repository;
-            this.httpContextAccessor = httpContextAccessor;
         }
 
-        private int ObterIdUsuarioLogado()
+        public List<NotificacaoResponseDTO> ObterNotificacoesDoUsuario(int usuarioId)
         {
-            var idClaim = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim != null && int.TryParse(idClaim.Value, out int id))
-            {
-                return id;
-            }
-            throw new Exception("Usuário não identificado no token.");
-        }
-
-        public List<NotificacaoResponseDTO> obterNotificacoesDoUsuario()
-        {
-            var usuarioId = ObterIdUsuarioLogado();
             var notificacoes = repository.ObterPorUsuario(usuarioId);
 
             return notificacoes.Select(n => new NotificacaoResponseDTO
@@ -43,15 +30,13 @@ namespace edu_connect_backend.Service
             }).ToList();
         }
 
-        public int contarNotificacoesNaoLidas()
+        public int ContarNotificacoesNaoLidas(int usuarioId)
         {
-            var usuarioId = ObterIdUsuarioLogado();
             return repository.ContarNaoLidas(usuarioId);
         }
 
-        public bool marcarNotificacaoComoLida(int id)
+        public bool MarcarNotificacaoComoLida(int id, int usuarioId)
         {
-            var usuarioId = ObterIdUsuarioLogado();
             var notificacao = repository.ObterPorId(id, usuarioId);
 
             if (notificacao == null) return false;
@@ -60,9 +45,8 @@ namespace edu_connect_backend.Service
             return true;
         }
 
-        public void marcarTodasNotificacoesComoLidas()
+        public void MarcarTodasNotificacoesComoLidas(int usuarioId)
         {
-            var usuarioId = ObterIdUsuarioLogado();
             repository.MarcarTodasComoLidas(usuarioId);
         }
 

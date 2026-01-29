@@ -28,17 +28,16 @@ namespace edu_connect_backend.Service
                 throw new Exception("Um ou mais alunos informados não existem no banco de dados. Verifique a lista.");
             }
 
-            this.repository.Registrar(frequencias);
+            repository.Registrar(frequencias);
         }
 
         public List<FrequenciaResumoReadModel> ObterResumoFrequencia(int usuarioId)
         {
-            var aluno = context.alunos.FirstOrDefault(a => a.usuarioId == usuarioId);
+            var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId)
+                ?? throw new KeyNotFoundException("Aluno não encontrado.");
 
-            if (aluno == null)
-                throw new Exception("Perfil de aluno não encontrado para este usuário.");
-
-            return repository.ObterResumoPorAluno(aluno.id, aluno.turmaId);
+            return repository.ObterResumoPorAluno(aluno.id, aluno.turmaId)
+                ?? throw new KeyNotFoundException("Resumo não encontrado.");
         }
     }
 }

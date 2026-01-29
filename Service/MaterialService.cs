@@ -19,8 +19,8 @@ namespace edu_connect_backend.Service
 
         public void EditarMaterial(int id, Material dadosAtualizados)
         {
-            var material = materialRepository.ObterMaterialPorId(id);
-            if (material == null) throw new Exception("Material não encontrado.");
+            var material = materialRepository.ObterMaterialPorId(id)
+                ?? throw new KeyNotFoundException("Material não encontrado.");
 
             material.titulo = dadosAtualizados.titulo;
             material.url = dadosAtualizados.url;
@@ -32,8 +32,8 @@ namespace edu_connect_backend.Service
 
         public void DeletarMaterial(int id)
         {
-            var material = materialRepository.ObterMaterialPorId(id);
-            if (material == null) throw new Exception("Material não encontrado.");
+            var material = materialRepository.ObterMaterialPorId(id)
+                ?? throw new KeyNotFoundException("Material não encontrado.");
 
             materialRepository.DeletarMaterial(material);
         }

@@ -14,10 +14,8 @@ namespace edu_connect_backend.Service
 
         public Usuario? Autenticar(string email, string senha)
         {
-            var usuario = usuarioRepository.ObterUsuarioPorEmail(email);
-
-            if (usuario == null)
-                return null;
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(email)
+                ?? throw new KeyNotFoundException("Usuário não encontrado");
 
             if (usuario.senhaHash != senha)
                 return null;
@@ -25,21 +23,10 @@ namespace edu_connect_backend.Service
             return usuario;
         }
 
-        public Usuario? ObterUsuarioPorEmail(string email)
-        {
-            return usuarioRepository.ObterUsuarioPorEmail(email);
-        }
-
-        public Usuario? ObterPorId(int id)
-        {
-            return usuarioRepository.ObterPorId(id);
-        }
-
         public void CadastrarUsuario(Usuario usuario)
         {
-            // Validações básicas de negócio podem vir aqui
             if (usuarioRepository.ObterUsuarioPorEmail(usuario.email) != null)
-                throw new Exception("E-mail já cadastrado.");
+                throw new InvalidOperationException("E-mail já cadastrado.");
 
             usuarioRepository.AdicionarUsuario(usuario);
         }
