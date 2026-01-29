@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("api/dashboard")]
+    [Route("api/dashboards")]
     [Authorize]
     public class DashboardController : ControllerBase
     {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("api/aluno")]
+    [Route("api/alunos")]
     [Authorize]
     public class AlunoController : ControllerBase
     {

@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("disciplina")]
+    [Route("api/disciplinas")]
     [Authorize]
     public class DisciplinaController : ControllerBase
     {

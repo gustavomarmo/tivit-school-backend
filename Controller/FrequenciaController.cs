@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace edu_connect_backend.Controller
 {
     [ApiController]
-    [Route("api/frequencia")]
+    [Route("api/frequencias")]
     [Authorize]
     public class FrequenciaController : ControllerBase
     {
