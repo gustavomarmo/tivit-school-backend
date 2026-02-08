@@ -5,10 +5,6 @@ namespace edu_connect_backend.Mapper
 {
     public class MaterialMapper
     {
-        public MaterialMapper()
-        {
-        }
-
         public Material ToMaterial(MaterialRequestDTO dto)
         {
             return new Material

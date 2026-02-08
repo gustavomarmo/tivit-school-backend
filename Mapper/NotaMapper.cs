@@ -5,10 +5,6 @@ namespace edu_connect_backend.Mapper
 {
     public class NotaMapper
     {
-        public NotaMapper()
-        {
-        }
-
         public Nota ToNota(NotaRequestDTO dto)
         {
             return new Nota

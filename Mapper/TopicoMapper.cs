@@ -5,9 +5,6 @@ namespace edu_connect_backend.Mapper
 {
     public class TopicoMapper
     {
-        public TopicoMapper()
-        {
-        }
 
         public Topico ToTopico(TopicoRequestDTO dto)
         {

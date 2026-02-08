@@ -5,9 +5,6 @@ namespace edu_connect_backend.Mapper
 {
     public class ProfessorMapper
     {
-        public ProfessorMapper()
-        {
-        }
 
         public Professor ToProfessor(ProfessorRequestDTO dto)
         {

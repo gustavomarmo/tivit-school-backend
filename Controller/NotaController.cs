@@ -26,7 +26,7 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("boletim")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult obterBoletim()
+        public IActionResult ObterBoletim()
         {
             string email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             if (email == null) return Unauthorized();
@@ -41,7 +41,7 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("lancamento")]
         [Authorize(Roles = "Professor, Coordenador")]
-        public IActionResult obterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
+        public IActionResult ObterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
         {
             if (turmaId <= 0 || disciplinaId <= 0 || bimestre <= 0)
                 return BadRequest(new { message = "Parâmetros inválidos." });
