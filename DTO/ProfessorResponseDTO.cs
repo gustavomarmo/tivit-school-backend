@@ -7,5 +7,6 @@
         public string email { get; set; }
         public string matricula { get; set; }
         public string especialidade { get; set; }
+        public bool ativo { get; set; }
     }
 }

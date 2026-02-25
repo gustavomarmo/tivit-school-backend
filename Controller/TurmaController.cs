@@ -24,7 +24,7 @@ namespace edu_connect_backend.Controller
         public IActionResult ListarTurmas()
         {
             var turmasModel = turmaService.ListarTurmas();
-            var resultado = turmaMapper.ToTurmaNomesList(turmasModel);
+            var resultado = turmaMapper.ToTurmaResponseDTOList(turmasModel);
             return Ok(resultado);
         }
     }
