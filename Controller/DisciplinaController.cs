@@ -52,7 +52,8 @@ namespace edu_connect_backend.Controller
         [HttpGet("{id}/conteudo")]
         public IActionResult ObterConteudoDisciplina(int id)
         {
-            var (modelo, entregues) = disciplinaService.ObterConteudoDisciplina(id, ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
+            var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
+            var (modelo, entregues) = disciplinaService.ObterConteudoDisciplina(id, email);
 
             if (modelo == null) return NotFound("Disciplina não encontrada.");
 

@@ -65,13 +65,19 @@ namespace edu_connect_backend.Service
             return new List<TurmaDisciplina>();
         }
 
-        public (TurmaDisciplina? disciplina, List<int> entregues) ObterConteudoDisciplina(int disciplinaId, int usuarioId)
+        public (TurmaDisciplina? disciplina, List<int> entregues) ObterConteudoDisciplina(int disciplinaId, string emailUsuario)
         {
             var turmaDisciplina = disciplinaRepository.ObterConteudoCompleto(disciplinaId)
-                ?? throw new KeyNotFoundException("Nenhum contéudo encontrado da disciplina");
+                ?? throw new KeyNotFoundException("Nenhum conteúdo encontrado da disciplina");
 
-            var entregues = atividadeRepository.ObterIdsMateriaisEntregues(disciplinaId, GetAlunoId(usuarioId))
-                ?? throw new KeyNotFoundException("Nenhum material entregue da disciplina.");
+            var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario)
+                ?? throw new KeyNotFoundException("Usuário não encontrado.");
+
+            if (usuario.perfil != PerfilUsuario.Aluno)
+                return (turmaDisciplina, new List<int>());
+
+            var idAluno = GetAlunoId(usuario.id);
+            var entregues = atividadeRepository.ObterIdsMateriaisEntregues(disciplinaId, idAluno);
 
             return (turmaDisciplina, entregues);
         }
