@@ -20,7 +20,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet]
-        [Authorize(Roles = "Coordenador")]
+        [Authorize(Roles = "Professor, Coordenador")]
         public IActionResult ListarTurmas()
         {
             var turmasModel = turmaService.ListarTurmas();
