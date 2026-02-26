@@ -41,12 +41,12 @@ namespace edu_connect_backend.Controller
 
         [HttpGet("lancamento")]
         [Authorize(Roles = "Professor, Coordenador")]
-        public IActionResult ObterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId, [FromQuery] int bimestre)
+        public IActionResult ObterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId)
         {
-            if (turmaId <= 0 || disciplinaId <= 0 || bimestre <= 0)
+            if (turmaId <= 0 || disciplinaId <= 0)
                 return BadRequest(new { message = "Parâmetros inválidos." });
 
-            var listaModel = notaService.obterListaLancamento(turmaId, disciplinaId, bimestre);
+            var listaModel = notaService.obterListaLancamento(turmaId, disciplinaId);
 
             return Ok(notaMapper.ToNotaLancamentoDTOList(listaModel));
         }

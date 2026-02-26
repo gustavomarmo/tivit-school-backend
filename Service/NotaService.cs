@@ -59,9 +59,9 @@ namespace edu_connect_backend.Service
                 ?? throw new KeyNotFoundException("Boletim não encontrado.");
         }
 
-        public List<NotaLancamentoReadModel> obterListaLancamento(int turmaId, int disciplinaId, int bimestre)
+        public List<NotaLancamentoReadModel> obterListaLancamento(int turmaId, int disciplinaId)
         {
-            return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId, bimestre)
+            return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId)
                 ?? throw new KeyNotFoundException("Alunos não encontrados.");
         }
 

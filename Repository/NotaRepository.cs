@@ -20,12 +20,12 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public List<NotaLancamentoReadModel> ObterAlunosParaLancamento(int turmaId, int disciplinaId, int bimestre)
+        public List<NotaLancamentoReadModel> ObterAlunosParaLancamento(int turmaId, int disciplinaId)
         {
             return context.Database
                 .SqlQueryRaw<NotaLancamentoReadModel>(
-                    "EXEC sp_Notas_Lancamento @TurmaId = {0}, @DisciplinaId = {1}, @Bimestre = {2}",
-                    turmaId, disciplinaId, bimestre)
+                    "EXEC sp_Notas_Lancamento @TurmaId = {0}, @DisciplinaId = {1}",
+                    turmaId, disciplinaId)
                 .ToList();
         }
 
