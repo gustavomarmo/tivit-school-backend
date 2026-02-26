@@ -49,12 +49,12 @@ namespace edu_connect_backend.Mapper
                 AlunoId = model.AlunoId,
                 Matricula = model.Matricula,
                 Nome = model.Nome,
-                N1_B1 = model.N1_B1,
-                N2_B1 = model.N2_B1,
-                Ativ_B1 = model.Ativ_B1,
-                N1_B2 = model.N1_B2,
-                N2_B2 = model.N2_B2,
-                Ativ_B2 = model.Ativ_B2,
+                N1b1 = model.N1b1,
+                N2b1 = model.N2b1,
+                Ativb1 = model.Ativb1,
+                N1b2 = model.N1b2,
+                N2b2 = model.N2b2,
+                Ativb2 = model.Ativb2,
             };
         }
 
