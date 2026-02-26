@@ -18,6 +18,7 @@ namespace edu_connect_backend.Mapper
                 email = model.usuario != null ? model.usuario.email : "N/A",
                 matricula = model.matricula,
                 turma = model.turma != null ? model.turma.nome : "Sem Turma",
+                turmaId = model.turma != null ? model.turma.id : 0,
                 ativo = model.usuario != null ? model.usuario.ativo : false
             };
         }

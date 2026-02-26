@@ -7,6 +7,7 @@
         public string email { get; set; }
         public string matricula { get; set; }
         public string? turma { get; set; }
+        public int? turmaId { get; set; }
         public bool ativo { get; set; }
     }
 }
