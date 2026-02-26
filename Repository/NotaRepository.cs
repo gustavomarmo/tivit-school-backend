@@ -10,7 +10,7 @@ namespace edu_connect_backend.Repository
 
         public NotaRepository(ConnectionContext context)
         {
-            context = context;
+            this.context = context;
         }
 
         public List<BoletimReadModel> ObterBoletimPorAluno(int alunoId)

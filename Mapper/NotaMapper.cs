@@ -46,6 +46,7 @@ namespace edu_connect_backend.Mapper
         {
             return new NotaLancamentoDTO
             {
+                AlunoId = model.AlunoId,
                 Matricula = model.Matricula,
                 Nome = model.Nome,
                 N1 = model.N1,

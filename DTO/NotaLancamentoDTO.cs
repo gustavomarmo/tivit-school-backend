@@ -2,6 +2,7 @@
 {
     public class NotaLancamentoDTO
     {
+        public int AlunoId { get; set; }
         public string Matricula { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
         public double? N1 { get; set; }
