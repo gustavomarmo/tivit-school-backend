@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Remove="Controller\AcademicoController.cs" />
     <Compile Remove="DTO\EntregarAtividadeDTO.cs" />
+    <Compile Remove="DTO\ExtracurricularRequestDTO.cs" />
     <Compile Remove="Model\Notas.cs" />
   </ItemGroup>
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edu_connect_backend.Context;
 
@@ -11,9 +12,11 @@ using edu_connect_backend.Context;
 namespace edu_connect_backend.Migrations
 {
     [DbContext(typeof(ConnectionContext))]
-    partial class ConnectionContextModelSnapshot : ModelSnapshot
+    [Migration("20260305033952_AdicionandoModelsMatricula")]
+    partial class AdicionandoModelsMatricula
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,6 +326,29 @@ namespace edu_connect_backend.Migrations
                     b.ToTable("evento");
                 });
 
+            modelBuilder.Entity("edu_connect_backend.Model.Extracurricular", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("descricao")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("descricao");
+
+                    b.Property<string>("nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("nome");
+
+                    b.HasKey("id");
+
+                    b.ToTable("extracurricular");
+                });
+
             modelBuilder.Entity("edu_connect_backend.Model.Frequencia", b =>
                 {
                     b.Property<int>("id")
@@ -630,9 +656,15 @@ namespace edu_connect_backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("turma_disciplina_id");
 
+                    b.Property<int?>("turmaExtracurricularId")
+                        .HasColumnType("int")
+                        .HasColumnName("turma_extracurricular_id");
+
                     b.HasKey("id");
 
                     b.HasIndex("turmaDisciplinaId");
+
+                    b.HasIndex("turmaExtracurricularId");
 
                     b.ToTable("topico");
                 });
@@ -690,6 +722,38 @@ namespace edu_connect_backend.Migrations
                     b.HasIndex("turmaId");
 
                     b.ToTable("turma_disciplina");
+                });
+
+            modelBuilder.Entity("edu_connect_backend.Model.TurmaExtracurricular", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("extracurricularId")
+                        .HasColumnType("int")
+                        .HasColumnName("extracurricular_id");
+
+                    b.Property<int>("professorId")
+                        .HasColumnType("int")
+                        .HasColumnName("professor_id");
+
+                    b.Property<int>("turmaId")
+                        .HasColumnType("int")
+                        .HasColumnName("turma_id");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("extracurricularId");
+
+                    b.HasIndex("professorId");
+
+                    b.HasIndex("turmaId");
+
+                    b.ToTable("turma_extracurricular");
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.Usuario", b =>
@@ -891,7 +955,13 @@ namespace edu_connect_backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("edu_connect_backend.Model.TurmaExtracurricular", "turmaExtracurricular")
+                        .WithMany("topicos")
+                        .HasForeignKey("turmaExtracurricularId");
+
                     b.Navigation("turmaDisciplina");
+
+                    b.Navigation("turmaExtracurricular");
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.TurmaDisciplina", b =>
@@ -921,6 +991,33 @@ namespace edu_connect_backend.Migrations
                     b.Navigation("turma");
                 });
 
+            modelBuilder.Entity("edu_connect_backend.Model.TurmaExtracurricular", b =>
+                {
+                    b.HasOne("edu_connect_backend.Model.Extracurricular", "extracurricular")
+                        .WithMany()
+                        .HasForeignKey("extracurricularId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("edu_connect_backend.Model.Professor", "professor")
+                        .WithMany()
+                        .HasForeignKey("professorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("edu_connect_backend.Model.Turma", "turma")
+                        .WithMany()
+                        .HasForeignKey("turmaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("extracurricular");
+
+                    b.Navigation("professor");
+
+                    b.Navigation("turma");
+                });
+
             modelBuilder.Entity("edu_connect_backend.Model.SolicitacaoMatricula", b =>
                 {
                     b.Navigation("documentos");
@@ -932,6 +1029,11 @@ namespace edu_connect_backend.Migrations
                 });
 
             modelBuilder.Entity("edu_connect_backend.Model.TurmaDisciplina", b =>
+                {
+                    b.Navigation("topicos");
+                });
+
+            modelBuilder.Entity("edu_connect_backend.Model.TurmaExtracurricular", b =>
                 {
                     b.Navigation("topicos");
                 });
