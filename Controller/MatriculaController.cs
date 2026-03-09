@@ -1,9 +1,9 @@
-﻿using edu_connect_backend.Context;
-using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO;
+using edu_connect_backend.Mapper;
 using edu_connect_backend.Model;
 using edu_connect_backend.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace edu_connect_backend.Controller
 {
@@ -11,12 +11,17 @@ namespace edu_connect_backend.Controller
     [Route("api/matriculas")]
     public class MatriculaController : ControllerBase
     {
-        private readonly ConnectionContext context;
+        private readonly MatriculaService matriculaService;
+        private readonly MatriculaMapper matriculaMapper;
         private readonly EmailService emailService;
 
-        public MatriculaController(ConnectionContext context, EmailService emailService)
+        public MatriculaController(
+            MatriculaService matriculaService,
+            MatriculaMapper matriculaMapper,
+            EmailService emailService)
         {
-            this.context = context;
+            this.matriculaService = matriculaService;
+            this.matriculaMapper = matriculaMapper;
             this.emailService = emailService;
         }
 
@@ -26,124 +31,77 @@ namespace edu_connect_backend.Controller
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var solicitacao = await context.solicitacoesMatricula
-                .FirstOrDefaultAsync(x => x.cpf == dto.Cpf || x.email == dto.Email);
+            var solicitacaoExistente = await matriculaService.ObterPorEmailOuCpf(dto.Email, dto.Cpf);
+
+            if (solicitacaoExistente?.status == StatusMatricula.Finalizado)
+                return BadRequest(new { mensagem = "Este CPF/E-mail já consta como matriculado no sistema. Faça login na área do aluno." });
 
             string otp = new Random().Next(100000, 999999).ToString();
-            string mensagemRetorno = "Solicitação iniciada! O código foi enviado para seu e-mail.";
-            bool ehReenvio = false;
+            bool ehReenvio = solicitacaoExistente != null;
 
-            if (solicitacao != null)
-            {
-                if (solicitacao.status == StatusMatricula.Finalizado)
-                {
-                    return BadRequest("Este CPF/E-mail já consta como matriculado no sistema. Faça login na área do aluno.");
-                }
-
-                solicitacao.nomeCompleto = dto.NomeCompleto;
-                solicitacao.email = dto.Email;
-                solicitacao.telefone = dto.Telefone;
-                solicitacao.dataNascimento = dto.DataNascimento;
-
-                solicitacao.codigoOtp = otp;
-                solicitacao.validadeOtp = DateTime.Now.AddMinutes(30);
-
-                context.solicitacoesMatricula.Update(solicitacao);
-
-                mensagemRetorno = "Identificamos um cadastro em andamento. Um NOVO código foi enviado para seu e-mail.";
-                ehReenvio = true;
-            }
+            if (ehReenvio)
+                await matriculaService.IniciarOuAtualizarSolicitacao(solicitacaoExistente!, matriculaMapper.ToSolicitacaoMatricula(dto), otp);
             else
-            {
-                solicitacao = new SolicitacaoMatricula
-                {
-                    nomeCompleto = dto.NomeCompleto,
-                    cpf = dto.Cpf,
-                    email = dto.Email,
-                    telefone = dto.Telefone,
-                    dataNascimento = dto.DataNascimento,
-                    codigoOtp = otp,
-                    validadeOtp = DateTime.Now.AddMinutes(30),
-                    status = StatusMatricula.Iniciado,
-                    dataSolicitacao = DateTime.Now
-                };
-
-                context.solicitacoesMatricula.Add(solicitacao);
-            }
-
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao salvar no banco: {ex.Message}");
-            }
+                await matriculaService.CriarSolicitacao(matriculaMapper.ToSolicitacaoMatricula(dto), otp);
 
             try
             {
                 string assunto = ehReenvio ? "Edu Connect - Novo Código de Verificação" : "Edu Connect - Código de Verificação";
-                string corpo = $@"
-                    Olá, {dto.NomeCompleto}!
-                    
-                    {(ehReenvio ? "Você solicitou um novo código de acesso para matrícula no Edu Connect." : "Recebemos sua solicitação de matrícula.")}
-                    
-                    Seu código de verificação é: {otp}
-                    
-                    Utilize este código para continuar. Validade: 30 minutos.
-                ";
+                string corpo = $@"Olá, {dto.NomeCompleto}!
+
+{(ehReenvio ? "Você solicitou um novo código de acesso para matrícula no Edu Connect." : "Recebemos sua solicitação de matrícula.")}
+
+Seu código de verificação é: {otp}
+
+Utilize este código para continuar. Validade: 30 minutos.";
 
                 await emailService.SendEmailAsync(dto.Email, dto.NomeCompleto, assunto, corpo);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Solicitação salva, mas erro ao enviar e-mail: {ex.Message}");
+                return StatusCode(500, new { mensagem = $"Solicitação salva, mas erro ao enviar e-mail: {ex.Message}" });
             }
 
-            return Ok(new { mensagem = mensagemRetorno, idSolicitacao = solicitacao.id, reenvio = ehReenvio });
+            var solicitacao = ehReenvio
+                ? solicitacaoExistente!
+                : await matriculaService.ObterPorEmailOuCpf(dto.Email, dto.Cpf);
+
+            return Ok(new
+            {
+                mensagem = ehReenvio
+                    ? "Identificamos um cadastro em andamento. Um NOVO código foi enviado para seu e-mail."
+                    : "Solicitação iniciada! O código foi enviado para seu e-mail.",
+                idSolicitacao = solicitacao!.id,
+                reenvio = ehReenvio
+            });
         }
 
         [HttpPost("validar-otp")]
         public async Task<IActionResult> ValidarOtp([FromBody] ValidarOtpDTO dto)
         {
-            var solicitacao = await context.solicitacoesMatricula
-                .FirstOrDefaultAsync(x => x.email == dto.Email && x.codigoOtp == dto.Codigo);
+            var solicitacao = await matriculaService.ObterPorEmailEOtp(dto.Email, dto.Codigo);
 
             if (solicitacao == null)
-                return BadRequest("E-mail ou código inválidos.");
+                return BadRequest(new { mensagem = "E-mail ou código inválidos." });
 
             if (solicitacao.validadeOtp < DateTime.Now)
-                return BadRequest("O código expirou. Solicite um novo.");
+                return BadRequest(new { mensagem = "O código expirou. Solicite um novo." });
 
             if (solicitacao.status == StatusMatricula.Iniciado)
-            {
-                solicitacao.status = StatusMatricula.AguardandoDados;
-                await context.SaveChangesAsync();
-            }
+                await matriculaService.AtualizarStatus(solicitacao, StatusMatricula.AguardandoDados);
 
-            return Ok(new
-            {
-                mensagem = "Código validado com sucesso!",
-                idSolicitacao = solicitacao.id,
-                nome = solicitacao.nomeCompleto
-            });
+            return Ok(matriculaMapper.ToMatriculaResponseDTO(solicitacao));
         }
 
         [HttpPut("dados-complementares")]
         public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2DTO dto)
         {
-            var solicitacao = await context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
+            var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId);
 
             if (solicitacao == null)
-                return NotFound("Solicitação não encontrada.");
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
 
-            solicitacao.enderecoCompleto = dto.EnderecoCompleto;
-            solicitacao.rg = dto.Rg;
-            solicitacao.nomeResponsavel = dto.NomeResponsavel;
-            solicitacao.contatoResponsavel = dto.ContatoResponsavel;
-            solicitacao.escolaridadeAnterior = dto.EscolaridadeAnterior;
-
-            await context.SaveChangesAsync();
+            await matriculaService.SalvarDadosComplementares(solicitacao, matriculaMapper.ToDadosComplementares(dto));
 
             return Ok(new { mensagem = "Dados salvos com sucesso!" });
         }
@@ -155,75 +113,57 @@ namespace edu_connect_backend.Controller
             IFormFile arquivo)
         {
             if (arquivo == null || arquivo.Length == 0)
-                return BadRequest("Arquivo inválido.");
+                return BadRequest(new { mensagem = "Arquivo inválido." });
 
-            var solicitacao = await context.solicitacoesMatricula.FindAsync(solicitacaoId);
-            if (solicitacao == null) return NotFound("Solicitação não encontrada.");
+            var solicitacao = await matriculaService.ObterPorId(solicitacaoId);
+            if (solicitacao == null)
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
 
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "matriculas", solicitacaoId.ToString());
-
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
-            var extensao = Path.GetExtension(arquivo.FileName);
-            var nomeArquivo = $"{tipo}_{Guid.NewGuid()}{extensao}";
+            var nomeArquivo = $"{tipo}_{Guid.NewGuid()}{Path.GetExtension(arquivo.FileName)}";
             var caminhoCompleto = Path.Combine(uploadsFolder, nomeArquivo);
 
             using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
-            {
                 await arquivo.CopyToAsync(stream);
-            }
 
-            var documento = new DocumentoMatricula
-            {
-                solicitacaoMatriculaId = solicitacaoId,
-                tipo = tipo,
-                caminhoArquivo = $"uploads/matriculas/{solicitacaoId}/{nomeArquivo}",
-                nomeOriginalArquivo = arquivo.FileName,
-                validado = false
-            };
+            var documento = matriculaMapper.ToDocumentoMatricula(
+                solicitacaoId,
+                tipo,
+                $"uploads/matriculas/{solicitacaoId}/{nomeArquivo}",
+                arquivo.FileName);
 
-            context.documentosMatricula.Add(documento);
-            await context.SaveChangesAsync();
+            var documentoSalvo = await matriculaService.SalvarDocumento(documento);
 
-            return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documento.id });
+            return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documentoSalvo.id });
         }
 
         [HttpGet("vagas-disponiveis")]
         public async Task<IActionResult> ObterVagas()
         {
-            var configuracoes = await context.configuracoesVaga
-                .Where(c => c.anoLetivo == 2026)
-                .ToListAsync();
+            var configuracoes = await matriculaService.ObterVagasDoAnoAtual();
 
             if (!configuracoes.Any())
+                return NotFound(new { mensagem = "Nenhuma vaga configurada para o ano letivo atual." });
+
+            var resultado = new List<object>();
+
+            foreach (var config in configuracoes)
             {
-                return NotFound("Nenhuma vaga configurada para o ano letivo atual.");
-            }
+                int ocupadas = await matriculaService.ContarOcupacoes(config.serie, config.turno);
+                int vagasRestantes = config.vagasTotais - ocupadas;
 
-            var ocupacoes = await context.solicitacoesMatricula
-                .Where(s => s.status != StatusMatricula.Rejeitado && s.serieDesejada != null)
-                .Select(s => new { s.serieDesejada, s.turnoDesejado })
-                .ToListAsync();
-
-            var resultado = configuracoes.Select(config =>
-            {
-                int ocupadas = ocupacoes.Count(s =>
-                    s.serieDesejada == config.serie &&
-                    s.turnoDesejado == config.turno);
-
-                return new
+                resultado.Add(new
                 {
-                    opt = new
-                    {
-                        serie = config.serie,
-                        turno = config.turno.ToString(),
-                        valor = config.valorMensalidade
-                    },
-                    vagasRestantes = config.vagasTotais - ocupadas,
-                    disponivel = (config.vagasTotais - ocupadas) > 0
-                };
-            });
+                    serie = config.serie,
+                    turno = config.turno.ToString(),
+                    valor = config.valorMensalidade,
+                    vagasRestantes,
+                    disponivel = vagasRestantes > 0
+                });
+            }
 
             return Ok(resultado);
         }
@@ -231,27 +171,145 @@ namespace edu_connect_backend.Controller
         [HttpPut("selecionar-vaga")]
         public async Task<IActionResult> SelecionarVaga([FromBody] SelecaoVagaDTO dto)
         {
-            var solicitacao = await context.solicitacoesMatricula.FindAsync(dto.SolicitacaoId);
+            var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId);
+            if (solicitacao == null)
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
 
-            if (solicitacao == null) return NotFound("Solicitação não encontrada.");
-
-            decimal valorCalculado = 0;
-            if (dto.Serie.Contains("1º")) valorCalculado = dto.Turno == "Manha" ? 1200 : 1100;
-            else if (dto.Serie.Contains("2º")) valorCalculado = dto.Turno == "Manha" ? 1250 : 950;
-            else if (dto.Serie.Contains("3º")) valorCalculado = 1300;
-
-            if (!Enum.TryParse<Turno>(dto.Turno, true, out var turnoEnum))
+            SolicitacaoMatricula dadosVaga;
+            try
             {
-                return BadRequest("Turno inválido.");
+                dadosVaga = matriculaMapper.ToSelecaoVaga(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
             }
 
-            solicitacao.serieDesejada = dto.Serie;
-            solicitacao.turnoDesejado = turnoEnum;
-            solicitacao.valorMensalidade = valorCalculado;
+            var configuracoes = await matriculaService.ObterVagasDoAnoAtual();
+            var config = configuracoes.FirstOrDefault(c => c.serie == dadosVaga.serieDesejada && c.turno == dadosVaga.turnoDesejado);
 
-            await context.SaveChangesAsync();
+            if (config == null)
+                return NotFound(new { mensagem = "Configuração de vaga não encontrada." });
 
-            return Ok(new { mensagem = "Vaga selecionada com sucesso!", valor = valorCalculado });
+            int ocupadas = await matriculaService.ContarOcupacoes(dadosVaga.serieDesejada!, dadosVaga.turnoDesejado!.Value, dto.SolicitacaoId);
+            if (ocupadas >= config.vagasTotais)
+                return BadRequest(new { mensagem = "Não há vagas disponíveis para esta série/turno." });
+
+            await matriculaService.SelecionarVaga(solicitacao, dadosVaga, config.valorMensalidade);
+
+            return Ok(new { mensagem = "Vaga selecionada com sucesso!", valor = config.valorMensalidade });
+        }
+
+        [HttpPut("aceitar-termos")]
+        public async Task<IActionResult> AceitarTermos([FromBody] AceitarTermosDTO dto)
+        {
+            if (!dto.TermosAceitos)
+                return BadRequest(new { mensagem = "Os termos precisam ser aceitos para continuar." });
+
+            var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId);
+            if (solicitacao == null)
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
+
+            await matriculaService.AtualizarStatus(solicitacao, StatusMatricula.AguardandoAnaliseDocs);
+
+            return Ok(new { mensagem = "Termos aceitos. Aguardando análise da coordenação." });
+        }
+
+        [HttpPost("comprovante-pix")]
+        public async Task<IActionResult> UploadComprovantePix(
+            [FromForm] int solicitacaoId,
+            IFormFile arquivo)
+        {
+            if (arquivo == null || arquivo.Length == 0)
+                return BadRequest(new { mensagem = "Arquivo inválido." });
+
+            var solicitacao = await matriculaService.ObterPorId(solicitacaoId);
+            if (solicitacao == null)
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
+
+            if (solicitacao.status != StatusMatricula.AguardandoPagamento)
+                return BadRequest(new { mensagem = "Solicitação não está aguardando pagamento." });
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "matriculas", solicitacaoId.ToString());
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var nomeArquivo = $"pix_{Guid.NewGuid()}{Path.GetExtension(arquivo.FileName)}";
+            var caminhoCompleto = Path.Combine(uploadsFolder, nomeArquivo);
+
+            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                await arquivo.CopyToAsync(stream);
+
+            var documento = matriculaMapper.ToDocumentoMatricula(
+                solicitacaoId,
+                TipoDocumentoMatricula.ComprovantePagamento,
+                $"uploads/matriculas/{solicitacaoId}/{nomeArquivo}",
+                arquivo.FileName);
+
+            await matriculaService.SalvarDocumento(documento);
+            await matriculaService.AtualizarStatus(solicitacao, StatusMatricula.AguardandoAnaliseDocs);
+
+            return Ok(new { mensagem = "Comprovante enviado! Aguardando confirmação do financeiro." });
+        }
+
+        [HttpGet("pendentes")]
+        [Authorize(Roles = "Coordenador,Admin")]
+        public async Task<IActionResult> ListarPendentes()
+        {
+            var pendentes = await matriculaService.ListarPendentes();
+            return Ok(matriculaMapper.ToMatriculaPendenteResponseDTOList(pendentes));
+        }
+
+        [HttpPut("{id}/avaliar")]
+        [Authorize(Roles = "Coordenador,Admin")]
+        public async Task<IActionResult> AvaliarMatricula(int id, [FromBody] AvaliacaoMatriculaDTO dto)
+        {
+            var solicitacao = await matriculaService.ObterPorIdComDocumentos(id);
+            if (solicitacao == null)
+                return NotFound(new { mensagem = "Solicitação não encontrada." });
+
+            if (dto.Aprovado)
+            {
+                if (solicitacao.status == StatusMatricula.AguardandoAnaliseDocs)
+                {
+                    await matriculaService.AtualizarStatus(solicitacao, StatusMatricula.AguardandoPagamento);
+
+                    await emailService.SendEmailAsync(
+                        solicitacao.email,
+                        solicitacao.nomeCompleto,
+                        "Edu Connect - Documentação Aprovada!",
+                        $"Olá {solicitacao.nomeCompleto}, sua documentação foi aprovada!\n\n" +
+                        $"Realize o pagamento da 1ª mensalidade no valor de R$ {solicitacao.valorMensalidade:F2} via PIX.");
+
+                    return Ok(new { mensagem = "Documentação aprovada. Candidato notificado para pagamento." });
+                }
+
+                if (solicitacao.status == StatusMatricula.AguardandoPagamento)
+                {
+                    await matriculaService.FinalizarMatricula(solicitacao);
+
+                    await emailService.SendEmailAsync(
+                        solicitacao.email,
+                        solicitacao.nomeCompleto,
+                        "Edu Connect - Matrícula Concluída! 🎉",
+                        $"Parabéns, {solicitacao.nomeCompleto}! Sua matrícula foi concluída. Seu acesso ao sistema já está disponível.");
+
+                    return Ok(new { mensagem = "Matrícula finalizada. Aluno criado no sistema." });
+                }
+
+                return BadRequest(new { mensagem = $"Status '{solicitacao.status}' não permite aprovação." });
+            }
+
+            await matriculaService.AtualizarStatus(solicitacao, StatusMatricula.AguardandoDados);
+
+            await emailService.SendEmailAsync(
+                solicitacao.email,
+                solicitacao.nomeCompleto,
+                "Edu Connect - Documentação Devolvida",
+                $"Olá {solicitacao.nomeCompleto},\n\nSua documentação foi devolvida para correção.\n" +
+                $"Motivo: {dto.Observacao ?? "Documentação inválida ou incompleta."}");
+
+            return Ok(new { mensagem = "Solicitação devolvida ao candidato." });
         }
     }
 }
