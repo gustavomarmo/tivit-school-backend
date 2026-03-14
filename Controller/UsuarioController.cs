@@ -47,10 +47,10 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("esqueci-senha")]
-        public async Task<IActionResult> EsqueciSenha([FromBody] ResetarSenhaRequestDTO dto)
+        public async Task<IActionResult> EsqueciSenha(EsqueciSenhaRequestDTO dto)
         {
             await usuarioService.SolicitarResetSenhaAsync(dto.Email);
-
+            
             return Ok(new { message = "Se o e-mail estiver cadastrado em nossa base de dados, um código de verificação foi enviado." });
         }
 

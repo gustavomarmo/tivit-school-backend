@@ -15,6 +15,7 @@ namespace edu_connect_backend.Mapper
                 usuario = new Usuario
                 {
                     nome = dto.nome,
+                    email = dto.email,
                     ativo = dto.ativo
                 }
             };

@@ -9,9 +9,8 @@ namespace edu_connect_backend.DTO
 
         [Required(ErrorMessage = "A matrícula é obrigatória")]
         public string matricula { get; set; }
-
+        public string email { get; set; }
         public string especialidade { get; set; }
-
         public bool ativo { get; set; } = true;
     }
 }

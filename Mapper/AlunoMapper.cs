@@ -1,5 +1,6 @@
 ﻿using edu_connect_backend.DTO;
 using edu_connect_backend.Model;
+using edu_connect_backend.Service;
 
 namespace edu_connect_backend.Mapper
 {
@@ -37,6 +38,7 @@ namespace edu_connect_backend.Mapper
                 usuario = new Usuario
                 {
                     nome = dto.nome,
+                    email = dto.email,
                     ativo = dto.ativo
                 }
             };
