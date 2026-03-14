@@ -1,5 +1,6 @@
 ﻿using edu_connect_backend.Context;
 using edu_connect_backend.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace edu_connect_backend.Repository
 {
@@ -30,6 +31,12 @@ namespace edu_connect_backend.Repository
         public void AdicionarUsuario(Usuario usuario)
         {
             context.usuarios.Add(usuario);
+            context.SaveChanges();
+        }
+
+        public void AtualizarUsuario(Usuario usuario)
+        {
+            context.usuarios.Update(usuario);
             context.SaveChanges();
         }
     }

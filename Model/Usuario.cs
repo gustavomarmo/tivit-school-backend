@@ -17,7 +17,7 @@ namespace edu_connect_backend.Model
         public bool ativo { get; set; } = true;
         public DateTime dataCadastro;
 
-        // public Aluno? dadosAluno { get; set; }
-        // public Professor? dadosProfessor { get; set; }
+        public string? codigoOtp { get; set; }
+        public DateTime? validadeOtp { get; set; }
     }
 }

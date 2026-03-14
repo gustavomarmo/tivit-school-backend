@@ -45,5 +45,35 @@ namespace edu_connect_backend.Controller
             usuarioService.CadastrarUsuario(usuario);
             return Ok(new { message = "Usuário cadastrado com sucesso!" });
         }
+
+        [HttpPost("esqueci-senha")]
+        public async Task<IActionResult> EsqueciSenha([FromBody] ResetarSenhaRequestDTO dto)
+        {
+            await usuarioService.SolicitarResetSenhaAsync(dto.Email);
+
+            return Ok(new { message = "Se o e-mail estiver cadastrado em nossa base de dados, um código de verificação foi enviado." });
+        }
+
+        [HttpPost("validar-otp")]
+        public IActionResult ValidarOtp([FromBody] ValidarOtpDTO dto)
+        {
+            var isValido = usuarioService.ValidarOtpSenha(dto.Email, dto.Codigo);
+
+            if (!isValido)
+                return BadRequest(new { message = "Código inválido ou expirado." });
+
+            return Ok(new { message = "Código validado com sucesso!" });
+        }
+
+        [HttpPost("resetar-senha")]
+        public IActionResult ResetarSenha([FromBody] ResetarSenhaRequestDTO dto)
+        {
+            var isSucesso = usuarioService.ResetarSenha(dto.Email, dto.Codigo, dto.NovaSenha);
+
+            if (!isSucesso)
+                return BadRequest(new { message = "Não foi possível redefinir a senha. Código inválido ou expirado." });
+
+            return Ok(new { message = "Senha redefinida com sucesso!" });
+        }
     }
 }
