@@ -47,7 +47,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("esqueci-senha")]
-        public async Task<IActionResult> EsqueciSenha(EsqueciSenhaRequestDTO dto)
+        public async Task<IActionResult> EsqueciSenha([FromBody] EsqueciSenhaRequestDTO dto)
         {
             await usuarioService.SolicitarResetSenhaAsync(dto.Email);
             

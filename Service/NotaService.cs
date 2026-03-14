@@ -45,6 +45,21 @@ namespace edu_connect_backend.Service
 
                 notaRepository.Salvar(nota);
             }
+
+            var aluno = context.alunos.FirstOrDefault(a => a.id == nota.alunoId);
+            if (aluno != null)
+            {
+                var notificacao = new Notificacao
+                {
+                    usuarioId = aluno.usuarioId,
+                    titulo = "Nova Nota Lançada",
+                    mensagem = $"A sua nota de {nota.tipo} ({nota.bimestre}º Bimestre) de foi publicada/atualizada.",
+                    dataCriacao = DateTime.Now,
+                    lida = false
+                };
+                context.Notificacoes.Add(notificacao);
+                context.SaveChanges();
+            }
         }
 
         public List<BoletimReadModel>? obterBoletim(string emailUsuario)
