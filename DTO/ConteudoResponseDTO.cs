@@ -3,6 +3,8 @@
     public class DisciplinaResumoDTO
     {
         public int id { get; set; }
+        public int disciplinaId { get; set; }
+        public int turmaId { get; set; }
         public string nome { get; set; }
         public string turma { get; set; }
         public string professor { get; set; }

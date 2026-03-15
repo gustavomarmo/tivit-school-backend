@@ -33,6 +33,8 @@ namespace edu_connect_backend.Mapper
             return new DisciplinaResumoDTO
             {
                 id = model.id,
+                disciplinaId = model.disciplinaId,
+                turmaId = model.turmaId,
                 nome = model.disciplina != null ? model.disciplina.nome : "N/A",
                 turma = model.turma != null ? model.turma.nome : "N/A",
                 professor = model.professor != null && model.professor.usuario != null
