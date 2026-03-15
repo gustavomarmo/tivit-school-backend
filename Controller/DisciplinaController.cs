@@ -59,5 +59,13 @@ namespace edu_connect_backend.Controller
 
             return Ok(disciplinaMapper.ToDisciplinaConteudoDTO(modelo, entregues));
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Coordenador,Admin")]
+        public IActionResult ListarTodasDisciplinas()
+        {
+            var disciplinas = disciplinaService.ListarTodasDisciplinasGenericas();
+            return Ok(disciplinas);
+        }
     }
 }

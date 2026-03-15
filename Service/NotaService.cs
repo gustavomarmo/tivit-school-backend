@@ -28,8 +28,7 @@ namespace edu_connect_backend.Service
             var vinculo = notaRepository.ObterTurmaDisciplina(nota.TempTurmaId, nota.TempDisciplinaId)
                 ?? throw new KeyNotFoundException("Vínculo não encontrado.");
 
-            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo)
-                ?? throw new KeyNotFoundException("Nota específica não encontrada.");
+            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo);
 
             if (notaExistente != null)
             {
@@ -52,6 +51,7 @@ namespace edu_connect_backend.Service
                 var notificacao = new Notificacao
                 {
                     usuarioId = aluno.usuarioId,
+                    tipo = "success",
                     titulo = "Nova Nota Lançada",
                     mensagem = $"A sua nota de {nota.tipo} ({nota.bimestre}º Bimestre) de foi publicada/atualizada.",
                     dataCriacao = DateTime.Now,

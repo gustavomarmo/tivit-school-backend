@@ -20,6 +20,6 @@
         public string turma { get; set; }
         public string disciplina { get; set; }
         public decimal media { get; set; }
-        public string foto { get; set; }
+        public string? foto { get; set; }
     }
 }

@@ -55,5 +55,10 @@ namespace edu_connect_backend.Repository
                 .ThenInclude(t => t.materiais)
                 .FirstOrDefault(td => td.id == turmaDisciplinaId);
         }
+
+        public List<Disciplina> ListarTodasDisciplinas()
+        {
+            return context.Disciplinas.OrderBy(d => d.nome).ToList();
+        }
     }
 }

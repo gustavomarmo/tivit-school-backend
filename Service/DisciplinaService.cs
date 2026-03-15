@@ -65,6 +65,11 @@ namespace edu_connect_backend.Service
             return new List<TurmaDisciplina>();
         }
 
+        public List<Disciplina> ListarTodasDisciplinasGenericas()
+        {
+            return disciplinaRepository.ListarTodasDisciplinas();
+        }
+
         public (TurmaDisciplina? disciplina, List<int> entregues) ObterConteudoDisciplina(int disciplinaId, string emailUsuario)
         {
             var turmaDisciplina = disciplinaRepository.ObterConteudoCompleto(disciplinaId)
