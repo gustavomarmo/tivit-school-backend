@@ -1,16 +1,21 @@
-﻿using edu_connect_backend.Model;
+﻿using edu_connect_backend.Configuration;
+using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
+using Microsoft.Extensions.Options;
 using System.Data;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace edu_connect_backend.Service
 {
     public class ProfessorService
     {
+        private readonly EduConnectVariables config;
         private readonly ProfessorRepository professorRepository;
         private readonly UsuarioRepository usuarioRepository;
 
-        public ProfessorService(ProfessorRepository professorRepository, UsuarioRepository usuarioRepository)
+        public ProfessorService(IOptions<EduConnectVariables> config, ProfessorRepository professorRepository, UsuarioRepository usuarioRepository)
         {
+            this.config = config.Value;
             this.professorRepository = professorRepository;
             this.usuarioRepository = usuarioRepository;
         }
@@ -30,7 +35,7 @@ namespace edu_connect_backend.Service
             if (usuarioRepository.ObterUsuarioPorEmail(novoProfessor.usuario.email) != null)
                 throw new Exception("Já existe um usuário com este e-mail/matrícula.");
 
-            novoProfessor.usuario.senhaHash = "Mudar123!";
+            novoProfessor.usuario.senhaHash = BCrypt.Net.BCrypt.HashPassword(config.SENHA_PADRAO);
             novoProfessor.usuario.cpf = "";
             novoProfessor.usuario.perfil = PerfilUsuario.Professor;
             novoProfessor.usuario.dataCadastro = DateTime.Now;

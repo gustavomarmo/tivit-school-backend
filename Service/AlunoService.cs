@@ -28,7 +28,7 @@ namespace edu_connect_backend.Service
                 novoAluno.usuario = new Usuario();
 
             novoAluno.usuario.email = novoAluno.matricula + config.DOMINIO_EMAIL_ALUNO;
-            novoAluno.usuario.senhaHash = config.SENHA_PADRAO;
+            novoAluno.usuario.senhaHash = BCrypt.Net.BCrypt.HashPassword(config.SENHA_PADRAO);
             novoAluno.usuario.cpf = "";
             novoAluno.usuario.perfil = PerfilUsuario.Aluno;
             novoAluno.usuario.dataCadastro = DateTime.Now;

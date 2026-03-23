@@ -138,7 +138,7 @@ namespace edu_connect_backend.Service
             {
                 nome = solicitacao.nomeCompleto,
                 email = matricula + (config.DOMINIO_EMAIL_ALUNO ?? "@aluno.educonnect.com"),
-                senhaHash = solicitacao.cpf.Replace(".", "").Replace("-", "").Substring(0, 6),
+                senhaHash = BCrypt.Net.BCrypt.HashPassword(solicitacao.cpf.Replace(".", "").Replace("-", "").Substring(0, 6)),
                 cpf = solicitacao.cpf,
                 perfil = PerfilUsuario.Aluno,
                 ativo = true,

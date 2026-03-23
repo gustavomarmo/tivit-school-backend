@@ -19,7 +19,7 @@ namespace edu_connect_backend.Service
             var usuario = usuarioRepository.ObterUsuarioPorEmail(email)
                 ?? throw new KeyNotFoundException("Usuário não encontrado");
 
-            if (usuario.senhaHash != senha)
+            if (!BCrypt.Net.BCrypt.Verify(senha, usuario.senhaHash))
                 return null;
 
             return usuario;
@@ -72,7 +72,7 @@ namespace edu_connect_backend.Service
             if (usuario == null || usuario.codigoOtp != codigo || usuario.validadeOtp < DateTime.Now)
                 return false;
 
-            usuario.senhaHash = novaSenha;
+            usuario.senhaHash = BCrypt.Net.BCrypt.HashPassword(novaSenha);
             usuario.codigoOtp = null;
             usuario.validadeOtp = null;
 
