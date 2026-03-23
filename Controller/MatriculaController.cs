@@ -108,37 +108,27 @@ Utilize este código para continuar. Validade: 30 minutos.";
 
         [HttpPost("upload")]
         public async Task<IActionResult> UploadDocumento(
-            [FromForm] int solicitacaoId,
-            [FromForm] TipoDocumentoMatricula tipo,
-            IFormFile arquivo)
-        {
-            if (arquivo == null || arquivo.Length == 0)
-                return BadRequest(new { mensagem = "Arquivo inválido." });
+        [FromForm] int solicitacaoId,
+        [FromForm] TipoDocumentoMatricula tipo,
+        IFormFile arquivo,
+        [FromServices] BlobService blobService)
+            {
+                if (arquivo == null || arquivo.Length == 0)
+                    return BadRequest(new { mensagem = "Arquivo inválido." });
 
-            var solicitacao = await matriculaService.ObterPorId(solicitacaoId);
-            if (solicitacao == null)
-                return NotFound(new { mensagem = "Solicitação não encontrada." });
+                var solicitacao = await matriculaService.ObterPorId(solicitacaoId);
+                if (solicitacao == null)
+                    return NotFound(new { mensagem = "Solicitação não encontrada." });
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "matriculas", solicitacaoId.ToString());
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
+                var url = await blobService.UploadAsync(arquivo, $"matriculas/{solicitacaoId}");
 
-            var nomeArquivo = $"{tipo}_{Guid.NewGuid()}{Path.GetExtension(arquivo.FileName)}";
-            var caminhoCompleto = Path.Combine(uploadsFolder, nomeArquivo);
+                var documento = matriculaMapper.ToDocumentoMatricula(
+                    solicitacaoId, tipo, url, arquivo.FileName);
 
-            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
-                await arquivo.CopyToAsync(stream);
+                var documentoSalvo = await matriculaService.SalvarDocumento(documento);
 
-            var documento = matriculaMapper.ToDocumentoMatricula(
-                solicitacaoId,
-                tipo,
-                $"uploads/matriculas/{solicitacaoId}/{nomeArquivo}",
-                arquivo.FileName);
-
-            var documentoSalvo = await matriculaService.SalvarDocumento(documento);
-
-            return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documentoSalvo.id });
-        }
+                return Ok(new { mensagem = "Upload realizado com sucesso!", idDocumento = documentoSalvo.id });
+            }
 
         [HttpGet("vagas-disponiveis")]
         public async Task<IActionResult> ObterVagas()
@@ -218,7 +208,8 @@ Utilize este código para continuar. Validade: 30 minutos.";
         [HttpPost("comprovante-pix")]
         public async Task<IActionResult> UploadComprovantePix(
             [FromForm] int solicitacaoId,
-            IFormFile arquivo)
+            IFormFile arquivo,
+            [FromServices] BlobService blobService)
         {
             if (arquivo == null || arquivo.Length == 0)
                 return BadRequest(new { mensagem = "Arquivo inválido." });
@@ -230,20 +221,12 @@ Utilize este código para continuar. Validade: 30 minutos.";
             if (solicitacao.status != StatusMatricula.AguardandoPagamento)
                 return BadRequest(new { mensagem = "Solicitação não está aguardando pagamento." });
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "matriculas", solicitacaoId.ToString());
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
-
-            var nomeArquivo = $"pix_{Guid.NewGuid()}{Path.GetExtension(arquivo.FileName)}";
-            var caminhoCompleto = Path.Combine(uploadsFolder, nomeArquivo);
-
-            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
-                await arquivo.CopyToAsync(stream);
+            var url = await blobService.UploadAsync(arquivo, $"matriculas/{solicitacaoId}");
 
             var documento = matriculaMapper.ToDocumentoMatricula(
                 solicitacaoId,
                 TipoDocumentoMatricula.ComprovantePagamento,
-                $"uploads/matriculas/{solicitacaoId}/{nomeArquivo}",
+                url,
                 arquivo.FileName);
 
             await matriculaService.SalvarDocumento(documento);

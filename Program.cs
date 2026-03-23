@@ -70,6 +70,7 @@ builder.Services.AddScoped<TurmaRepository>();
 builder.Services.AddScoped<TurmaMapper>();
 builder.Services.AddScoped<MatriculaService>();
 builder.Services.AddScoped<MatriculaMapper>();
+builder.Services.AddScoped<BlobService>();
 
 var app = builder.Build();
 
