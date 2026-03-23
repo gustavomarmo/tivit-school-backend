@@ -12,6 +12,8 @@
     {
         public int totalAlunos { get; set; }
         public int totalProfessores { get; set; }
+
+        public int totalTurmas { get; set; }
         public decimal mediaGeralEscola { get; set; }
     }
 
