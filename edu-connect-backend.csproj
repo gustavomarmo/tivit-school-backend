@@ -15,13 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controller\AcademicoController.cs" />
-    <Compile Remove="DTO\EntregarAtividadeDTO.cs" />
-    <Compile Remove="DTO\ExtracurricularRequestDTO.cs" />
-    <Compile Remove="Model\Notas.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="MailKit" Version="4.14.1" />
@@ -37,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Domain\Interfaces\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

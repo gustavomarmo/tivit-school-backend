@@ -1,0 +1,38 @@
+﻿using edu_connect_backend.Domain.Entities;
+using edu_connect_backend.Infrastructure.Persistence.Repositories;
+
+namespace edu_connect_backend.Application.Services
+{
+    public class TopicoService
+    {
+        private readonly TopicoRepository topicoRepository;
+
+        public TopicoService(TopicoRepository topicoRepository)
+        {
+            this.topicoRepository = topicoRepository;
+        }
+
+        public void CriarTopico(Topico topico)
+        {
+            topicoRepository.CriarTopico(topico);
+        }
+
+        public void EditarTopico(int id, Topico dadosAtualizados)
+        {
+            var topico = topicoRepository.ObterTopicoPorId(id)
+                ?? throw new KeyNotFoundException("Tópico não encontrado");
+
+            topico.titulo = dadosAtualizados.titulo;
+
+            topicoRepository.AtualizarTopico(topico);
+        }
+
+        public void DeletarTopico(int id)
+        {
+            var topico = topicoRepository.ObterTopicoPorId(id)
+                ?? throw new KeyNotFoundException("Tópico não encontrado");
+
+            topicoRepository.DeletarTopico(topico);
+        }
+    }
+}
