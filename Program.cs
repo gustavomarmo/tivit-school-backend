@@ -71,6 +71,8 @@ builder.Services.AddScoped<TurmaMapper>();
 builder.Services.AddScoped<MatriculaService>();
 builder.Services.AddScoped<MatriculaMapper>();
 builder.Services.AddScoped<BlobService>();
+builder.Services.AddHttpClient<AiService>();
+builder.Services.AddScoped<AiService>();
 
 var app = builder.Build();
 
