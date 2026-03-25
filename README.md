@@ -1,126 +1,440 @@
-﻿# 🎓 Edu Connect (TIVIT School) - Sistema de Gestão Escolar Fullstack
+﻿<div align="center">
 
-![Status do Projeto](https://img.shields.io/badge/Status-Em_Desenvolvimento-success)
-![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
-![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=black)
-![MySQL](https://img.shields.io/badge/MySQL-8.0.44-4479A1?logo=mysql&logoColor=white)
-![Azure](https://img.shields.io/badge/Deployed_on-Azure-0089D6?logo=microsoft-azure)
+# 🎓 Edu Connect
 
-O **Edu Connect** (também conhecido internamente como TIVIT School) é um sistema de gestão escolar moderno, escalável e completo, projetado para modernizar a interação entre Alunos, Professores e a Coordenação. O sistema abrange todo o ciclo de vida acadêmico, desde o fluxo de matrícula até o lançamento de notas, acompanhamento de frequência e geração de boletins. 
+**Plataforma escolar completa para gestão acadêmica, matrícula digital e comunicação entre alunos, professores e coordenação.**
 
-Um dos grandes diferenciais do projeto é a integração com **Inteligência Artificial**, permitindo aos professores a geração automática de exercícios com base nos materiais didáticos disponibilizados na plataforma.
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
+[![SQL Server](https://img.shields.io/badge/SQL%20Server-EF-CC2927?style=flat-square&logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
+[![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4?style=flat-square&logo=microsoftazure)](https://azure.microsoft.com/)
 
-## ✨ Principais Funcionalidades
+[Demo ao Vivo](https://icy-wave-0e2eac10f.5.azurestaticapps.net) · [API Backend](https://backend-tivitschool.graybush-2b90a918.brazilsouth.azurecontainerapps.io) · [Reportar Bug](../../issues) · [Sugerir Feature](../../issues)
 
-* **Autenticação e Segurança:** Login com JWT, recuperação de senha, e verificação via OTP.
-* **Dashboards Personalizados:** Visões específicas e indicadores rápidos para Alunos, Professores e Coordenadores.
-* **Gestão de Matrículas:** Fluxo completo em etapas para novos alunos, upload de documentos e tela de aprovação para a coordenação.
-* **Gestão Acadêmica:**
-  * Criação e gerenciamento de Turmas e Disciplinas.
-  * Lançamento de Notas e Frequência.
-  * Visualização e geração de Boletins.
-* **Geração de Exercícios com IA:** Ferramenta integrada (`AiService`) que lê materiais enviados e gera listas de exercícios automaticamente.
-* **Mural e Notificações:** Sistema de eventos, calendário acadêmico integrado e notificações em tempo real.
-* **Armazenamento na Nuvem:** Integração com Azure Blob Storage para upload de materiais, fotos e documentos.
-
-## 🛠️ Arquitetura e Tecnologias
-
-O projeto está dividido em duas frentes principais:
-
-### Frontend (`/tivit-school-frontend`)
-* **Framework:** React (criado com Vite)
-* **Estilização:** CSS Modules (para escopo local e organização)
-* **Gerenciamento de Estado/Contexto:** Context API (`AuthContext`, `DialogContext`, `ThemeContext` com suporte a Dark/Light mode)
-* **Integração:** Axios
-* **Deploy:** Azure Static Web Apps via GitHub Actions
-
-### Backend (`/edu-connect-backend`)
-* **Framework:** C# .NET (Web API)
-* **ORM:** Entity Framework Core
-* **Banco de Dados:** MySQL (versão 8.0.44)
-* **Documentação de API:** Swagger / OpenAPI
-* **Infraestrutura/Deploy:** Docker, GitHub Actions, Azure App Service
-* **Serviços Adicionais:** Envio de E-mails via SMTP, integração com IA e Azure Blob Storage.
+</div>
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+## 📋 Índice
 
-### Pré-requisitos
-* [Node.js](https://nodejs.org/) (versão 18+ recomendada)
-* [.NET SDK](https://dotnet.microsoft.com/download) (compatível com a versão do projeto, ex: .NET 8)
-* [MySQL](https://dev.mysql.com/downloads/) (versão 8.0.44)
-* Uma IDE de sua escolha (Visual Studio, VS Code, Rider, etc.)
+- [Sobre o Projeto](#-sobre-o-projeto)
+- [Funcionalidades](#-funcionalidades)
+- [Arquitetura](#-arquitetura)
+- [Stack Tecnológica](#-stack-tecnológica)
+- [Pré-requisitos](#-pré-requisitos)
+- [Instalação e Execução](#-instalação-e-execução)
+- [Variáveis de Ambiente](#-variáveis-de-ambiente)
+- [Estrutura de Pastas](#-estrutura-de-pastas)
+- [Perfis de Usuário](#-perfis-de-usuário)
+- [API Reference](#-api-reference)
+- [Deploy](#-deploy)
+- [Contribuindo](#-contribuindo)
+- [Licença](#-licença)
 
-### 1. Configurando e Rodando o Backend
-1. Navegue até o diretório do backend:
-   ```bash
-   cd edu-connect-backend
+---
 
-2. Configure o banco de dados e as chaves de API:
+## 🎯 Sobre o Projeto
 
-Abra ou crie o arquivo appsettings.Development.json.
+O **Edu Connect** é um sistema de gestão escolar full stack desenvolvido para digitalizar e centralizar os processos de uma instituição de ensino médio. A plataforma oferece experiências distintas e personalizadas para três perfis de usuário — **Aluno**, **Professor** e **Coordenador** — cobrindo desde o processo de matrícula digital até o lançamento de notas, controle de frequência e geração de exercícios com Inteligência Artificial.
 
-Configure sua ConnectionStrings apontando para sua instância local do MySQL.
+### 🏗️ Repositórios
 
-Adicione as credenciais de SMTP, JWT e as chaves da API de IA e Azure Blob Storage nas variáveis correspondentes (presentes na classe EduConnectVariables).
+| Projeto | Repositório | Deploy |
+|---|---|---|
+| Frontend (React) | `tivit-school-react` | Azure Static Web Apps |
+| Backend (.NET) | `edu-connect-backend` | Azure Container Apps |
 
-Aplique as migrações do banco de dados:
+---
 
-Bash
-dotnet ef database update
-Execute a aplicação:
+## ✨ Funcionalidades
 
-Bash
-dotnet run
-Acesse o Swagger para testar os endpoints: http://localhost:<porta>/swagger
+### 🎒 Aluno
+- **Dashboard** com notas recentes, avisos e tarefas pendentes
+- **Boletim escolar** com médias por bimestre e download em PDF
+- **Matérias** — acesso a materiais, vídeos, arquivos e atividades por disciplina
+- **Calendário** de eventos da escola e da turma
+- **Portal de Matrícula** — processo completo em etapas (wizard) com validação OTP por e-mail, upload de documentos e pagamento via PIX
 
-2. Configurando e Rodando o Frontend
-Navegue até o diretório do frontend:
+### 👩‍🏫 Professor
+- **Dashboard** com KPIs, lista de alunos em atenção e próximas aulas
+- **Lançamento de Notas** em lote por turma e disciplina
+- **Chamada Digital** — registro de frequência por aula e horário
+- **Gerenciamento de Matérias** — criação de tópicos e publicação de materiais (links, PDFs, atividades)
+- **Exercícios com IA** — geração automática de questões de múltipla escolha a partir de PDFs usando LLM (Groq / LLaMA 3)
 
-Bash
-cd tivit-school-frontend
-Instale as dependências:
+### 🏫 Coordenador
+- **Dashboard** com estatísticas gerais, gráficos de desempenho por disciplina e situação acadêmica dos alunos
+- **Gestão de Alunos** — CRUD completo com filtro e busca
+- **Gestão de Professores** — CRUD com vinculação de disciplinas
+- **Gestão de Turmas** — criação de turmas e vínculos disciplina-professor
+- **Aprovação de Matrículas** — análise de documentos e comprovantes de pagamento com envio de e-mails automáticos
+- **Calendário** de eventos gerais e por turma
 
-Bash
+### 🔐 Autenticação & Segurança
+- Login com JWT (validade de 8h)
+- Recuperação de senha via código OTP por e-mail (validade de 15 min)
+- Controle de acesso baseado em perfil (RBAC) em todas as rotas e endpoints
+
+---
+
+## 🏛️ Arquitetura
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Cliente (Browser)                     │
+│              React 19 + Vite + React Router               │
+└────────────────────────┬────────────────────────────────┘
+                         │ HTTPS / JSON (Axios)
+┌────────────────────────▼────────────────────────────────┐
+│               Backend (.NET 10 Web API)                   │
+│  Controllers → Services → Repositories → Entity Framework│
+│                                                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │  SQL Server  │  │ Azure Blob   │  │  Groq AI API  │  │
+│  │  (EF Core)   │  │  (uploads)   │  │  (exercícios) │  │
+│  └──────────────┘  └──────────────┘  └───────────────┘  │
+│                          ┌──────────────┐                │
+│                          │  SMTP Email  │                │
+│                          │  (MailKit)   │                │
+│                          └──────────────┘                │
+└─────────────────────────────────────────────────────────┘
+```
+
+O backend segue uma arquitetura em camadas:
+
+- **Controllers** — recebem as requisições HTTP e delegam ao serviço
+- **Services** — contêm a regra de negócio
+- **Repositories** — isolam o acesso ao banco de dados via EF Core
+- **Mappers** — convertem entre entidades de domínio e DTOs
+- **Middleware** — tratamento global de exceções com respostas padronizadas
+
+---
+
+## 🛠️ Stack Tecnológica
+
+### Frontend
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| React | 19.2 | UI Framework |
+| Vite | 7.x | Build tool & dev server |
+| React Router DOM | 7.13 | Roteamento SPA |
+| Axios | 1.13 | Requisições HTTP |
+| Chart.js + react-chartjs-2 | 4.5 | Gráficos e dashboards |
+| pdfjs-dist | 5.5 | Leitura de PDFs no browser |
+| CSS Modules | — | Estilização por componente |
+| Font Awesome | 6.5 | Ícones |
+
+### Backend
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| .NET / ASP.NET Core | 10.0 | Web API Framework |
+| Entity Framework Core | 10.0 | ORM |
+| SQL Server | — | Banco de dados relacional |
+| JWT Bearer | 10.0 | Autenticação stateless |
+| BCrypt.Net | 4.1 | Hash de senhas |
+| MailKit | 4.14 | Envio de e-mails SMTP |
+| QuestPDF | 2025.x | Geração de PDFs (boletim) |
+| Azure Blob Storage SDK | 12.27 | Upload de documentos |
+| Groq API (LLaMA 3) | — | Geração de exercícios com IA |
+| Swashbuckle (Swagger) | 6.6 | Documentação da API |
+
+### Infraestrutura
+| Serviço | Uso |
+|---|---|
+| Azure Static Web Apps | Hospedagem do frontend |
+| Azure Container Apps | Hospedagem do backend (Docker) |
+| Azure Container Registry | Registro de imagem Docker |
+| Azure Blob Storage | Armazenamento de documentos de matrícula |
+| GitHub Actions | CI/CD (deploy automático no push para `main`) |
+
+---
+
+## 📦 Pré-requisitos
+
+- **Node.js** >= 20.19 (frontend)
+- **.NET SDK** 10.0 (backend)
+- **SQL Server** (local ou Azure SQL)
+- **Conta Azure** (opcional, para Blob Storage)
+- **Conta Groq** (opcional, para geração de exercícios com IA)
+
+---
+
+## 🚀 Instalação e Execução
+
+### Frontend
+
+```bash
+# 1. Clone o repositório frontend
+git clone https://github.com/seu-usuario/tivit-school-react.git
+cd tivit-school-react
+
+# 2. Instale as dependências
 npm install
-Configure as variáveis de ambiente:
 
-Crie um arquivo .env.development na raiz do frontend.
+# 3. Configure as variáveis de ambiente
+# Edite .env.development com a URL do seu backend local
 
-Defina a URL base da API (ex: VITE_API_URL=http://localhost:<porta_do_backend>).
-
-Inicie o servidor de desenvolvimento:
-
-Bash
+# 4. Inicie o servidor de desenvolvimento
 npm run dev
-Acesse a aplicação no navegador (geralmente em http://localhost:5173).
+# → http://localhost:5173
 
-📂 Estrutura de Diretórios Resumida
-Plaintext
-📦 Raiz do Repositório
- ┣ 📂 edu-connect-backend          # API em C# .NET
- ┃ ┣ 📂 Configuration              # Configurações de CORS, JWT, Swagger, etc.
- ┃ ┣ 📂 Controller                 # Endpoints da API (Alunos, Notas, Matricula, etc.)
- ┃ ┣ 📂 DTO                        # Objetos de Transferência de Dados
- ┃ ┣ 📂 Mapper                     # Mapeamento entre DTOs e Models
- ┃ ┣ 📂 Migrations                 # Migrações do Entity Framework
- ┃ ┣ 📂 Model                      # Entidades de Domínio
- ┃ ┣ 📂 Repository                 # Acesso a Dados (Padrão Repository)
- ┃ ┣ 📂 Service                    # Regras de Negócio e Lógica de Aplicação
- ┃ ┗ 📂 Util                       # Serviços externos (AI, Blob, Tokens)
- ┃
- ┗ 📂 tivit-school-frontend        # Interface de Usuário em React/Vite
-   ┣ 📂 public                     # Assets públicos
-   ┗ 📂 src
-     ┣ 📂 assets                   # Imagens e estilos globais (.css)
-     ┣ 📂 components               # Componentes reutilizáveis (Botões, Modais, Tabelas, Sidebar)
-     ┣ 📂 contexts                 # Context API (Autenticação, Tema)
-     ┣ 📂 hooks                    # Custom Hooks para chamadas de API
-     ┣ 📂 layouts                  # Estruturas de página (MainLayout)
-     ┣ 📂 pages                    # Páginas da aplicação (Dashboard, Matrícula, Boletim, etc.)
-     ┗ 📂 services                 # Configuração do Axios e chamadas base
-👨‍💻 Autor
-Gustavo Marmo Desenvolvedor Trainee | Engenharia de Software
+# Build para produção
+npm run build
+```
 
-Projeto desenvolvido como sistema prático de Gestão Escolar (Edu Connect / TIVIT School).
+### Backend
+
+```bash
+# 1. Clone o repositório backend
+git clone https://github.com/seu-usuario/edu-connect-backend.git
+cd edu-connect-backend
+
+# 2. Configure o appsettings.json (veja seção de variáveis de ambiente)
+
+# 3. Aplique as migrations do banco de dados
+dotnet ef database update
+
+# 4. Inicie a API
+dotnet run
+# → http://localhost:5051
+# → Swagger UI: http://localhost:5051/swagger
+```
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+### Frontend
+
+Crie os arquivos `.env.development` e `.env.production` na raiz do projeto React:
+
+```env
+# .env.development
+VITE_API_URL=http://localhost:5051
+
+# .env.production
+VITE_API_URL=https://seu-backend.azurecontainerapps.io
+```
+
+### Backend
+
+Configure o arquivo `appsettings.json` (não versionado — use variáveis de ambiente ou Azure Key Vault em produção):
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=...;Database=EduConnect;User Id=...;Password=...;"
+  },
+  "Jwt": {
+    "Key": "sua-chave-secreta-de-pelo-menos-32-caracteres"
+  },
+  "SmtpSettings": {
+    "Server": "smtp.seuprovedor.com",
+    "Port": 587,
+    "SenderName": "Edu Connect",
+    "SenderEmail": "noreply@educonnect.com",
+    "Username": "seu-usuario-smtp",
+    "Password": "sua-senha-smtp",
+    "EnableSsl": true
+  },
+  "AzureBlob": {
+    "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=..."
+  },
+  "Ai": {
+    "ApiKey": "sua-chave-groq"
+  },
+  "edu-connect-variables": {
+    "DOMINIO_EMAIL_ALUNO": "@aluno.educonnect.com",
+    "DOMINIO_EMAIL_PROFESSOR": "@professor.educonnect.com",
+    "SENHA_PADRAO": "Edu@2025"
+  }
+}
+```
+
+---
+
+## 📁 Estrutura de Pastas
+
+### Frontend (`tivit-school-react`)
+
+```
+src/
+├── assets/
+│   ├── images/          # Logotipos e fotos
+│   └── styles/          # CSS global e variáveis de tema
+├── components/          # Componentes reutilizáveis
+│   ├── Button/
+│   ├── Card/
+│   ├── Modal/
+│   ├── Sidebar/
+│   ├── Table/
+│   ├── Topbar/
+│   ├── ExerciciosModal/ # Componente de IA
+│   └── ...
+├── contexts/            # React Context (Auth, Theme, Dialog)
+├── hooks/               # Custom hooks (useAlunos, useNotas, ...)
+├── layouts/             # MainLayout (Sidebar + Topbar + Outlet)
+├── pages/               # Páginas por rota
+│   ├── Dashboard/       # DashboardAluno / Professor / Coordenador
+│   ├── Materias/
+│   ├── Boletim/
+│   ├── Frequencia/
+│   ├── Notas/
+│   ├── Matricula/       # Wizard de matrícula
+│   ├── Alunos/
+│   ├── Professores/
+│   ├── Turmas/
+│   └── ...
+├── services/
+│   ├── api.js           # Todas as chamadas à API
+│   └── axiosInstance.js # Interceptors (auth + erros)
+├── constants/           # Enums e constantes compartilhadas
+└── utils/               # tokenUtils (decode JWT)
+```
+
+### Backend (`edu-connect-backend`)
+
+```
+├── Application/
+│   ├── DTOs/            # Data Transfer Objects (request/response)
+│   ├── Mappers/         # Conversão entre entidades e DTOs
+│   └── Services/        # Regras de negócio
+├── Domain/
+│   ├── Entities/        # Entidades EF Core (Aluno, Nota, Turma...)
+│   └── Enums/           # PerfilUsuario, StatusMatricula, Turno...
+├── Infrastructure/
+│   ├── AI/              # AiService (integração Groq)
+│   ├── Blob/            # BlobService (Azure Storage)
+│   ├── Email/           # EmailService (MailKit SMTP)
+│   └── Persistence/
+│       ├── Context/     # ConnectionContext (EF Core DbContext)
+│       └── Repositories/ # Acesso a dados por entidade
+└── WebAPI/
+    ├── Configuration/   # JWT, CORS, Swagger, SMTP settings
+    ├── Controllers/     # Endpoints REST
+    ├── Middleware/      # GlobalExceptionHandler
+    └── Util/            # ColetaInfoToken (helpers JWT)
+```
+
+---
+
+## 👥 Perfis de Usuário
+
+O sistema possui três perfis com acesso e rotas distintos:
+
+| Perfil | Descrição | Acesso |
+|---|---|---|
+| `Aluno` | Estudante matriculado | Dashboard, Boletim, Matérias, Calendário |
+| `Professor` | Docente da instituição | Dashboard, Matérias, Frequência, Notas, Calendário |
+| `Coordenador` | Gestão administrativa | Dashboard, Alunos, Professores, Turmas, Matrículas, Calendário |
+
+O controle de acesso é implementado via:
+- **Frontend** — rotas protegidas por `PrivateRoute` e menus filtrados por `userRole`
+- **Backend** — atributos `[Authorize(Roles = "...")]` em cada controller/endpoint
+
+---
+
+## 📡 API Reference
+
+A documentação interativa completa da API está disponível via Swagger:
+
+> **Desenvolvimento:** `http://localhost:5051/swagger`  
+> **Produção:** `https://backend-tivitschool.graybush-2b90a918.brazilsouth.azurecontainerapps.io/swagger`
+
+### Principais Grupos de Endpoints
+
+| Prefixo | Descrição |
+|---|---|
+| `POST /auth/login` | Autenticação e geração de token JWT |
+| `POST /auth/esqueci-senha` | Solicitar reset via e-mail (OTP) |
+| `POST /auth/resetar-senha` | Redefinir senha com token OTP |
+| `GET /api/alunos` | Listar alunos (Coordenador) |
+| `GET /api/professores` | Listar professores |
+| `GET /api/turmas` | Listar turmas e vínculos |
+| `GET /api/disciplinas/listar` | Disciplinas do usuário logado |
+| `GET /api/notas/boletim` | Boletim do aluno logado |
+| `POST /api/notas/lote` | Lançar notas em lote (Professor) |
+| `POST /api/frequencias/chamada` | Registrar chamada (Professor) |
+| `GET /api/eventos` | Eventos do calendário (por mês/ano) |
+| `GET /api/notificacoes` | Notificações do usuário logado |
+| `GET /api/dashboards/coordenador` | KPIs e gráficos para coordenação |
+| `POST /api/matriculas/iniciar` | Iniciar solicitação de matrícula |
+| `PUT /api/matriculas/{id}/avaliar` | Aprovar/rejeitar matrícula (Coordenador) |
+| `POST /api/exercicios/gerar` | Gerar exercícios via IA a partir de PDF |
+
+> **Autenticação:** Todas as rotas (exceto `/auth/*` e `/api/matriculas/iniciar`) requerem o header `Authorization: Bearer <token>`.
+
+---
+
+## ☁️ Deploy
+
+O deploy é realizado automaticamente via **GitHub Actions** ao realizar push na branch `main`.
+
+### Frontend → Azure Static Web Apps
+
+O workflow `.github/workflows/azure-static-web-apps-icy-wave-0e2eac10f.yml`:
+1. Faz checkout do repositório
+2. Executa o build com `vite build` (usando `.env.production`)
+3. Publica a pasta `dist/` no Azure Static Web Apps
+
+O arquivo `staticwebapp.config.json` configura o fallback de navegação para suportar o roteamento SPA do React Router.
+
+### Backend → Azure Container Apps
+
+O workflow `.github/workflows/backend-tivitschool-AutoDeployTrigger-*.yml`:
+1. Faz login no Azure via OIDC (sem segredos de longa duração)
+2. Builda a imagem Docker usando o `Dockerfile` do projeto
+3. Faz push para o **Azure Container Registry** (`acrtivitschool.azurecr.io`)
+4. Atualiza o **Azure Container App** (`backend-tivitschool`) com a nova imagem
+
+#### Secrets necessários no GitHub
+
+| Secret | Descrição |
+|---|---|
+| `AZURE_STATIC_WEB_APPS_API_TOKEN_ICY_WAVE_0E2EAC10F` | Token do Static Web App (frontend) |
+| `BACKENDTIVITSCHOOL_AZURE_CLIENT_ID` | Client ID do Service Principal |
+| `BACKENDTIVITSCHOOL_AZURE_TENANT_ID` | Tenant ID do Azure AD |
+| `BACKENDTIVITSCHOOL_AZURE_SUBSCRIPTION_ID` | Subscription ID do Azure |
+| `BACKENDTIVITSCHOOL_REGISTRY_USERNAME` | Usuário do Container Registry |
+| `BACKENDTIVITSCHOOL_REGISTRY_PASSWORD` | Senha do Container Registry |
+
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Faça um **fork** do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Faça commit das suas alterações (`git commit -m 'feat: adiciona MinhaFeature'`)
+4. Faça push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um **Pull Request**
+
+### Convenção de Commits
+
+Este projeto segue o padrão [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat:     nova funcionalidade
+fix:      correção de bug
+docs:     atualização de documentação
+style:    formatação de código (sem mudança de lógica)
+refactor: refatoração sem nova feature ou fix
+test:     adição ou correção de testes
+chore:    tarefas de manutenção (build, deps, ci)
+```
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
+
+---
+
+<div align="center">
+
+Desenvolvido com ❤️ pela equipe **TIVIT School**
+
+</div>
