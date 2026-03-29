@@ -6,7 +6,7 @@ namespace edu_connect_backend.Service
 {
     public class TurmaService
     {
-        private readonly TurmaRepository turmaRepository;
+        private readonly TurmaRepository turma;
 
         public TurmaService(TurmaRepository turmaRepository)
         {
