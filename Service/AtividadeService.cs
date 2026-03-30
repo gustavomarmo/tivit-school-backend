@@ -1,8 +1,5 @@
-﻿using edu_connect_backend.Context;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 
 namespace edu_connect_backend.Service
 {
