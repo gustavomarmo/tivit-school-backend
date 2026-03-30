@@ -55,5 +55,20 @@ namespace edu_connect_backend.Repository
             return context.TurmaDisciplinas
                 .FirstOrDefault(td => td.turmaId == turmaId && td.disciplinaId == disciplinaId);
         }
+
+        public void ExecutarEmTransacao(Action operacao)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                operacao();
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
     }
 }

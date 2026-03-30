@@ -40,29 +40,26 @@ namespace edu_connect_backend.Repository
             return total == 0 ? 0 : Math.Round(((decimal)presentes / total) * 100, 1);
         }
 
-        public List<FrequenciaResumoReadModel> ObterResumoPorAluno(int alunoId, int? turmaId)
+        public List<FrequenciaRawModel> ObterDadosBrutosPorAluno(int alunoId, int? turmaId)
         {
-            var consulta = context.TurmaDisciplinas
+            return context.TurmaDisciplinas
                 .Where(td => td.turmaId == turmaId)
-                .Select(td => new
+                .Select(td => new FrequenciaRawModel
                 {
-                    NomeDisciplina = td.disciplina.nome,
-                    TotalAulas = context.Frequencias.Count(f => f.disciplinaId == td.disciplinaId && f.alunoId == alunoId),
-                    Presencas = context.Frequencias.Count(f => f.disciplinaId == td.disciplinaId && f.alunoId == alunoId && f.presente)
+                    nomeDisciplina = td.disciplina.nome,
+                    totalAulas = context.Frequencias.Count(f =>
+                        f.disciplinaId == td.disciplinaId && f.alunoId == alunoId),
+                    presencas = context.Frequencias.Count(f =>
+                        f.disciplinaId == td.disciplinaId && f.alunoId == alunoId && f.presente)
                 })
                 .ToList();
-
-            var resultado = consulta.Select(item => new FrequenciaResumoReadModel
-            {
-                disciplina = item.NomeDisciplina,
-                totalAulas = item.TotalAulas,
-                totalFaltas = item.TotalAulas - item.Presencas,
-                frequencia = item.TotalAulas == 0
-                    ? 100
-                    : (double)Math.Round(((decimal)item.Presencas / item.TotalAulas) * 100, 1)
-            }).ToList();
-
-            return resultado;
         }
+    }
+
+    public class FrequenciaRawModel
+    {
+        public string nomeDisciplina { get; set; } = string.Empty;
+        public int totalAulas { get; set; }
+        public int presencas { get; set; }
     }
 }

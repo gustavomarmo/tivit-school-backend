@@ -15,21 +15,21 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public List<NotaResumoReadModel> obterNotasRecentes(int alunoId)
+        public List<NotaResumoReadModel> ObterNotasRecentes(int alunoId)
         {
             return context.Database
                 .SqlQueryRaw<NotaResumoReadModel>("EXEC sp_Dashboard_NotasRecentes @AlunoId = {0}", alunoId)
                 .ToList();
         }
 
-        public List<AvisoResumoReadModel> obterAvisos(int turmaId)
+        public List<AvisoResumoReadModel> ObterAvisos(int turmaId)
         {
             return context.Database
                 .SqlQueryRaw<AvisoResumoReadModel>("EXEC sp_Dashboard_Avisos @TurmaId = {0}", turmaId)
                 .ToList();
         }
 
-        public List<TarefaPendenteReadModel> obterTarefasPendentes(int turmaId)
+        public List<TarefaPendenteReadModel> ObterTarefasPendentes(int turmaId)
         {
             return context.Database
                 .SqlQueryRaw<TarefaPendenteReadModel>("EXEC sp_Dashboard_Tarefas @TurmaId = {0}", turmaId)
@@ -66,11 +66,11 @@ namespace edu_connect_backend.Repository
 
                     resultados.Add(new DadosNotaProfessor
                     {
-                        AlunoId = aluno.id,
-                        AlunoNome = aluno.usuario.nome,
-                        TurmaNome = vinculo.turma.nome,
-                        DisciplinaNome = vinculo.disciplina.nome,
-                        Media = mediaAtual
+                        alunoId = aluno.id,
+                        alunoNome = aluno.usuario.nome,
+                        turmaNome = vinculo.turma.nome,
+                        disciplinaNome = vinculo.disciplina.nome,
+                        media = mediaAtual
                     });
                 }
             }
@@ -78,7 +78,7 @@ namespace edu_connect_backend.Repository
             return resultados;
         }
 
-        public KPIsProfessorDTO obterKPIsProfessorProcedure(int professorId)
+        public KPIsProfessorDTO ObterKPIsProfessorProcedure(int professorId)
         {
             var param = new SqlParameter("@ProfessorId", professorId);
 
@@ -90,7 +90,7 @@ namespace edu_connect_backend.Repository
             return result ?? new KPIsProfessorDTO();
         }
 
-        public List<AlunoAtencaoDTO> obterAlunosEmRisco(int professorId)
+        public List<AlunoAtencaoDTO> ObterAlunosEmRisco(int professorId)
         {
             var param = new SqlParameter("@ProfessorId", professorId);
 
@@ -99,7 +99,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public KPIsCoordenadorDTO obterKPIsCoordenador()
+        public KPIsCoordenadorDTO ObterKPIsCoordenador()
         {
             var result = context.Database
                 .SqlQueryRaw<KPIsCoordenadorDTO>("EXEC sp_Dashboard_Coordenador_KPIs")
@@ -108,14 +108,14 @@ namespace edu_connect_backend.Repository
             return result ?? new KPIsCoordenadorDTO();
         }
 
-        public List<GraficoBarrasDTO> obterGraficoDesempenhoTurmas()
+        public List<GraficoBarrasDTO> ObterGraficoDesempenhoTurmas()
         {
             return context.Database
                 .SqlQueryRaw<GraficoBarrasDTO>("EXEC sp_Dashboard_Coordenador_GraficoBarras")
                 .ToList();
         }
 
-        public List<GraficoPizzaDTO> obterGraficoStatusAlunos()
+        public List<GraficoPizzaDTO> ObterGraficoStatusAlunos()
         {
             return context.Database
                 .SqlQueryRaw<GraficoPizzaDTO>("EXEC sp_Dashboard_Coordenador_GraficoPizza")
@@ -125,10 +125,10 @@ namespace edu_connect_backend.Repository
 
     public class DadosNotaProfessor
     {
-        public int AlunoId { get; set; }
-        public string AlunoNome { get; set; }
-        public string TurmaNome { get; set; }
-        public string DisciplinaNome { get; set; }
-        public decimal Media { get; set; }
+        public int alunoId { get; set; }
+        public string alunoNome { get; set; }
+        public string turmaNome { get; set; }
+        public string disciplinaNome { get; set; }
+        public decimal media { get; set; }
     }
 }

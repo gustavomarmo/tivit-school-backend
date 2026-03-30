@@ -13,7 +13,7 @@ namespace edu_connect_backend.Repository
             this.context = context;
         }
 
-        public List<Aluno> obterAlunos(string? busca)
+        public List<Aluno> ObterAlunos(string? busca)
         {
             var query = context.alunos
                 .Include(a => a.usuario)
@@ -56,7 +56,6 @@ namespace edu_connect_backend.Repository
                 context.usuarios.Update(aluno.usuario);
             }
 
-            context.alunos.Remove(aluno);
             context.SaveChanges();
         }
 

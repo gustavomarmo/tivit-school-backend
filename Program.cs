@@ -68,6 +68,7 @@ builder.Services.AddScoped<TopicoMapper>();
 builder.Services.AddScoped<TurmaService>();
 builder.Services.AddScoped<TurmaRepository>();
 builder.Services.AddScoped<TurmaMapper>();
+builder.Services.AddScoped<MatriculaRepository>();
 builder.Services.AddScoped<MatriculaService>();
 builder.Services.AddScoped<MatriculaMapper>();
 builder.Services.AddScoped<BlobService>();

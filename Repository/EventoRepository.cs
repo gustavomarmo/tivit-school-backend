@@ -39,7 +39,7 @@ namespace edu_connect_backend.Repository
                 .ToList();
         }
 
-        public List<Evento> obterProximosEventos(int quantidade)
+        public List<Evento> ObterProximosEventos(int quantidade)
         {
             return context.Eventos
                 .Include(e => e.turma)

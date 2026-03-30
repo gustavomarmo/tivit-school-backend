@@ -1,72 +1,54 @@
 ﻿using edu_connect_backend.Configuration;
-using edu_connect_backend.Context;
 using edu_connect_backend.Model;
-using Microsoft.EntityFrameworkCore;
+using edu_connect_backend.Repository;
 using Microsoft.Extensions.Options;
 
 namespace edu_connect_backend.Service
 {
     public class MatriculaService
     {
-        private readonly ConnectionContext context;
+        private readonly MatriculaRepository matriculaRepository;
         private readonly EduConnectVariables config;
 
-        public MatriculaService(ConnectionContext context, IOptions<EduConnectVariables> config)
+        public MatriculaService(MatriculaRepository matriculaRepository, IOptions<EduConnectVariables> config)
         {
-            this.context = context;
+            this.matriculaRepository = matriculaRepository;
             this.config = config.Value;
         }
 
         public async Task<SolicitacaoMatricula?> ObterPorEmailOuCpf(string email, string cpf)
         {
-            return await context.solicitacoesMatricula
-                .FirstOrDefaultAsync(x => x.cpf == cpf || x.email == email);
+            return await matriculaRepository.ObterPorEmailOuCpf(email, cpf);
         }
 
         public async Task<SolicitacaoMatricula?> ObterPorEmailEOtp(string email, string otp)
         {
-            return await context.solicitacoesMatricula
-                .FirstOrDefaultAsync(x => x.email == email && x.codigoOtp == otp);
+            return await matriculaRepository.ObterPorEmailEOtp(email, otp);
         }
 
         public async Task<SolicitacaoMatricula?> ObterPorId(int id)
         {
-            return await context.solicitacoesMatricula.FindAsync(id);
+            return await matriculaRepository.ObterPorId(id);
         }
 
         public async Task<SolicitacaoMatricula?> ObterPorIdComDocumentos(int id)
         {
-            return await context.solicitacoesMatricula
-                .Include(s => s.documentos)
-                .FirstOrDefaultAsync(s => s.id == id);
+            return await matriculaRepository.ObterPorIdComDocumentos(id);
         }
 
         public async Task<List<SolicitacaoMatricula>> ListarPendentes()
         {
-            return await context.solicitacoesMatricula
-                .Include(s => s.documentos)
-                .Where(s =>
-                    s.status == StatusMatricula.AguardandoAnaliseDocs ||
-                    s.status == StatusMatricula.AguardandoPagamento)
-                .OrderByDescending(s => s.dataSolicitacao)
-                .ToListAsync();
+            return await matriculaRepository.ListarPendentes();
         }
 
         public async Task<List<ConfiguracaoVaga>> ObterVagasDoAnoAtual()
         {
-            return await context.configuracoesVaga
-                .Where(c => c.anoLetivo == DateTime.Now.Year)
-                .ToListAsync();
+            return await matriculaRepository.ObterVagasDoAnoAtual();
         }
 
         public async Task<int> ContarOcupacoes(string serie, Turno turno, int? ignorarId = null)
         {
-            return await context.solicitacoesMatricula
-                .CountAsync(s =>
-                    s.serieDesejada == serie &&
-                    s.turnoDesejado == turno &&
-                    s.status != StatusMatricula.Rejeitado &&
-                    s.id != ignorarId);
+            return await matriculaRepository.ContarOcupacoes(serie, turno, ignorarId);
         }
 
         public async Task IniciarOuAtualizarSolicitacao(SolicitacaoMatricula existente, SolicitacaoMatricula dados, string otp)
@@ -77,22 +59,22 @@ namespace edu_connect_backend.Service
             existente.dataNascimento = dados.dataNascimento;
             existente.codigoOtp = otp;
             existente.validadeOtp = DateTime.Now.AddMinutes(30);
-            context.solicitacoesMatricula.Update(existente);
-            await context.SaveChangesAsync();
+
+            await matriculaRepository.Atualizar(existente);
         }
 
         public async Task CriarSolicitacao(SolicitacaoMatricula solicitacao, string otp)
         {
             solicitacao.codigoOtp = otp;
             solicitacao.validadeOtp = DateTime.Now.AddMinutes(30);
-            context.solicitacoesMatricula.Add(solicitacao);
-            await context.SaveChangesAsync();
+
+            await matriculaRepository.Criar(solicitacao);
         }
 
         public async Task AtualizarStatus(SolicitacaoMatricula solicitacao, StatusMatricula novoStatus)
         {
             solicitacao.status = novoStatus;
-            await context.SaveChangesAsync();
+            await matriculaRepository.Atualizar(solicitacao);
         }
 
         public async Task SalvarDadosComplementares(SolicitacaoMatricula solicitacao, SolicitacaoMatricula dados)
@@ -102,22 +84,13 @@ namespace edu_connect_backend.Service
             solicitacao.nomeResponsavel = dados.nomeResponsavel;
             solicitacao.contatoResponsavel = dados.contatoResponsavel;
             solicitacao.escolaridadeAnterior = dados.escolaridadeAnterior;
-            await context.SaveChangesAsync();
+
+            await matriculaRepository.Atualizar(solicitacao);
         }
 
         public async Task<DocumentoMatricula> SalvarDocumento(DocumentoMatricula documento)
         {
-            var anterior = await context.documentosMatricula
-                .FirstOrDefaultAsync(d =>
-                    d.solicitacaoMatriculaId == documento.solicitacaoMatriculaId &&
-                    d.tipo == documento.tipo);
-
-            if (anterior != null)
-                context.documentosMatricula.Remove(anterior);
-
-            context.documentosMatricula.Add(documento);
-            await context.SaveChangesAsync();
-            return documento;
+            return await matriculaRepository.SalvarDocumento(documento);
         }
 
         public async Task SelecionarVaga(SolicitacaoMatricula solicitacao, SolicitacaoMatricula dados, decimal valorMensalidade)
@@ -125,40 +98,39 @@ namespace edu_connect_backend.Service
             solicitacao.serieDesejada = dados.serieDesejada;
             solicitacao.turnoDesejado = dados.turnoDesejado;
             solicitacao.valorMensalidade = valorMensalidade;
-            await context.SaveChangesAsync();
+
+            await matriculaRepository.Atualizar(solicitacao);
         }
 
         public async Task FinalizarMatricula(SolicitacaoMatricula solicitacao)
         {
             string anoAtual = DateTime.Now.Year.ToString();
-            int totalAlunos = context.alunos.Count();
+            int totalAlunos = await matriculaRepository.ContarAlunos();
             string matricula = $"{anoAtual}{(totalAlunos + 1):D4}";
 
             var novoUsuario = new Usuario
             {
                 nome = solicitacao.nomeCompleto,
                 email = matricula + (config.DOMINIO_EMAIL_ALUNO ?? "@aluno.educonnect.com"),
-                senhaHash = BCrypt.Net.BCrypt.HashPassword(solicitacao.cpf.Replace(".", "").Replace("-", "").Substring(0, 6)),
+                senhaHash = BCrypt.Net.BCrypt.HashPassword(
+                    solicitacao.cpf.Replace(".", "").Replace("-", "")[..6]),
                 cpf = solicitacao.cpf,
                 perfil = PerfilUsuario.Aluno,
                 ativo = true,
                 dataCadastro = DateTime.Now
             };
 
-            context.usuarios.Add(novoUsuario);
-            await context.SaveChangesAsync();
-
             var novoAluno = new Aluno
             {
                 matricula = matricula,
                 dataNascimento = solicitacao.dataNascimento,
-                usuarioId = novoUsuario.id,
                 turmaId = null
             };
 
-            context.alunos.Add(novoAluno);
+            await matriculaRepository.CriarUsuarioEAluno(novoUsuario, novoAluno);
+
             solicitacao.status = StatusMatricula.Finalizado;
-            await context.SaveChangesAsync();
+            await matriculaRepository.Atualizar(solicitacao);
         }
     }
 }

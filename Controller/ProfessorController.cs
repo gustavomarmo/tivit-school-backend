@@ -24,26 +24,15 @@ namespace edu_connect_backend.Controller
         public IActionResult ListarProfessores([FromQuery] string? busca)
         {
             var professoresModel = professorService.ListarProfessores(busca);
-            var professoresDTO = professorMapper.ToProfessorResponseDTOList(professoresModel);
-
-            return Ok(professoresDTO);
+            return Ok(professorMapper.ToProfessorResponseDTOList(professoresModel));
         }
 
         [HttpPost]
         [Authorize(Roles = "Coordenador,Admin")]
         public IActionResult CriarProfessor([FromBody] ProfessorRequestDTO dto)
         {
-            try
-            {
-                var professorModel = professorMapper.ToProfessor(dto);
-                professorService.CriarProfessor(professorModel);
-
-                return Created("", new { message = "Professor criado com sucesso!" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = $"Erro ao criar professor: {ex.Message}" });
-            }
+            professorService.CriarProfessor(professorMapper.ToProfessor(dto));
+            return Created("", new { message = "Professor criado com sucesso!" });
         }
 
         [HttpPut("{id}")]
@@ -51,11 +40,7 @@ namespace edu_connect_backend.Controller
         public IActionResult EditarProfessor(int id, [FromBody] ProfessorRequestDTO dto)
         {
             var professorModel = professorMapper.ToProfessor(dto);
-            var resultado = professorService.EditarProfessor(id, professorModel);
-
-            if (resultado == null)
-                return NotFound(new { message = "Professor não encontrado." });
-
+            professorService.EditarProfessor(id, professorModel);
             return NoContent();
         }
 
@@ -63,11 +48,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Coordenador,Admin")]
         public IActionResult DeletarProfessor(int id)
         {
-            var sucesso = professorService.DeletarProfessor(id);
-
-            if (!sucesso)
-                return NotFound(new { message = "Professor não encontrado." });
-
+            professorService.DeletarProfessor(id);
             return NoContent();
         }
     }

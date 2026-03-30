@@ -18,7 +18,7 @@ namespace edu_connect_backend.Service
 
         public List<Aluno> ListarAlunos(string? busca)
         {
-            return alunoRepository.obterAlunos(busca)
+            return alunoRepository.ObterAlunos(busca)
                 ?? throw new KeyNotFoundException("Alunos não encontrados");
         }
 

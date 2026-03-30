@@ -18,7 +18,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet]
-        public IActionResult listarNotificacoes()
+        public IActionResult ListarNotificacoes()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet("nao-lidas/contagem")]
-        public IActionResult obterContagemNotificacoesNaoLidas()
+        public IActionResult ObterContagemNotificacoesNaoLidas()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("{id}/ler")]
-        public IActionResult marcarNotificacaoComoLida(int id)
+        public IActionResult MarcarNotificacaoComoLida(int id)
         {
             var sucesso = notificacaoService.MarcarNotificacaoComoLida(id, ColetaInfoToken.ObterIdUsuarioLogado(HttpContext));
             if (!sucesso) return NotFound("Notificação não encontrada.");
@@ -55,7 +55,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("ler-todas")]
-        public IActionResult marcarTodasNotificacoesComoLidas()
+        public IActionResult MarcarTodasNotificacoesComoLidas()
         {
             try
             {
