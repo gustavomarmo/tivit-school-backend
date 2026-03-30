@@ -1,5 +1,4 @@
-﻿using edu_connect_backend.Context;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 
 namespace edu_connect_backend.Service
@@ -8,15 +7,13 @@ namespace edu_connect_backend.Service
     {
         private readonly FrequenciaRepository repository;
         private readonly AlunoRepository alunoRepository;
-        private readonly ConnectionContext context;
+
         public FrequenciaService(
             FrequenciaRepository repository,
-            AlunoRepository alunoRepository,
-            ConnectionContext context)
+            AlunoRepository alunoRepository)
         {
             this.repository = repository;
             this.alunoRepository = alunoRepository;
-            this.context = context;
         }
 
         public void RealizarChamada(List<Frequencia> frequencias)
@@ -24,9 +21,8 @@ namespace edu_connect_backend.Service
             var idsAlunos = frequencias.Select(r => r.alunoId).Distinct().ToList();
 
             if (!alunoRepository.TodosAlunosExistem(idsAlunos))
-            {
-                throw new Exception("Um ou mais alunos informados não existem no banco de dados. Verifique a lista.");
-            }
+                throw new InvalidOperationException(
+                    "Um ou mais alunos informados não existem no banco de dados. Verifique a lista.");
 
             repository.Registrar(frequencias);
         }
@@ -37,7 +33,7 @@ namespace edu_connect_backend.Service
                 ?? throw new KeyNotFoundException("Aluno não encontrado.");
 
             return repository.ObterResumoPorAluno(aluno.id, aluno.turmaId)
-                ?? throw new KeyNotFoundException("Resumo não encontrado.");
+                ?? throw new KeyNotFoundException("Resumo de frequência não encontrado.");
         }
     }
 }
