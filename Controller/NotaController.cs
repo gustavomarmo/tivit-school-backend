@@ -4,7 +4,6 @@ using edu_connect_backend.Service;
 using edu_connect_backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace edu_connect_backend.Controller
 {
@@ -28,9 +27,7 @@ namespace edu_connect_backend.Controller
         [Authorize(Roles = "Aluno")]
         public IActionResult ObterBoletim()
         {
-            string email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
-            if (email == null) return Unauthorized();
-
+            var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             var boletimModel = notaService.obterBoletim(email);
 
             if (boletimModel == null)
@@ -40,46 +37,36 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpGet("lancamento")]
-        [Authorize(Roles = "Professor, Coordenador")]
-        public IActionResult ObterListaFrequencia([FromQuery] int turmaId, [FromQuery] int disciplinaId)
+        [Authorize(Roles = "Professor,Coordenador")]
+        public IActionResult ObterListaLancamento([FromQuery] int turmaId, [FromQuery] int disciplinaId)
         {
             if (turmaId <= 0 || disciplinaId <= 0)
                 return BadRequest(new { message = "Parâmetros inválidos." });
 
             var listaModel = notaService.obterListaLancamento(turmaId, disciplinaId);
-
             return Ok(notaMapper.ToNotaLancamentoDTOList(listaModel));
         }
 
         [HttpPost("lote")]
         [Authorize(Roles = "Professor,Coordenador")]
-        public IActionResult salvarNotasLote([FromBody] List<NotaRequestDTO> notasDto)
+        public IActionResult SalvarNotasLote([FromBody] List<NotaRequestDTO> notasDto)
         {
-            try
-            {
-                if (notasDto == null || notasDto.Count == 0)
-                    return BadRequest(new { message = "A lista de notas está vazia." });
+            if (notasDto == null || notasDto.Count == 0)
+                return BadRequest(new { message = "A lista de notas está vazia." });
 
-                var notasModel = notaMapper.ToNotaList(notasDto);
-                notaService.lancarNotasEmLote(notasModel);
+            var notasModel = notaMapper.ToNotaList(notasDto);
+            notaService.lancarNotasEmLote(notasModel);
 
-                return Ok(new { mensagem = $"{notasDto.Count} notas processadas com sucesso." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = $"Erro ao salvar lote: {ex.Message}" });
-            }
+            return Ok(new { mensagem = $"{notasDto.Count} notas processadas com sucesso." });
         }
 
         [HttpGet("boletim/download")]
         [Authorize(Roles = "Aluno")]
-        public IActionResult downloadBoletim()
+        public IActionResult DownloadBoletim()
         {
             var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
-            if (email == null) return Unauthorized();
-
+            var nomeAluno = ColetaInfoToken.ObterNomeAlunoLogado(HttpContext);
             var boletimModel = notaService.obterBoletim(email);
-            var nomeAluno = ColetaInfoToken.ObterNomeAlunoLogado(HttpContext) ?? "Aluno";
 
             if (boletimModel == null || !boletimModel.Any())
                 return NotFound(new { message = "Sem dados para gerar o boletim." });

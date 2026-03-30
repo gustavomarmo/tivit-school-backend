@@ -46,17 +46,15 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("entregar")]
-        public async Task<IActionResult> EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
+        public IActionResult EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
         {
             if (dto.Arquivo == null || dto.Arquivo.Length == 0)
                 return BadRequest(new { message = "Nenhum arquivo enviado." });
 
             var usuarioId = ColetaInfoToken.ObterIdUsuarioLogado(HttpContext);
-            if (usuarioId == null) return Unauthorized();
-
             atividadeService.RegistrarEntrega(dto.AtividadeId, usuarioId, dto.Arquivo);
 
-            return Ok(new { messsage = "Atividade entregue com sucesso!" });
+            return Ok(new { message = "Atividade entregue com sucesso!" });
         }
     }
 }
