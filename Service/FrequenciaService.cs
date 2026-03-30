@@ -32,8 +32,17 @@ namespace edu_connect_backend.Service
             var aluno = alunoRepository.ObterAlunoPorUsuarioId(usuarioId)
                 ?? throw new KeyNotFoundException("Aluno não encontrado.");
 
-            return repository.ObterResumoPorAluno(aluno.id, aluno.turmaId)
-                ?? throw new KeyNotFoundException("Resumo de frequência não encontrado.");
+            var dadosBrutos = repository.ObterDadosBrutosPorAluno(aluno.id, aluno.turmaId);
+
+            return dadosBrutos.Select(item => new FrequenciaResumoReadModel
+            {
+                disciplina = item.NomeDisciplina,
+                totalAulas = item.TotalAulas,
+                totalFaltas = item.TotalAulas - item.Presencas,
+                frequencia = item.TotalAulas == 0
+                    ? 100
+                    : (double)Math.Round(((decimal)item.Presencas / item.TotalAulas) * 100, 1)
+            }).ToList();
         }
     }
 }
