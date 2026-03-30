@@ -1,5 +1,4 @@
-﻿using edu_connect_backend.Context;
-using edu_connect_backend.Model;
+﻿using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 
 namespace edu_connect_backend.Service
@@ -9,26 +8,27 @@ namespace edu_connect_backend.Service
         private readonly NotaRepository notaRepository;
         private readonly AlunoRepository alunoRepository;
         private readonly UsuarioRepository usuarioRepository;
-        private readonly ConnectionContext context;
+        private readonly NotificacaoRepository notificacaoRepository;
 
         public NotaService(
             NotaRepository notaRepository,
             AlunoRepository alunoRepository,
             UsuarioRepository usuarioRepository,
-            ConnectionContext context)
+            NotificacaoRepository notificacaoRepository)
         {
             this.notaRepository = notaRepository;
             this.alunoRepository = alunoRepository;
             this.usuarioRepository = usuarioRepository;
-            this.context = context;
+            this.notificacaoRepository = notificacaoRepository;
         }
 
         public void LancarNota(Nota nota)
         {
             var vinculo = notaRepository.ObterTurmaDisciplina(nota.TempTurmaId, nota.TempDisciplinaId)
-                ?? throw new KeyNotFoundException("Vínculo não encontrado.");
+                ?? throw new KeyNotFoundException("Vínculo turma-disciplina não encontrado.");
 
-            var notaExistente = notaRepository.ObterNotaEspecifica(nota.alunoId, vinculo.id, nota.bimestre, nota.tipo);
+            var notaExistente = notaRepository.ObterNotaEspecifica(
+                nota.alunoId, vinculo.id, nota.bimestre, nota.tipo);
 
             if (notaExistente != null)
             {
@@ -41,25 +41,15 @@ namespace edu_connect_backend.Service
                 nota.turmaDisciplinaId = vinculo.id;
                 nota.descricao = $"Nota {nota.tipo} - {nota.bimestre}º Bimestre";
                 nota.dataLancamento = DateTime.Now;
-
                 notaRepository.Salvar(nota);
             }
 
-            var aluno = context.alunos.FirstOrDefault(a => a.id == nota.alunoId);
-            if (aluno != null)
-            {
-                var notificacao = new Notificacao
-                {
-                    usuarioId = aluno.usuarioId,
-                    tipo = "success",
-                    titulo = "Nova Nota Lançada",
-                    mensagem = $"A sua nota de {nota.tipo} ({nota.bimestre}º Bimestre) de foi publicada/atualizada.",
-                    dataCriacao = DateTime.Now,
-                    lida = false
-                };
-                context.Notificacoes.Add(notificacao);
-                context.SaveChanges();
-            }
+            notificacaoRepository.CriarParaAluno(
+                alunoId: nota.alunoId,
+                tipo: "success",
+                titulo: "Nova Nota Lançada",
+                mensagem: $"A sua nota de {nota.tipo} ({nota.bimestre}º Bimestre) foi publicada/atualizada."
+            );
         }
 
         public List<BoletimReadModel>? obterBoletim(string emailUsuario)
@@ -84,22 +74,11 @@ namespace edu_connect_backend.Service
         {
             if (listaNotas == null || !listaNotas.Any()) return;
 
-            using var transaction = context.Database.BeginTransaction();
-
-            try
+            notaRepository.ExecutarEmTransacao(() =>
             {
                 foreach (var nota in listaNotas)
-                {
                     LancarNota(nota);
-                }
-
-                transaction.Commit();
-            }
-            catch (Exception)
-            {
-                transaction.Rollback();
-                throw;
-            }
+            });
         }
     }
 }

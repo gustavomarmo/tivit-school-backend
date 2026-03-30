@@ -47,15 +47,36 @@ namespace edu_connect_backend.Repository
                 .ToList();
 
             foreach (var notif in notificacoes)
-            {
                 notif.lida = true;
-            }
 
             context.SaveChanges();
         }
+
         public void Criar(Notificacao notificacao)
         {
             context.Notificacoes.Add(notificacao);
+            context.SaveChanges();
+        }
+
+        public void CriarParaAluno(int alunoId, string tipo, string titulo, string mensagem)
+        {
+            var usuarioId = context.alunos
+                .Where(a => a.id == alunoId)
+                .Select(a => a.usuarioId)
+                .FirstOrDefault();
+
+            if (usuarioId == 0) return;
+
+            context.Notificacoes.Add(new Notificacao
+            {
+                usuarioId = usuarioId,
+                tipo = tipo,
+                titulo = titulo,
+                mensagem = mensagem,
+                dataCriacao = DateTime.Now,
+                lida = false
+            });
+
             context.SaveChanges();
         }
     }
