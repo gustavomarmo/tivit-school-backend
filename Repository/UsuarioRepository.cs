@@ -23,7 +23,7 @@ namespace edu_connect_backend.Repository
             return context.usuarios.FirstOrDefault(u => u.id == usuarioId);
         }
 
-        public Usuario? obterPorUsuarioId(int usuarioId)
+        public Usuario? ObterPorUsuarioId(int usuarioId)
         {
             return ObterPorId(usuarioId);
         }

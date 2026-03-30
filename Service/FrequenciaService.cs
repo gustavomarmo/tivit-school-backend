@@ -36,12 +36,12 @@ namespace edu_connect_backend.Service
 
             return dadosBrutos.Select(item => new FrequenciaResumoReadModel
             {
-                disciplina = item.NomeDisciplina,
-                totalAulas = item.TotalAulas,
-                totalFaltas = item.TotalAulas - item.Presencas,
-                frequencia = item.TotalAulas == 0
+                disciplina = item.nomeDisciplina,
+                totalAulas = item.totalAulas,
+                totalFaltas = item.totalAulas - item.presencas,
+                frequencia = item.totalAulas == 0
                     ? 100
-                    : (double)Math.Round(((decimal)item.Presencas / item.TotalAulas) * 100, 1)
+                    : (double)Math.Round(((decimal)item.presencas / item.totalAulas) * 100, 1)
             }).ToList();
         }
     }

@@ -32,7 +32,7 @@ namespace edu_connect_backend.Controller
             if (usuario == null)
                 return Unauthorized(new { message = "Email ou senha inválidos." });
 
-            var token = tokenService.gerarToken(usuario);
+            var token = tokenService.GerarToken(usuario);
 
             var response = usuarioMapper.ToLoginResponseDTO(usuario, token);
 

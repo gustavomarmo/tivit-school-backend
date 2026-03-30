@@ -11,7 +11,6 @@ namespace edu_connect_backend.Model
 
         public DateTime dataNascimento { get; set; }
 
-        // Chaves Estrangeiras
         public int usuarioId { get; set; }
         public Usuario usuario { get; set; } = null!;
 

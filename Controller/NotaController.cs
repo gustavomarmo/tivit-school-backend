@@ -28,7 +28,7 @@ namespace edu_connect_backend.Controller
         public IActionResult ObterBoletim()
         {
             var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
-            var boletimModel = notaService.obterBoletim(email);
+            var boletimModel = notaService.ObterBoletim(email);
 
             if (boletimModel == null)
                 return NotFound(new { message = "Aluno não encontrado ou sem notas registradas." });
@@ -43,7 +43,7 @@ namespace edu_connect_backend.Controller
             if (turmaId <= 0 || disciplinaId <= 0)
                 return BadRequest(new { message = "Parâmetros inválidos." });
 
-            var listaModel = notaService.obterListaLancamento(turmaId, disciplinaId);
+            var listaModel = notaService.ObterListaLancamento(turmaId, disciplinaId);
             return Ok(notaMapper.ToNotaLancamentoDTOList(listaModel));
         }
 
@@ -55,7 +55,7 @@ namespace edu_connect_backend.Controller
                 return BadRequest(new { message = "A lista de notas está vazia." });
 
             var notasModel = notaMapper.ToNotaList(notasDto);
-            notaService.lancarNotasEmLote(notasModel);
+            notaService.LancarNotasEmLote(notasModel);
 
             return Ok(new { mensagem = $"{notasDto.Count} notas processadas com sucesso." });
         }
@@ -66,13 +66,13 @@ namespace edu_connect_backend.Controller
         {
             var email = ColetaInfoToken.ObterEmailUsuarioLogado(HttpContext);
             var nomeAluno = ColetaInfoToken.ObterNomeAlunoLogado(HttpContext);
-            var boletimModel = notaService.obterBoletim(email);
+            var boletimModel = notaService.ObterBoletim(email);
 
             if (boletimModel == null || !boletimModel.Any())
                 return NotFound(new { message = "Sem dados para gerar o boletim." });
 
             var boletimDto = notaMapper.ToBoletimDTOList(boletimModel);
-            var pdfBytes = pdfService.gerarPdfBoletim(boletimDto, nomeAluno);
+            var pdfBytes = pdfService.GerarPdfBoletim(boletimDto, nomeAluno);
 
             return File(pdfBytes, "application/pdf", "meu_boletim.pdf");
         }

@@ -32,20 +32,20 @@ namespace edu_connect_backend.Service
             this.eventoRepository = eventoRepository;
         }
 
-        public DashboardAlunoReadModel obterDashboardAluno(int usuarioId)
+        public DashboardAlunoReadModel ObterDashboardAluno(int usuarioId)
         {
-            var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
+            var usuario = usuarioRepository.ObterPorUsuarioId(usuarioId)
                 ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
 
-            var aluno = alunoRepository.obterAlunos(usuario.nome)
+            var aluno = alunoRepository.ObterAlunos(usuario.nome)
                             .FirstOrDefault(a => a.usuarioId == usuario.id)
                             ?? throw new KeyNotFoundException("Cadastro de aluno não encontrado");
                                                                     
             var dashboard = new DashboardAlunoReadModel
             {
-                ultimasNotas = repository.obterNotasRecentes(aluno.id),
-                avisos = repository.obterAvisos(aluno.turmaId.Value),
-                tarefasPendentes = repository.obterTarefasPendentes(aluno.turmaId.Value)
+                ultimasNotas = repository.ObterNotasRecentes(aluno.id),
+                avisos = repository.ObterAvisos(aluno.turmaId.Value),
+                tarefasPendentes = repository.ObterTarefasPendentes(aluno.turmaId.Value)
             };
 
             return dashboard;
@@ -53,14 +53,14 @@ namespace edu_connect_backend.Service
 
         public DashboardProfessorResponseDTO ObterDashboardProfessor(int usuarioId)
         {
-            var usuario = usuarioRepository.obterPorUsuarioId(usuarioId)
+            var usuario = usuarioRepository.ObterPorUsuarioId(usuarioId)
                 ?? throw new KeyNotFoundException($"Usuário não encontrado com id {usuarioId}");
 
             var professor = professorRepository.ObterProfessorPorUsuarioId(usuario.id);
 
-            var kpis = repository.obterKPIsProfessorProcedure(professor.id);
+            var kpis = repository.ObterKPIsProfessorProcedure(professor.id);
 
-            var alunosAtencao = repository.obterAlunosEmRisco(professor.id);
+            var alunosAtencao = repository.ObterAlunosEmRisco(professor.id);
 
             return new DashboardProfessorResponseDTO
             {
@@ -73,12 +73,12 @@ namespace edu_connect_backend.Service
         {
             var response = new DashboardCoordenadorResponseDTO();
 
-            response.kpis = repository.obterKPIsCoordenador();
+            response.kpis = repository.ObterKPIsCoordenador();
 
-            response.graficoDesempenho = repository.obterGraficoDesempenhoTurmas();
-            response.graficoStatus = repository.obterGraficoStatusAlunos();
+            response.graficoDesempenho = repository.ObterGraficoDesempenhoTurmas();
+            response.graficoStatus = repository.ObterGraficoStatusAlunos();
 
-            var eventosFuturos = eventoRepository.obterProximosEventos(5);
+            var eventosFuturos = eventoRepository.ObterProximosEventos(5);
 
             response.proximosEventos = eventosFuturos.Select(e => new EventoResponseDTO
             {

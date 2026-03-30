@@ -7,7 +7,7 @@ namespace edu_connect_backend.Service
 {
     public class BoletimPdfService
     {
-        public byte[] gerarPdfBoletim(List<BoletimDTO> boletim, string nomeAluno)
+        public byte[] GerarPdfBoletim(List<BoletimDTO> boletim, string nomeAluno)
         {
             QuestPDF.Settings.License = LicenseType.Community;
 
@@ -30,13 +30,13 @@ namespace edu_connect_backend.Service
                         {
                             table.ColumnsDefinition(columns =>
                             {
-                                columns.RelativeColumn(3); // Matéria
-                                columns.RelativeColumn();  // N1
-                                columns.RelativeColumn();  // N2
-                                columns.RelativeColumn();  // Ativ
-                                columns.RelativeColumn();  // N1
-                                columns.RelativeColumn();  // N2
-                                columns.RelativeColumn();  // Ativ
+                                columns.RelativeColumn(3);
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
                             });
 
                             table.Header(header =>

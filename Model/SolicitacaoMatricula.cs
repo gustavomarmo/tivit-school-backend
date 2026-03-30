@@ -22,7 +22,6 @@ namespace edu_connect_backend.Model
 
         public DateTime dataNascimento { get; set; }
 
-        // --- Controle de Segurança (OTP) ---
         public string? codigoOtp { get; set; }
         public DateTime? validadeOtp { get; set; }
         public string? enderecoCompleto { get; set; }

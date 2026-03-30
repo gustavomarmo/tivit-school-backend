@@ -26,7 +26,7 @@ namespace edu_connect_backend.Controller
 
             if (usuarioId == null) return Unauthorized();
 
-            return Ok(dashboardService.obterDashboardAluno(usuarioId));
+            return Ok(dashboardService.ObterDashboardAluno(usuarioId));
         }
 
         [HttpGet("professor")]

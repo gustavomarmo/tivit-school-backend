@@ -52,7 +52,7 @@ namespace edu_connect_backend.Service
             );
         }
 
-        public List<BoletimReadModel>? obterBoletim(string emailUsuario)
+        public List<BoletimReadModel>? ObterBoletim(string emailUsuario)
         {
             var usuario = usuarioRepository.ObterUsuarioPorEmail(emailUsuario)
                 ?? throw new KeyNotFoundException("Usuário não encontrado.");
@@ -64,13 +64,13 @@ namespace edu_connect_backend.Service
                 ?? throw new KeyNotFoundException("Boletim não encontrado.");
         }
 
-        public List<NotaLancamentoReadModel> obterListaLancamento(int turmaId, int disciplinaId)
+        public List<NotaLancamentoReadModel> ObterListaLancamento(int turmaId, int disciplinaId)
         {
             return notaRepository.ObterAlunosParaLancamento(turmaId, disciplinaId)
                 ?? throw new KeyNotFoundException("Alunos não encontrados.");
         }
 
-        public void lancarNotasEmLote(List<Nota> listaNotas)
+        public void LancarNotasEmLote(List<Nota> listaNotas)
         {
             if (listaNotas == null || !listaNotas.Any()) return;
 

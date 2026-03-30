@@ -46,10 +46,10 @@ namespace edu_connect_backend.Repository
                 .Where(td => td.turmaId == turmaId)
                 .Select(td => new FrequenciaRawModel
                 {
-                    NomeDisciplina = td.disciplina.nome,
-                    TotalAulas = context.Frequencias.Count(f =>
+                    nomeDisciplina = td.disciplina.nome,
+                    totalAulas = context.Frequencias.Count(f =>
                         f.disciplinaId == td.disciplinaId && f.alunoId == alunoId),
-                    Presencas = context.Frequencias.Count(f =>
+                    presencas = context.Frequencias.Count(f =>
                         f.disciplinaId == td.disciplinaId && f.alunoId == alunoId && f.presente)
                 })
                 .ToList();
@@ -58,8 +58,8 @@ namespace edu_connect_backend.Repository
 
     public class FrequenciaRawModel
     {
-        public string NomeDisciplina { get; set; } = string.Empty;
-        public int TotalAulas { get; set; }
-        public int Presencas { get; set; }
+        public string nomeDisciplina { get; set; } = string.Empty;
+        public int totalAulas { get; set; }
+        public int presencas { get; set; }
     }
 }
