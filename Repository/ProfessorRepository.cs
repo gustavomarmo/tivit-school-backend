@@ -53,7 +53,6 @@ namespace edu_connect_backend.Repository
                 context.usuarios.Update(professor.usuario);
             }
 
-            context.professores.Remove(professor);
             context.SaveChanges();
         }
 
