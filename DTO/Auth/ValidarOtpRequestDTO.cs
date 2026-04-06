@@ -4,11 +4,11 @@ namespace edu_connect_backend.DTO.Auth
 {
     public class ValidarOtpRequestDTO
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "O e-mail é obrigatório")]
+        [EmailAddress(ErrorMessage = "E-mail inválido")]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "O código OTP é obrigatório")]
         public string Codigo { get; set; } = string.Empty;
     }
 }

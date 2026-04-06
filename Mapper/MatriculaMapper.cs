@@ -5,7 +5,7 @@ namespace edu_connect_backend.Mapper
 {
     public class MatriculaMapper
     {
-        public SolicitacaoMatricula ToSolicitacaoMatricula(MatriculaInicialDTO dto)
+        public SolicitacaoMatricula ToSolicitacaoMatricula(MatriculaInicialRequestDTO dto)
         {
             return new SolicitacaoMatricula
             {
@@ -19,7 +19,7 @@ namespace edu_connect_backend.Mapper
             };
         }
 
-        public SolicitacaoMatricula ToDadosComplementares(MatriculaPasso2DTO dto)
+        public SolicitacaoMatricula ToDadosComplementares(MatriculaPasso2RequestDTO dto)
         {
             return new SolicitacaoMatricula
             {

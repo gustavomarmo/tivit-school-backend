@@ -24,7 +24,7 @@ namespace edu_connect_backend.Controller
 
         [HttpPost("criar")]
         [Authorize(Roles = "Coordenador")]
-        public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoDTO dto)
+        public IActionResult CriarDisciplina([FromBody] DisciplinaCriacaoResponseDTO dto)
         {
             disciplinaService.CriarDisciplinaGenerica(disciplinaMapper.ToDisciplina(dto));
             return Ok(new { message = "Disciplina criada com sucesso." });
@@ -32,7 +32,7 @@ namespace edu_connect_backend.Controller
 
         [HttpPost("vincular")]
         [Authorize(Roles = "Coordenador")]
-        public IActionResult VincularDisciplina([FromBody] VincularDisciplinaDTO dto)
+        public IActionResult VincularDisciplina([FromBody] VincularDisciplinaRequestDTO dto)
         {
             disciplinaService.VincularDisciplina(disciplinaMapper.ToTurmaDisciplina(dto));
             return Ok(new { message = "Disciplina vinculada à turma." });

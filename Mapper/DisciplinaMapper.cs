@@ -9,7 +9,7 @@ namespace edu_connect_backend.Mapper
         {
         }
 
-        public Disciplina ToDisciplina(DisciplinaCriacaoDTO dto)
+        public Disciplina ToDisciplina(DisciplinaCriacaoResponseDTO dto)
         {
             return new Disciplina
             {
@@ -18,7 +18,7 @@ namespace edu_connect_backend.Mapper
             };
         }
 
-        public TurmaDisciplina ToTurmaDisciplina(VincularDisciplinaDTO dto)
+        public TurmaDisciplina ToTurmaDisciplina(VincularDisciplinaRequestDTO dto)
         {
             return new TurmaDisciplina
             {

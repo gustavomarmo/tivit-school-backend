@@ -13,6 +13,7 @@ namespace edu_connect_backend.DTO.Auth
 
         [Required]
         [MinLength(6, ErrorMessage = "A senha deve ter no mínimo 6 caracteres.")]
+        [MaxLength(100, ErrorMessage = "A senha deve ter no máximo 100 caracteres")]
         public string NovaSenha { get; set; } = string.Empty;
     }
 }

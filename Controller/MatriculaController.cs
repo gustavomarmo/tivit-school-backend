@@ -27,7 +27,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("iniciar")]
-        public async Task<IActionResult> IniciarMatricula([FromBody] MatriculaInicialDTO dto)
+        public async Task<IActionResult> IniciarMatricula([FromBody] MatriculaInicialRequestDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -97,7 +97,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("dados-complementares")]
-        public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2DTO dto)
+        public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2RequestDTO dto)
         {
             var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId)
                 ?? throw new KeyNotFoundException("Solicitação não encontrada.");
