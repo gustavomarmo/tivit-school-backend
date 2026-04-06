@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Auth;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -12,11 +12,11 @@ namespace edu_connect_backend.Mapper
         {
             return new LoginResponseDTO
             {
-                email = usuario.email,
-                nome = usuario.nome,
-                perfil = usuario.perfil.ToString(),
-                fotoUrl = usuario.fotoUrl,
-                token = token
+                Email = usuario.email,
+                Nome = usuario.nome,
+                Perfil = usuario.perfil.ToString(),
+                FotoUrl = usuario.fotoUrl,
+                Token = token
             };
         }
     }

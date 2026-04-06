@@ -14,6 +14,7 @@ namespace edu_connect_backend.Service
         private readonly ProfessorRepository professorRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly AtividadeRepository atividadeRepository;
+        private readonly NotificacaoRepository notificacaoRepository;
 
         public DisciplinaService(
             DisciplinaRepository disciplinaRepository,
@@ -21,7 +22,8 @@ namespace edu_connect_backend.Service
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
             IHttpContextAccessor httpContextAccessor,
-            AtividadeRepository atividadeRepository)
+            AtividadeRepository atividadeRepository,
+            NotificacaoRepository notificacaoRepository)
         {
             this.disciplinaRepository = disciplinaRepository;
             this.usuarioRepository = usuarioRepository;
@@ -29,6 +31,7 @@ namespace edu_connect_backend.Service
             this.professorRepository = professorRepository;
             this.httpContextAccessor = httpContextAccessor;
             this.atividadeRepository = atividadeRepository;
+            this.notificacaoRepository = notificacaoRepository;
         }
 
         public void CriarDisciplinaGenerica(Disciplina disciplina)
@@ -39,6 +42,18 @@ namespace edu_connect_backend.Service
         public void VincularDisciplina(TurmaDisciplina vinculo)
         {
             disciplinaRepository.VincularDisciplina(vinculo);
+
+            var professor = professorRepository.ObterPorId(vinculo.professorId);
+
+            if (professor?.usuarioId != null)
+            {
+                notificacaoRepository.CriarParaUsuario(
+                    usuarioId: professor.usuarioId,
+                    tipo: "success",
+                    titulo: "Nova Turma Vinculada",
+                    mensagem: $"Você foi vinculado a uma nova disciplina/turma. Acesse Matérias para mais detalhes."
+                );
+            }
         }
 
         public List<TurmaDisciplina> ListarDisciplinas(string emailUsuario)

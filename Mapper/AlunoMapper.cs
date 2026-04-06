@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Aluno;
 using edu_connect_backend.Model;
 using edu_connect_backend.Service;
 
@@ -14,13 +14,13 @@ namespace edu_connect_backend.Mapper
         {
             return new AlunoResponseDTO
             {
-                id = model.id,
-                nome = model.usuario != null ? model.usuario.nome : "N/A",
-                email = model.usuario != null ? model.usuario.email : "N/A",
-                matricula = model.matricula,
-                turma = model.turma != null ? model.turma.nome : "Sem Turma",
-                turmaId = model.turma != null ? model.turma.id : 0,
-                ativo = model.usuario != null ? model.usuario.ativo : false
+                Id = model.id,
+                Nome = model.usuario != null ? model.usuario.nome : "N/A",
+                Email = model.usuario != null ? model.usuario.email : "N/A",
+                Matricula = model.matricula,
+                Turma = model.turma != null ? model.turma.nome : "Sem Turma",
+                TurmaId = model.turma != null ? model.turma.id : 0,
+                Ativo = model.usuario != null ? model.usuario.ativo : false
             };
         }
 
@@ -33,13 +33,13 @@ namespace edu_connect_backend.Mapper
         {
             return new Aluno
             {
-                matricula = dto.matricula,
-                turmaId = dto.turmaId,
+                matricula = dto.Matricula,
+                turmaId = dto.TurmaId,
                 usuario = new Usuario
                 {
-                    nome = dto.nome,
-                    email = dto.email,
-                    ativo = dto.ativo
+                    nome = dto.Nome,
+                    email = dto.Email,
+                    ativo = dto.Ativo
                 }
             };
         }

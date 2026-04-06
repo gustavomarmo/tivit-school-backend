@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Auth;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Model;
 using edu_connect_backend.Service;
@@ -27,7 +27,7 @@ namespace edu_connect_backend.Controller
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDTO loginDto)
         {
-            var usuario = usuarioService.Autenticar(loginDto.email, loginDto.senha);
+            var usuario = usuarioService.Autenticar(loginDto.Email, loginDto.Senha);
 
             if (usuario == null)
                 return Unauthorized(new { message = "Email ou senha inválidos." });
@@ -55,7 +55,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("validar-otp")]
-        public IActionResult ValidarOtp([FromBody] ValidarOtpDTO dto)
+        public IActionResult ValidarOtp([FromBody] ValidarOtpRequestDTO dto)
         {
             var isValido = usuarioService.ValidarOtpSenha(dto.Email, dto.Codigo);
 

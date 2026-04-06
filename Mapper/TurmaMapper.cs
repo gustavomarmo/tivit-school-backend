@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Turma;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -11,9 +11,9 @@ namespace edu_connect_backend.Mapper
         {
             return new TurmaResponseDTO
             {
-                id = model.id,
-                nome = model.nome,
-                anoLetivo = model.anoLetivo
+                Id = model.id,
+                Nome = model.nome,
+                AnoLetivo = model.anoLetivo
             };
         }
 

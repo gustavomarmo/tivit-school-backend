@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Disciplina;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using edu_connect_backend.Util;
@@ -46,7 +46,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("entregar")]
-        public IActionResult EntregarAtividade([FromForm] EntregaAtividadeDTO dto)
+        public IActionResult EntregarAtividade([FromForm] EntregaAtividadeRequestDTO dto)
         {
             if (dto.Arquivo == null || dto.Arquivo.Length == 0)
                 return BadRequest(new { message = "Nenhum arquivo enviado." });

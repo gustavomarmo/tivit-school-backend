@@ -1,11 +1,11 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Matricula;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
 {
     public class MatriculaMapper
     {
-        public SolicitacaoMatricula ToSolicitacaoMatricula(MatriculaInicialDTO dto)
+        public SolicitacaoMatricula ToSolicitacaoMatricula(MatriculaInicialRequestDTO dto)
         {
             return new SolicitacaoMatricula
             {
@@ -19,7 +19,7 @@ namespace edu_connect_backend.Mapper
             };
         }
 
-        public SolicitacaoMatricula ToDadosComplementares(MatriculaPasso2DTO dto)
+        public SolicitacaoMatricula ToDadosComplementares(MatriculaPasso2RequestDTO dto)
         {
             return new SolicitacaoMatricula
             {
@@ -31,7 +31,7 @@ namespace edu_connect_backend.Mapper
             };
         }
 
-        public SolicitacaoMatricula ToSelecaoVaga(SelecaoVagaDTO dto)
+        public SolicitacaoMatricula ToSelecaoVaga(SelecaoVagaRequestDTO dto)
         {
             if (!Enum.TryParse<Turno>(dto.Turno, true, out var turnoEnum))
                 throw new ArgumentException($"Turno inválido: {dto.Turno}. Use: Manha, Tarde ou Noite.");
@@ -59,19 +59,19 @@ namespace edu_connect_backend.Mapper
         {
             return new MatriculaResponseDTO
             {
-                idSolicitacao = model.id,
-                status = model.status.ToString(),
-                nome = model.nomeCompleto,
-                email = model.email,
-                cpf = model.cpf,
-                telefone = model.telefone,
-                endereco = model.enderecoCompleto,
-                nomeResponsavel = model.nomeResponsavel,
-                contatoResponsavel = model.contatoResponsavel,
-                escolaridade = model.escolaridadeAnterior,
-                serie = model.serieDesejada,
-                turno = model.turnoDesejado?.ToString(),
-                mensalidade = model.valorMensalidade
+                IdSolicitacao = model.id,
+                Status = model.status.ToString(),
+                Nome = model.nomeCompleto,
+                Email = model.email,
+                Cpf = model.cpf,
+                Telefone = model.telefone,
+                Endereco = model.enderecoCompleto,
+                NomeResponsavel = model.nomeResponsavel,
+                ContatoResponsavel = model.contatoResponsavel,
+                Escolaridade = model.escolaridadeAnterior,
+                Serie = model.serieDesejada,
+                Turno = model.turnoDesejado?.ToString(),
+                Mensalidade = model.valorMensalidade
             };
         }
 
@@ -79,24 +79,24 @@ namespace edu_connect_backend.Mapper
         {
             return new MatriculaPendenteResponseDTO
             {
-                id = model.id,
-                nome = model.nomeCompleto,
-                email = model.email,
-                cpf = model.cpf,
-                telefone = model.telefone,
-                nomeResponsavel = model.nomeResponsavel,
-                serie = model.serieDesejada,
-                turno = model.turnoDesejado?.ToString(),
-                mensalidade = model.valorMensalidade,
-                status = model.status.ToString(),
-                dataSolicitacao = model.dataSolicitacao,
-                documentos = model.documentos.Select(d => new DocumentoMatriculaResponseDTO
+                Id = model.id,
+                Nome = model.nomeCompleto,
+                Email = model.email,
+                Cpf = model.cpf,
+                Telefone = model.telefone,
+                NomeResponsavel = model.nomeResponsavel,
+                Serie = model.serieDesejada,
+                Turno = model.turnoDesejado?.ToString(),
+                Mensalidade = model.valorMensalidade,
+                Status = model.status.ToString(),
+                DataSolicitacao = model.dataSolicitacao,
+                Documentos = model.documentos.Select(d => new DocumentoMatriculaResponseDTO
                 {
-                    id = d.id,
-                    tipo = d.tipo.ToString(),
-                    url = d.caminhoArquivo,
-                    nomeOriginal = d.nomeOriginalArquivo,
-                    validado = d.validado
+                    Id = d.id,
+                    Tipo = d.tipo.ToString(),
+                    Url = d.caminhoArquivo,
+                    NomeOriginal = d.nomeOriginalArquivo,
+                    Validado = d.validado
                 }).ToList()
             };
         }

@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Evento;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -13,13 +13,13 @@ namespace edu_connect_backend.Mapper
         {
             return new EventoResponseDTO
             {
-                id = model.id,
-                title = model.titulo,
-                start = model.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
-                end = model.dataFim?.ToString("yyyy-MM-ddTHH:mm:ss"),
-                type = model.tipo,
-                description = model.descricao,
-                turmaNome = model.turma != null ? model.turma.nome : "Geral"
+                Id = model.id,
+                Titulo = model.titulo,
+                Inicio = model.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
+                Fim = model.dataFim?.ToString("yyyy-MM-ddTHH:mm:ss"),
+                Tipo = model.tipo,
+                Descricao = model.descricao,
+                TurmaNome = model.turma != null ? model.turma.nome : "Geral"
             };
         }
 
@@ -32,12 +32,12 @@ namespace edu_connect_backend.Mapper
         {
             return new Evento
             {
-                titulo = dto.titulo,
-                descricao = dto.descricao,
-                dataInicio = dto.dataInicio,
-                dataFim = dto.dataFim,
-                tipo = dto.tipo,
-                turmaId = dto.turmaId
+                titulo = dto.Titulo,
+                descricao = dto.Descricao,
+                dataInicio = dto.DataInicio,
+                dataFim = dto.DataFim,
+                tipo = dto.Tipo,
+                turmaId = dto.TurmaId
             };
         }
     }

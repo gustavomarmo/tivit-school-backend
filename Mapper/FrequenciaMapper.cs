@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Frequencia;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -13,16 +13,16 @@ namespace edu_connect_backend.Mapper
         {
             var lista = new List<Frequencia>();
 
-            if (dto.registros != null)
+            if (dto.Registros != null)
             {
-                foreach (var registro in dto.registros)
+                foreach (var registro in dto.Registros)
                 {
                     lista.Add(new Frequencia
                     {
-                        dataAula = dto.data,
-                        disciplinaId = dto.disciplinaId,
-                        alunoId = registro.alunoId,
-                        presente = registro.presente
+                        dataAula = dto.Data,
+                        disciplinaId = dto.DisciplinaId,
+                        alunoId = registro.AlunoId,
+                        presente = registro.Presente
                     });
                 }
             }
@@ -30,18 +30,18 @@ namespace edu_connect_backend.Mapper
             return lista;
         }
 
-        public FrequenciaResumoDTO ToFrequenciaResumoDTO(FrequenciaResumoReadModel model)
+        public FrequenciaResumoResponseDTO ToFrequenciaResumoDTO(FrequenciaResumoReadModel model)
         {
-            return new FrequenciaResumoDTO
+            return new FrequenciaResumoResponseDTO
             {
-                disciplina = model.disciplina,
-                totalAulas = model.totalAulas,
-                faltas = model.totalFaltas,
-                frequencia = model.frequencia
+                Disciplina = model.disciplina,
+                TotalAulas = model.totalAulas,
+                Faltas = model.totalFaltas,
+                Frequencia = model.frequencia
             };
         }
 
-        public List<FrequenciaResumoDTO> ToFrequenciaResumoDTOList(List<FrequenciaResumoReadModel> models)
+        public List<FrequenciaResumoResponseDTO> ToFrequenciaResumoDTOList(List<FrequenciaResumoReadModel> models)
         {
             return models.Select(ToFrequenciaResumoDTO).ToList();
         }

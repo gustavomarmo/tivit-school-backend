@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Professor;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -10,13 +10,13 @@ namespace edu_connect_backend.Mapper
         {
             return new Professor
             {
-                matricula = dto.matricula,
-                especialidade = dto.especialidade,
+                matricula = dto.Matricula,
+                especialidade = dto.Especialidade,
                 usuario = new Usuario
                 {
-                    nome = dto.nome,
-                    email = dto.email,
-                    ativo = dto.ativo
+                    nome = dto.Nome,
+                    email = dto.Email,
+                    ativo = dto.Ativo
                 }
             };
         }
@@ -25,12 +25,12 @@ namespace edu_connect_backend.Mapper
         {
             return new ProfessorResponseDTO
             {
-                id = model.id,
-                nome = model.usuario != null ? model.usuario.nome : "N/A",
-                email = model.usuario != null ? model.usuario.email : "N/A",
-                matricula = model.matricula,
-                especialidade = model.especialidade,
-                ativo = model.usuario != null ? model.usuario.ativo : false
+                Id = model.id,
+                Nome = model.usuario != null ? model.usuario.nome : "N/A",
+                Email = model.usuario != null ? model.usuario.email : "N/A",
+                Matricula = model.matricula,
+                Especialidade = model.especialidade,
+                Ativo = model.usuario != null ? model.usuario.ativo : false
             };
         }
 

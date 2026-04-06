@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Dashboard;
 using edu_connect_backend.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;

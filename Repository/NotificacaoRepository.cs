@@ -79,5 +79,19 @@ namespace edu_connect_backend.Repository
 
             context.SaveChanges();
         }
+
+        public void CriarParaUsuario(int usuarioId, string tipo, string titulo, string mensagem)
+        {
+            context.Notificacoes.Add(new Notificacao
+            {
+                usuarioId = usuarioId,
+                tipo = tipo,
+                titulo = titulo,
+                mensagem = mensagem,
+                dataCriacao = DateTime.Now,
+                lida = false
+            });
+            context.SaveChanges();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Auth;
+using edu_connect_backend.DTO.Matricula;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Model;
 using edu_connect_backend.Service;
@@ -26,7 +27,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("iniciar")]
-        public async Task<IActionResult> IniciarMatricula([FromBody] MatriculaInicialDTO dto)
+        public async Task<IActionResult> IniciarMatricula([FromBody] MatriculaInicialRequestDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -79,7 +80,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPost("validar-otp")]
-        public async Task<IActionResult> ValidarOtp([FromBody] ValidarOtpDTO dto)
+        public async Task<IActionResult> ValidarOtp([FromBody] ValidarOtpRequestDTO dto)
         {
             var solicitacao = await matriculaService.ObterPorEmailEOtp(dto.Email, dto.Codigo);
 
@@ -96,7 +97,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("dados-complementares")]
-        public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2DTO dto)
+        public async Task<IActionResult> SalvarDadosComplementares([FromBody] MatriculaPasso2RequestDTO dto)
         {
             var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId)
                 ?? throw new KeyNotFoundException("Solicitação não encontrada.");
@@ -156,7 +157,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("selecionar-vaga")]
-        public async Task<IActionResult> SelecionarVaga([FromBody] SelecaoVagaDTO dto)
+        public async Task<IActionResult> SelecionarVaga([FromBody] SelecaoVagaRequestDTO dto)
         {
             var solicitacao = await matriculaService.ObterPorId(dto.SolicitacaoId)
                 ?? throw new KeyNotFoundException("Solicitação não encontrada.");
@@ -182,7 +183,7 @@ namespace edu_connect_backend.Controller
         }
 
         [HttpPut("aceitar-termos")]
-        public async Task<IActionResult> AceitarTermos([FromBody] AceitarTermosDTO dto)
+        public async Task<IActionResult> AceitarTermos([FromBody] AceitarTermosRequestDTO dto)
         {
             if (!dto.TermosAceitos)
                 return BadRequest(new { mensagem = "Os termos precisam ser aceitos para continuar." });
@@ -230,7 +231,7 @@ namespace edu_connect_backend.Controller
 
         [HttpPut("{id}/avaliar")]
         [Authorize(Roles = "Coordenador,Admin")]
-        public async Task<IActionResult> AvaliarMatricula(int id, [FromBody] AvaliacaoMatriculaDTO dto)
+        public async Task<IActionResult> AvaliarMatricula(int id, [FromBody] AvaliacaoMatriculaRequestDTO dto)
         {
             var solicitacao = await matriculaService.ObterPorIdComDocumentos(id)
                 ?? throw new KeyNotFoundException("Solicitação não encontrada.");
