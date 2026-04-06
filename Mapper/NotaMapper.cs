@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Nota;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -42,9 +42,9 @@ namespace edu_connect_backend.Mapper
             return models.Select(ToBoletimDTO).ToList();
         }
 
-        public NotaLancamentoDTO ToNotaLancamentoDTO(NotaLancamentoReadModel model)
+        public NotaLancamentoRequestDTO ToNotaLancamentoDTO(NotaLancamentoReadModel model)
         {
-            return new NotaLancamentoDTO
+            return new NotaLancamentoRequestDTO
             {
                 AlunoId = model.alunoId,
                 Matricula = model.matricula,
@@ -58,7 +58,7 @@ namespace edu_connect_backend.Mapper
             };
         }
 
-        public List<NotaLancamentoDTO> ToNotaLancamentoDTOList(List<NotaLancamentoReadModel> models)
+        public List<NotaLancamentoRequestDTO> ToNotaLancamentoDTOList(List<NotaLancamentoReadModel> models)
         {
             return models.Select(ToNotaLancamentoDTO).ToList();
         }

@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Dashboard;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 using Microsoft.AspNetCore.Http;
@@ -73,21 +73,21 @@ namespace edu_connect_backend.Service
         {
             var response = new DashboardCoordenadorResponseDTO();
 
-            response.kpis = repository.ObterKPIsCoordenador();
+            response.Kpis = repository.ObterKPIsCoordenador();
 
-            response.graficoDesempenho = repository.ObterGraficoDesempenhoTurmas();
-            response.graficoStatus = repository.ObterGraficoStatusAlunos();
+            response.GraficoDesempenho = repository.ObterGraficoDesempenhoTurmas();
+            response.GraficoStatus = repository.ObterGraficoStatusAlunos();
 
             var eventosFuturos = eventoRepository.ObterProximosEventos(5);
 
-            response.proximosEventos = eventosFuturos.Select(e => new EventoResponseDTO
+            response.ProximosEventos = eventosFuturos.Select(e => new EventoResponseDTO
             {
-                id = e.id,
-                title = e.titulo,
-                start = e.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
-                type = e.tipo,
-                description = e.descricao,
-                turmaNome = e.turma != null ? e.turma.nome : "Geral"
+                Id = e.id,
+                Titulo = e.titulo,
+                Inicio = e.dataInicio.ToString("yyyy-MM-ddTHH:mm:ss"),
+                Tipo = e.tipo,
+                Descricao = e.descricao,
+                TurmaNome = e.turma != null ? e.turma.nome : "Geral"
             }).ToList();
 
             return response;

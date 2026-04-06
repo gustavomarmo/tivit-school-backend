@@ -1,7 +1,7 @@
 ﻿using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using edu_connect_backend.DTO;
+using edu_connect_backend.DTO.Nota;
 
 namespace edu_connect_backend.Service
 {

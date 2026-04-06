@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Disciplina;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -13,8 +13,8 @@ namespace edu_connect_backend.Mapper
         {
             return new Disciplina
             {
-                nome = dto.nome,
-                codigo = dto.codigo
+                nome = dto.Nome,
+                codigo = dto.Codigo
             };
         }
 
@@ -22,9 +22,9 @@ namespace edu_connect_backend.Mapper
         {
             return new TurmaDisciplina
             {
-                turmaId = dto.turmaId,
-                disciplinaId = dto.disciplinaId,
-                professorId = dto.professorId
+                turmaId = dto.TurmaId,
+                disciplinaId = dto.DisciplinaId,
+                professorId = dto.ProfessorId
             };
         }
 
@@ -32,12 +32,12 @@ namespace edu_connect_backend.Mapper
         {
             return new DisciplinaResumoDTO
             {
-                id = model.id,
-                disciplinaId = model.disciplinaId,
-                turmaId = model.turmaId,
-                nome = model.disciplina != null ? model.disciplina.nome : "N/A",
-                turma = model.turma != null ? model.turma.nome : "N/A",
-                professor = model.professor != null && model.professor.usuario != null
+                Id = model.id,
+                DisciplinaId = model.disciplinaId,
+                TurmaId = model.turmaId,
+                Nome = model.disciplina != null ? model.disciplina.nome : "N/A",
+                Turma = model.turma != null ? model.turma.nome : "N/A",
+                Professor = model.professor != null && model.professor.usuario != null
                             ? model.professor.usuario.nome
                             : "Sem Professor"
             };
@@ -52,20 +52,20 @@ namespace edu_connect_backend.Mapper
         {
             return new DisciplinaConteudoDTO
             {
-                id = model.id,
-                nome = model.disciplina.nome,
-                topicos = model.topicos.Select(t => new TopicoDTO
+                Id = model.id,
+                Nome = model.disciplina.nome,
+                Topicos = model.topicos.Select(t => new TopicoDTO
                 {
-                    id = t.id,
-                    titulo = t.titulo,
-                    materiais = t.materiais.Select(m => new MaterialDTO
+                    Id = t.id,
+                    Titulo = t.titulo,
+                    Materiais = t.materiais.Select(m => new MaterialDTO
                     {
-                        id = m.id,
-                        titulo = m.titulo,
-                        tipo = m.tipo,
-                        url = m.url,
-                        dataEntrega = m.dataEntrega,
-                        entregue = (m.tipo == "assignment") && materiaisEntreguesIds.Contains(m.id)
+                        Id = m.id,
+                        Titulo = m.titulo,
+                        Tipo = m.tipo,
+                        Url = m.url,
+                        DataEntrega = m.dataEntrega,
+                        Entregue = (m.tipo == "assignment") && materiaisEntreguesIds.Contains(m.id)
                     }).ToList()
                 }).ToList()
             };

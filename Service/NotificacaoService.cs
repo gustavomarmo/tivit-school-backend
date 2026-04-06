@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Notificacao;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 using System.Security.Claims;
@@ -20,13 +20,13 @@ namespace edu_connect_backend.Service
 
             return notificacoes.Select(n => new NotificacaoResponseDTO
             {
-                id = n.id,
-                title = n.titulo,
-                message = n.mensagem,
-                type = n.tipo,
-                read = n.lida,
-                timestamp = new DateTimeOffset(n.dataCriacao).ToUnixTimeMilliseconds(),
-                time = CalcularTempoRelativo(n.dataCriacao)
+                Id = n.id,
+                Titulo = n.titulo,
+                Descricao = n.mensagem,
+                Tipo = n.tipo,
+                Lido = n.lida,
+                Timestamp = new DateTimeOffset(n.dataCriacao).ToUnixTimeMilliseconds(),
+                Tempo = CalcularTempoRelativo(n.dataCriacao)
             }).ToList();
         }
 

@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO;
+using edu_connect_backend.DTO.Disciplina;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

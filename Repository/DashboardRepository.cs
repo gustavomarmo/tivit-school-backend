@@ -1,5 +1,5 @@
 ﻿using edu_connect_backend.Context;
-using edu_connect_backend.DTO;
+using edu_connect_backend.DTO.Dashboard;
 using edu_connect_backend.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

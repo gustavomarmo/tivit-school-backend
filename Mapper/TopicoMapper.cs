@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Disciplina;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -10,8 +10,8 @@ namespace edu_connect_backend.Mapper
         {
             return new Topico
             {
-                titulo = dto.titulo,
-                turmaDisciplinaId = dto.turmaDisciplinaId
+                titulo = dto.Titulo,
+                turmaDisciplinaId = dto.TurmaDisciplinaId
             };
         }
     }

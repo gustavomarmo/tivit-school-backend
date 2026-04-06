@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Professor;
 using edu_connect_backend.Mapper;
 using edu_connect_backend.Service;
 using Microsoft.AspNetCore.Authorization;

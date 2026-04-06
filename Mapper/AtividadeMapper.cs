@@ -1,4 +1,4 @@
-﻿using edu_connect_backend.DTO;
+﻿using edu_connect_backend.DTO.Disciplina;
 using edu_connect_backend.Model;
 
 namespace edu_connect_backend.Mapper
@@ -13,13 +13,13 @@ namespace edu_connect_backend.Mapper
         {
             return new Material
             {
-                titulo = dto.titulo,
-                descricao = dto.descricao,
+                titulo = dto.Titulo,
+                descricao = dto.Descricao,
                 tipo = "assignment",
                 url = "",
-                topicoId = dto.topicoId,
-                dataEntrega = dto.dataEntrega,
-                notaMaxima = dto.notaMaxima
+                topicoId = dto.TopicoId,
+                dataEntrega = dto.DataEntrega,
+                notaMaxima = dto.NotaMaxima
             };
         }
     }
