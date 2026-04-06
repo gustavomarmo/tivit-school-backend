@@ -12,7 +12,6 @@ namespace edu_connect_backend.Service
         private readonly UsuarioRepository usuarioRepository;
         private readonly AlunoRepository alunoRepository;
         private readonly ProfessorRepository professorRepository;
-        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly AtividadeRepository atividadeRepository;
         private readonly NotificacaoRepository notificacaoRepository;
 
@@ -21,15 +20,13 @@ namespace edu_connect_backend.Service
             UsuarioRepository usuarioRepository,
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository,
-            IHttpContextAccessor httpContextAccessor,
             AtividadeRepository atividadeRepository,
             NotificacaoRepository notificacaoRepository)
         {
             this.disciplinaRepository = disciplinaRepository;
             this.usuarioRepository = usuarioRepository;
             this.alunoRepository = alunoRepository;
-            this.professorRepository = professorRepository;
-            this.httpContextAccessor = httpContextAccessor;
+            this.professorRepository = professorRepository;;
             this.atividadeRepository = atividadeRepository;
             this.notificacaoRepository = notificacaoRepository;
         }
