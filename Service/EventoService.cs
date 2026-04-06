@@ -5,16 +5,39 @@ namespace edu_connect_backend.Service
 {
     public class EventoService
     {
+        private readonly NotificacaoRepository notificacaoRepository;
+        private readonly AlunoRepository alunoRepository;
         private readonly EventoRepository eventoRepository;
 
-        public EventoService(EventoRepository eventoRepository)
+        public EventoService(
+            EventoRepository eventoRepository,
+            NotificacaoRepository notificacaoRepository,
+            AlunoRepository alunoRepository)
         {
             this.eventoRepository = eventoRepository;
+            this.notificacaoRepository = notificacaoRepository;
+            this.alunoRepository = alunoRepository;
         }
 
         public void CriarEvento(Evento evento)
         {
             eventoRepository.Criar(evento);
+
+            var alunos = alunoRepository.ObterAlunos(null);
+
+            var alunosParaNotificar = evento.turmaId.HasValue
+                ? alunos.Where(a => a.turmaId == evento.turmaId).ToList()
+                : alunos;
+
+            foreach (var aluno in alunosParaNotificar)
+            {
+                notificacaoRepository.CriarParaAluno(
+                    alunoId: aluno.id,
+                    tipo: "info",
+                    titulo: "Novo Evento no Calendário",
+                    mensagem: $"O evento \"{evento.titulo}\" foi adicionado ao calendário."
+                );
+            }
         }
 
         public List<Evento> ListarEventos(int mes, int ano)

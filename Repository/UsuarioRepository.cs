@@ -39,5 +39,12 @@ namespace edu_connect_backend.Repository
             context.usuarios.Update(usuario);
             context.SaveChanges();
         }
+
+        public List<Usuario> ObterTodosPorPerfil(PerfilUsuario perfil)
+        {
+            return context.usuarios
+                .Where(u => u.perfil == perfil && u.ativo)
+                .ToList();
+        }
     }
 }
