@@ -1,4 +1,5 @@
 ﻿using edu_connect_backend.DTO.Dashboard;
+using edu_connect_backend.DTO.Evento;
 using edu_connect_backend.Model;
 using edu_connect_backend.Repository;
 using Microsoft.AspNetCore.Http;
