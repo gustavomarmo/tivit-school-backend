@@ -8,15 +8,15 @@ namespace edu_connect_backend.Service
     public class BoletimPdfService
     {
         // Paleta de cores da escola
-        private static readonly string ColorPrimary = "#1A3C6E"; // Azul escuro
-        private static readonly string ColorSecondary = "#2E7DC4"; // Azul médio
-        private static readonly string ColorAccent = "#F0A500"; // Âmbar / dourado
-        private static readonly string ColorSuccess = "#27AE60"; // Verde
-        private static readonly string ColorDanger = "#E74C3C"; // Vermelho
-        private static readonly string ColorRowAlt = "#F4F8FD"; // Azul bem claro
-        private static readonly string ColorRowWhite = "#FFFFFF";
-        private static readonly string ColorHeaderBg = "#1A3C6E";
-        private static readonly string ColorSubHeader = "#2E7DC4";
+        private static readonly string ColorPrimary = "#f20024";   // --brand-primary
+        private static readonly string ColorSecondary = "#262626"; // --bg-secondary (Cinza Escuro)
+        private static readonly string ColorAccent = "#d1001f";    // --brand-secondary
+        private static readonly string ColorSuccess = "#27AE60";   // Verde mantido para UX de "Aprovado"
+        private static readonly string ColorDanger = "#f20024";    // --brand-primary para "Recuperação"
+        private static readonly string ColorRowAlt = "#f4f7f6";    // --bg-primary
+        private static readonly string ColorRowWhite = "#FFFFFF";  // Branco padrão
+        private static readonly string ColorHeaderBg = "#262626";  // --bg-secondary
+        private static readonly string ColorSubHeader = "#929292"; // --border-color / --icon-inactive
 
         public byte[] GerarPdfBoletim(List<BoletimDTO> boletim, string nomeAluno)
         {
