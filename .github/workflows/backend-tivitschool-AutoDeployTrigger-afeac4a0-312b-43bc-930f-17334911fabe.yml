@@ -8,7 +8,7 @@ on:
       [ main ]
     paths:
     - '**'
-    - '.github/workflows/backend-tivitschool-AutoDeployTrigger-8299f517-865e-48db-b3ab-7f532f191798.yml'
+    - '.github/workflows/backend-tivitschool-AutoDeployTrigger-afeac4a0-312b-43bc-930f-17334911fabe.yml'
 
   # Allow manual trigger 
   workflow_dispatch:      
