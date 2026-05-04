@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../edu-connect-backend.Testes/edu-connect-backend.Testes.csproj" Id="a8e59a96-a200-4333-8ab5-c5cc89bea6a6" />
   <Project Path="edu-connect-backend.csproj" />
 </Solution>
